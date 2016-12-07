@@ -38,7 +38,9 @@
 
             @include('form-input.propose-upload')
 
-            @include('form-input.propose-reviewer')
+            @if(!$dedication_reviewers->isEmpty())
+                @include('form-input.propose-reviewer')
+            @endif
 
             <form class="" action="{{url('approve-proposes', $propose->id) . '/approve'}}" method="POST">
 
@@ -51,10 +53,15 @@
                 <div class="form-footer">
                     <div class="col-sm-offset-4 col-md-offset-3">
                         <a href="{{url($deleteUrl)}}" class="btn btn-default btn-slideright">Kembali</a>
-                        <button name="rejected" value="1" type="submit" class="btn btn-danger btn-slideright">Ditolak</button>
-                        <button name="approved" value="1" type="submit" class="btn btn-success btn-slideright">Disetujui</button>
+                        <button name="rejected" value="1" type="submit" class="btn btn-danger btn-slideright">Ditolak
+                        </button>
+                        <button name="approved" value="1" type="submit" class="btn btn-success btn-slideright">
+                            Disetujui
+                        </button>
                     </div><!-- /.col-sm-offset-3 -->
-                </div><ss!-- /.form-footer -->
+                </div>
+                <ss
+                !-- /.form-footer -->
             </form>
         </div><!-- /.body-content -->
 

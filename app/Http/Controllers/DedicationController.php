@@ -8,6 +8,7 @@ use App\DedicationOutputMethod;
 use App\DedicationOutputPatent;
 use App\DedicationOutputProduct;
 use App\DedicationOutputService;
+use App\Period;
 use App\Propose;
 use App\Member;
 use App\ModelSDM\Lecturer;
@@ -369,16 +370,7 @@ class DedicationController extends BlankonController {
 
                 $request->file('file_name')[$key]->storeAs($path, $dedication_output_service->file_name);
             }
-
-            $flow_status = $dedication->propose()->first()->flowStatus()->orderBy('item', 'desc')->first();
-            if ($flow_status->status_code === 'UL')
-            {
-                $dedication->propose()->first()->flowStatus()->create([
-                    'item'        => $flow_status->item + 1,
-                    'status_code' => 'PS', //Pengabdian Selesai
-                    'created_by'  => Auth::user()->nidn,
-                ]);
-            }
+            $this->setFlowStatuses($dedication);
         });
 
         return redirect()->intended('dedications');
@@ -414,15 +406,7 @@ class DedicationController extends BlankonController {
             $dedication_output_method->annotation = $request->annotation;
             $dedication->dedicationOutputMethod()->save($dedication_output_method);
 
-            $flow_status = $dedication->propose()->first()->flowStatus()->orderBy('item', 'desc')->first();
-            if ($flow_status->status_code === 'UL')
-            {
-                $dedication->propose()->first()->flowStatus()->create([
-                    'item'        => $flow_status->item + 1,
-                    'status_code' => 'PS', //Pengabdian Selesai
-                    'created_by'  => Auth::user()->nidn,
-                ]);
-            }
+            $this->setFlowStatuses($dedication);
         });
 
         return redirect()->intended('dedications');
@@ -474,15 +458,7 @@ class DedicationController extends BlankonController {
             }
             $dedication->dedicationOutputMethod()->save($dedication_output_product);
 
-            $flow_status = $dedication->propose()->first()->flowStatus()->orderBy('item', 'desc')->first();
-            if ($flow_status->status_code === 'UL')
-            {
-                $dedication->propose()->first()->flowStatus()->create([
-                    'item'        => $flow_status->item + 1,
-                    'status_code' => 'PS', //Pengabdian Selesai
-                    'created_by'  => Auth::user()->nidn,
-                ]);
-            }
+            $this->setFlowStatuses($dedication);
         });
 
         return redirect()->intended('dedications');
@@ -518,15 +494,7 @@ class DedicationController extends BlankonController {
             $dedication_output_patent->patent_type = $request->patent_type;
             $dedication->dedicationOutputPatent()->save($dedication_output_patent);
 
-            $flow_status = $dedication->propose()->first()->flowStatus()->orderBy('item', 'desc')->first();
-            if ($flow_status->status_code === 'UL')
-            {
-                $dedication->propose()->first()->flowStatus()->create([
-                    'item'        => $flow_status->item + 1,
-                    'status_code' => 'PS', //Pengabdian Selesai
-                    'created_by'  => Auth::user()->nidn,
-                ]);
-            }
+            $this->setFlowStatuses($dedication);
         });
 
         return redirect()->intended('dedications');
@@ -582,15 +550,7 @@ class DedicationController extends BlankonController {
             $dedication_output_guidebook->isbn = $request->isbn;
             $dedication->dedicationOutputGuidebook()->save($dedication_output_guidebook);
 
-            $flow_status = $dedication->propose()->first()->flowStatus()->orderBy('item', 'desc')->first();
-            if ($flow_status->status_code === 'UL')
-            {
-                $dedication->propose()->first()->flowStatus()->create([
-                    'item'        => $flow_status->item + 1,
-                    'status_code' => 'PS', //Pengabdian Selesai
-                    'created_by'  => Auth::user()->nidn,
-                ]);
-            }
+            $this->setFlowStatuses($dedication);
         });
 
         return redirect()->intended('dedications');
@@ -691,6 +651,19 @@ class DedicationController extends BlankonController {
             $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/dedication-output/guidebooks/' . $file);
 
             return response()->download($path, $file_ori, []);
+        }
+    }
+
+    private function setFlowStatuses($dedication)
+    {
+        $flow_status = $dedication->propose()->first()->flowStatus()->orderBy('item', 'desc')->first();
+        if ($flow_status->status_code === 'UL')
+        {
+            $dedication->propose()->first()->flowStatus()->create([
+                'item'        => $flow_status->item + 1,
+                'status_code' => 'VL', //Menunggu Validasi Luaran
+                'created_by'  => Auth::user()->nidn,
+            ]);
         }
     }
 

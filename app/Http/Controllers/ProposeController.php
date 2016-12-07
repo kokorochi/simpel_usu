@@ -366,7 +366,7 @@ class ProposeController extends BlankonController {
 
         $disable_upload = false;
         $status_code = $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code;
-        if($status_code !== 'UU' && $status_code !== 'PR')
+        if ($status_code !== 'UU' && $status_code !== 'PR')
         {
             $disable_upload = true;
         }
@@ -417,13 +417,20 @@ class ProposeController extends BlankonController {
             $request->file('file_propose')->storeAs($path, $propose->file_propose);
 
             $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
+            $store_flow_status = new FlowStatus();
+            $store_flow_status->item = $flow_status->item + 1;
+            if ($propose->is_own === '1')
+            {
+                $store_flow_status->status_code = 'RS'; // Review Selesai, Menunggu Hasil
+            } else
+            {
+                $store_flow_status->status_code = 'PR'; // Penentuan Reviewer
+            }
+            $store_flow_status->created_by = Auth::user()->nidn;
+
             if ($flow_status->status_code === 'UU')
             {
-                $propose->flowStatus()->create([
-                    'item'        => $flow_status->item + 1,
-                    'status_code' => 'PR',
-                    'created_by'  => Auth::user()->nidn,
-                ]);
+                $propose->flowStatus()->save($store_flow_status);
             }
         });
 

@@ -214,7 +214,13 @@
             <td class="print-col-1">10.</td>
             <td class="print-col-2">Sumber Dana</td>
             <td class="print-col-3">:</td>
-            <td class="print-col-4">{{$propose->period()->first()->sponsor}}</td>
+            <td class="print-col-4">
+                @if($propose->is_own === null)
+                    {{$propose->period()->first()->sponsor}}
+                @else
+                    {{$propose->proposesOwn()->first()->scheme}}
+                @endif
+            </td>
         </tr>
         </tbody>
     </table>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Auths;
 use App\ModelSDM\Lecturer;
 use App\Period;
+use App\Propose;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -62,8 +63,13 @@ class AJAXController extends BlankonController {
         $period_id = Input::get("period_id");
         $status_codes = Input::get("status_code");
         $type = Input::get("type");
-        $period = Period::find($period_id);
-        $proposes = $period->propose()->get();
+        if($period_id == 0)
+        {
+            $proposes = Propose::where('is_own', '1')->get();
+        }else{
+            $period = Period::find($period_id);
+            $proposes = $period->propose()->get();
+        }
         $proposes_final = new Collection;
         foreach ($proposes as $propose)
         {
@@ -83,7 +89,12 @@ class AJAXController extends BlankonController {
         {
             $data['data'][$i][0] = $propose->title;
             $data['data'][$i][1] = Lecturer::where('employee_card_serial_number', $propose->created_by)->first()->full_name;
-            $data['data'][$i][2] = $period->scheme;
+            if($propose->is_own === '1')
+            {
+                $data['data'][$i][2] = $propose->proposesOwn()->first()->scheme;
+            }else{
+                $data['data'][$i][2] = $period->scheme;
+            }
             $data['data'][$i][3] = $propose->flowStatus()->orderBy('item', 'desc')->first()->statusCode()->first()->description;
             if($type === 'ASSIGN')
             {

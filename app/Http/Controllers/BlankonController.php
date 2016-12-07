@@ -61,12 +61,12 @@ class BlankonController extends Controller {
                 foreach ($members as $member)
                 {
                     $propose = $member->propose()->first();
-                    if ($propose->period()->where('years', '>=', intval(Carbon::now()->toDateString()))->exists())
-                    {
+//                    if ($propose->period()->where('years', '>=', intval(Carbon::now()->toDateString()))->exists())
+//                    {
                         $notifications[$i]['propose_id'] = $propose->id;
                         $notifications[$i]['propose_title'] = $propose->title;
                         $i++;
-                    }
+//                    }
                 }
                 View::share(compact('notifications'));
             }

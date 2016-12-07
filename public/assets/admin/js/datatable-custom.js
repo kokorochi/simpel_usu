@@ -1,7 +1,7 @@
 $(document).ready(function () {
     var getUrl = window.location,
         baseUrl = getUrl.protocol + "//" + getUrl.host + "/";
-    baseUrl = baseUrl + "lppm_blankon/public";
+    baseUrl = baseUrl + "lppm_usu/public";
 
     var responsiveHelperAjax = undefined;
     var breakpointDefinition = {

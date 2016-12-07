@@ -67,6 +67,11 @@ class InitiateDedication3 extends Seeder {
             'created_by'  => 'admin',
         ]);
         StatusCode::create([
+            'code'        => 'VL',
+            'description' => 'Menunggu Validasi Luaran',
+            'created_by'  => 'admin',
+        ]);
+        StatusCode::create([
             'code'        => 'PS',
             'description' => 'Pengabdian Selesai',
             'created_by'  => 'admin',

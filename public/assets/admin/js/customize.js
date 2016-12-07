@@ -4,7 +4,7 @@
 $(document).ready(function() {
     var getUrl = window.location,
         baseUrl = getUrl.protocol + "//" + getUrl.host + "/";
-    baseUrl = baseUrl + "lppm_blankon/public";
+    baseUrl = baseUrl + "lppm_usu/public";
 
     // Handle Additional Fields For Appraisal
     var max_fields      = 20; //maximum input boxes allowed

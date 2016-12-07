@@ -154,6 +154,22 @@ START @SIDEBAR LEFT
                 </ul>
             </li>
             <!-- End navigation - Update Usulan -->
+
+            <!-- Start navigation - Usulan -->
+            <li {!! Request::is('proposes','proposes/*')? 'class="submenu active"' : 'class="submenu"' !!}>
+                <a href="javascript:void(0);">
+                    <span class="icon"><i class="fa fa-file-powerpoint-o"></i></span>
+                    <span class="text">Usulan</span>
+                    <span class="arrow"></span>
+                    {!! Request::is('proposes', 'proposes/*') ? '<span class="selected"></span>' : null !!}
+                </a>
+                <ul>
+                    <li {!! Request::is('proposes','proposes/')? 'class="active"' : null !!}>
+                        <a href="{{url('proposes/')}}">List</a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End navigation - Usulan -->
         @endcan
     <!-- End category - Operator -->
 

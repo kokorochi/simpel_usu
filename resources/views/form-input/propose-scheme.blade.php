@@ -13,12 +13,12 @@ $errors->has('period_id')           || old('period_id')
     @php
         $propose->period_id             = old('period_id');
         $propose->is_own                = old('is_own');
-        $propose_own->years             = old('years');
-        $propose_own->dedication_type   = old('dedication_type');
-        $propose_own->scheme            = old('scheme');
-        $propose_own->sponsor           = old('sponsor');
-        $propose_own->member            = old('member');
-        $propose_own->annotation        = old('annotation');
+        $propose_own->years             = old('own-years');
+        $propose_own->dedication_type   = old('own-dedication_type');
+        $propose_own->scheme            = old('own-scheme');
+        $propose_own->sponsor           = old('own-sponsor');
+        $propose_own->member            = old('own-member');
+        $propose_own->annotation        = old('own-annotation');
     @endphp
 @endif
 {{--Get Old Value And Place It To VARIABLE--}}
@@ -40,12 +40,12 @@ $errors->has('period_id')           || old('period_id')
                 <div class="form-body form-horizontal form-bordered">
 
                     <!-- Own Data -->
-                    @if($propose->is_own === 'x' || $disabled === null)
+                    @if($propose->is_own === '1' || $disabled === null)
                         <div class="form-group">
                             <div class="col-sm-offset-3 col-sm-7">
                                 <div class="ckbox ckbox-primary">
                                     <input name="is_own" id="checkbox-primary1" type="checkbox" value="x"
-                                            {{ $propose->is_own === 'x' ? 'checked="checked"' : null }} {{$disabled}}>
+                                            {{ $propose->is_own === '1' ? 'checked="checked"' : null }} {{$disabled}}>
                                     <label for="checkbox-primary1">Mandiri</label>
                                 </div>
                             </div>
@@ -57,7 +57,7 @@ $errors->has('period_id')           || old('period_id')
                             <label for="own-years" class="col-sm-4 col-md-3 control-label">Tahun</label>
                             <div class="col-sm-7 mb-10">
                                 <input name="own-years" class="form-control input-sm" type="text"
-                                       value="{{ old('years') }}" {{$disabled}}>
+                                       value="{{ $propose_own->years }}" {{$disabled}}>
                                 @if($errors->has('own-years'))
                                     <label class="error" for="years" style="display: inline-block;">
                                         {{ $errors->first('own-years') }}
@@ -120,64 +120,66 @@ $errors->has('period_id')           || old('period_id')
                             </div>
                         </div> <!-- /#own-wrapper -->
 
-                        <div id="scheme-wrapper" class="col-sm-12">
-                            <label for="period_id" class="col-sm-4 col-md-3 control-label">Scheme</label>
-                            <div class="col-sm-7 mb-10">
-                                <select name="period_id" class="form-control input-sm" {{$disabled}}>
-                                    @foreach($periods as $item)
-                                        <option value="{{$item->id}}" {{$propose->period_id == $item->id ? 'selected' : null}}>{{$item->scheme}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                        @if($propose->is_own === null)
+                            <div id="scheme-wrapper" class="col-sm-12">
+                                <label for="period_id" class="col-sm-4 col-md-3 control-label">Scheme</label>
+                                <div class="col-sm-7 mb-10">
+                                    <select name="period_id" class="form-control input-sm" {{$disabled}}>
+                                        @foreach($periods as $item)
+                                            <option value="{{$item->id}}" {{$propose->period_id == $item->id ? 'selected' : null}}>{{$item->scheme}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
-                            <label for="category_name" class="col-sm-4 col-md-3 control-label">Kategori</label>
-                            <div class="col-sm-7 mb-10">
-                                <input name="category_name" class="form-control input-sm" type="text" disabled
-                                       value="{{ $period->categoryType->category_name }}">
-                            </div>
+                                <label for="category_name" class="col-sm-4 col-md-3 control-label">Kategori</label>
+                                <div class="col-sm-7 mb-10">
+                                    <input name="category_name" class="form-control input-sm" type="text" disabled
+                                           value="{{ $period->categoryType->category_name }}">
+                                </div>
 
-                            <label for="years" class="col-sm-4 col-md-3 control-label">Tahun</label>
-                            <div class="col-sm-7 mb-10">
-                                <input name="years" class="form-control input-sm" type="text" disabled
-                                       value="{{ $period->years }}">
-                            </div>
+                                <label for="years" class="col-sm-4 col-md-3 control-label">Tahun</label>
+                                <div class="col-sm-7 mb-10">
+                                    <input name="years" class="form-control input-sm" type="text" disabled
+                                           value="{{ $period->years }}">
+                                </div>
 
-                            <label for="dedication_name" class="col-xs-12 col-sm-4 col-md-3 control-label">Jenis
-                                Pengabdian</label>
-                            <div class="col-sm-7 mb-10">
-                                <input name="dedication_name" class="form-control input-sm" type="text" disabled
-                                       value="{{ $period->dedicationType->dedication_name }}">
-                            </div>
+                                <label for="dedication_name" class="col-xs-12 col-sm-4 col-md-3 control-label">Jenis
+                                    Pengabdian</label>
+                                <div class="col-sm-7 mb-10">
+                                    <input name="dedication_name" class="form-control input-sm" type="text" disabled
+                                           value="{{ $period->dedicationType->dedication_name }}">
+                                </div>
 
-                            <label for="scheme" class="col-sm-4 col-md-3 control-label">Scheme</label>
-                            <div class="col-sm-7 mb-10">
-                                <input name="scheme" class="form-control input-sm" type="text" disabled
-                                       value="{{ $period->scheme }}">
-                            </div>
+                                <label for="scheme" class="col-sm-4 col-md-3 control-label">Scheme</label>
+                                <div class="col-sm-7 mb-10">
+                                    <input name="scheme" class="form-control input-sm" type="text" disabled
+                                           value="{{ $period->scheme }}">
+                                </div>
 
-                            <label for="sponsor" class="col-sm-4 col-md-3 control-label">Sumber Dana</label>
-                            <div class="col-sm-7 mb-10">
-                                <input name="sponsor" class="form-control input-sm" type="text" disabled
-                                       value="{{ $period->sponsor }}">
-                            </div>
+                                <label for="sponsor" class="col-sm-4 col-md-3 control-label">Sumber Dana</label>
+                                <div class="col-sm-7 mb-10">
+                                    <input name="sponsor" class="form-control input-sm" type="text" disabled
+                                           value="{{ $period->sponsor }}">
+                                </div>
 
-                            <label for="min_member" class="col-sm-4 col-md-3 control-label">Jumlah Anggota</label>
-                            <div class="col-sm-3 col-md-3">
-                                <input name="min_member" class="form-control input-sm" type="text" disabled
-                                       value="{{ $period->min_member }}">
-                            </div>
-                            <label class="col-sm-1 control-label" style="text-align: center;"> - </label>
-                            <div class="col-sm-3 col-md-3">
-                                <input name="max_member" class="form-control input-sm mb-10" type="text" disabled
-                                       value="{{$period->max_member }}">
-                            </div>
+                                <label for="min_member" class="col-sm-4 col-md-3 control-label">Jumlah Anggota</label>
+                                <div class="col-sm-3 col-md-3">
+                                    <input name="min_member" class="form-control input-sm" type="text" disabled
+                                           value="{{ $period->min_member }}">
+                                </div>
+                                <label class="col-sm-1 control-label" style="text-align: center;"> - </label>
+                                <div class="col-sm-3 col-md-3">
+                                    <input name="max_member" class="form-control input-sm mb-10" type="text" disabled
+                                           value="{{$period->max_member }}">
+                                </div>
 
-                            <label for="annotation" class="col-sm-4 col-md-3 control-label">Keterangan</label>
-                            <div class="col-sm-7">
-                                <textarea id="input-annotation" name="annotation" class="form-control input-sm" rows="5"
-                                          placeholder="Enter text ..." disabled>{{ $period->annotation }}</textarea>
-                            </div>
-                        </div> <!-- /#scheme-wrapper -->
+                                <label for="annotation" class="col-sm-4 col-md-3 control-label">Keterangan</label>
+                                <div class="col-sm-7">
+                                    <textarea id="input-annotation" name="annotation" class="form-control input-sm" rows="5"
+                                              placeholder="Enter text ..." disabled>{{ $period->annotation }}</textarea>
+                                </div>
+                            </div> <!-- /#scheme-wrapper -->
+                        @endif
                     </div>
                 </div><!-- /.form-body -->
             </div>

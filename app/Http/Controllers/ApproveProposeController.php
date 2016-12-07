@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Dedication;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -21,8 +22,7 @@ use App\ModelSDM\Faculty;
 use Illuminate\Support\Facades\Auth;
 
 
-class ApproveProposeController extends BlankonController
-{
+class ApproveProposeController extends BlankonController {
     protected $pageTitle = 'Approve Proposal';
     protected $deleteQuestion = '';
     protected $deleteUrl = 'approve-proposes';
@@ -68,6 +68,12 @@ class ApproveProposeController extends BlankonController
     public function index()
     {
         $periods = Period::where('first_endda', '>=', Carbon::now()->toDateString())->get();
+
+        $period = new Period();
+        $period->id = '0';
+        $period->scheme = 'mandiri';
+        $periods->add($period);
+
         $period = $periods[0];
 
         return view('approve-propose.approve-propose-list', compact(
@@ -89,9 +95,11 @@ class ApproveProposeController extends BlankonController
 
         $dedication_reviewers = Dedication_reviewer::where('propose_id', $propose->id)->get();
         $dedication_reviewer = new Dedication_reviewer;
-        if ($dedication_reviewers->isEmpty())
+        if ($dedication_reviewers->isEmpty() &&
+            $propose->is_own !== '1'
+        )
         {
-            $dedication_reviewers = new Collection;
+            $dedication_reviewers = new Collection();
             $dedication_reviewers->add($dedication_reviewer);
         } else
         {
@@ -101,7 +109,13 @@ class ApproveProposeController extends BlankonController
                 $dedication_reviewer->disabled = 'readonly';
             }
         }
-        $propose_own = new Propose_own;
+        if ($propose->is_own === '1')
+        {
+            $propose_own = $propose->proposesOwn()->first();
+        } else
+        {
+            $propose_own = new Propose_own;
+        }
         $periods = Period::all();
         $period = $propose->period()->first();
         $members = $propose->member()->get();
@@ -152,19 +166,22 @@ class ApproveProposeController extends BlankonController
 
         $status_code = '';
         $propose->final_amount = str_replace(',', '', $request->final_amount);
-        if($request->rejected == 1)
+        if ($request->rejected == 1)
         {
             $status_code = 'UT'; //Usulan Ditolak
-        }else{
-            if($propose->final_amount !== $propose->total_amount)
+        } else
+        {
+            if ($propose->final_amount != $propose->total_amount)
             {
                 $status_code = 'PU'; //Perbaikan, Menunggu Unggah Usulan Perbaikan
-            }else{
+            } else
+            {
                 $status_code = 'UD'; //Usulan Diterima
             }
         }
 
-        DB::transaction(function() use($propose, $status_code){
+        DB::transaction(function () use ($propose, $status_code)
+        {
             $propose->save();
             $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
             $propose->flowStatus()->create([
@@ -172,9 +189,19 @@ class ApproveProposeController extends BlankonController
                 'status_code' => $status_code,
                 'created_by'  => Auth::user()->nidn,
             ]);
-            if($status_code === 'UD')
+            if ($status_code === 'UD')
             {
-                $propose->dedication()->create();
+                $propose->dedication()->create([
+                    'created_by' => Auth::user()->nidn,
+                ]);
+                if($propose->is_own === '1')
+                {
+                    $propose->flowStatus()->create([
+                        'item'        => $flow_status->item + 1,
+                        'status_code' => 'UL', // Menunggu Luaran
+                        'created_by'  => Auth::user()->nidn,
+                    ]);
+                }
             }
         });
 
