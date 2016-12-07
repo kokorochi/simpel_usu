@@ -1,0 +1,119 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+use App\Http\Requests;
+use App\Announce;
+use View;
+
+class AnnouncesController extends BlankonController
+{
+    private $pageTitle = 'Pengumuman';
+    protected $deleteQuestion = 'Apakah anda yakin untuk menghapus Pengumuman ini?';
+    protected $deleteUrl = 'announces';
+
+    public function __construct()
+    {
+        $this->middleware('auth', ['except' => 'showSingleList']);
+        $this->middleware('isOperator', ['except' => 'showSingleList']);
+        parent::__construct();
+
+        array_push($this->css['pages'], 'global/plugins/bower_components/fontawesome/css/font-awesome.min.css');
+        array_push($this->css['pages'], 'global/plugins/bower_components/animate.css/animate.min.css');
+        array_push($this->css['pages'], 'global/plugins/bower_components/bootstrap-wysihtml5/src/bootstrap-wysihtml5.css');
+        array_push($this->css['pages'], 'global/plugins/bower_components/summernote/dist/summernote.css');
+
+        array_push($this->js['plugins'], 'global/plugins/bower_components/bootstrap-wysihtml5/lib/js/wysihtml5-0.3.0.min.js');
+        array_push($this->js['plugins'], 'global/plugins/bower_components/bootstrap-wysihtml5/src/bootstrap-wysihtml5.js');
+        array_push($this->js['plugins'], 'global/plugins/bower_components/summernote/dist/summernote.min.js');
+
+        array_push($this->js['scripts'], 'admin/js/pages/blankon.form.wysiwyg.js');
+        array_push($this->js['scripts'], 'admin/js/pages/blankon.form.advanced.js');
+        array_push($this->js['scripts'], 'admin/js/customize.js');
+
+        View::share('css', $this->css);
+        View::share('js', $this->js);
+        View::share('title', $this->pageTitle . ' | ' . $this->mainTitle);
+        View::share('pageTitle', $this->pageTitle);
+        View::share('deleteQuestion', $this->deleteQuestion);
+        View::share('deleteUrl', $this->deleteUrl);
+    }
+
+    public function index()
+    {
+        $announces = Announce::paginate(10);
+
+        $i = 1;
+        foreach ($announces as $announce)
+        {
+            $announce->no = $i;
+            $announce->title = substr($announce->title, 0, 40);
+            $announce->content = substr($announce->content, 0, 100);
+            $i = $i + 1;
+        }
+        
+        return view('announce/announce-list', compact('announces'));
+    }
+
+    public function create()
+    {
+        return view('announce/announce-create', compact('announce'));
+    }
+
+    public function edit($id)   
+    {
+        $announce = Announce::find($id);
+        
+        return view('announce/announce-edit', compact('announce'));
+    }
+
+    public function showSingleList($id)
+    {
+        $announce = Announce::find($id);
+        if (empty($announce)){
+            return abort(404);
+        }
+
+        return view('announce/announce-single', compact('announce'));
+    }
+
+    public function store(Requests\StoreAnnounceRequest $request)
+    {
+        $store = new Announce;
+        $this->setAnnounceFields($request, $store);
+        $store->created_by  = Auth::user()->nidn;
+        $store->save();
+
+        return redirect()->intended('/announces/');
+    }
+
+    public function update(Requests\StoreAnnounceRequest $request, $id)
+    {
+        $store = Announce::find($id);
+        $this->setAnnounceFields($request, $store);
+        $store->updated_by = Auth::user()->nidn;
+        $store->save();
+
+        return redirect()->intended('/announces/');
+    }
+
+    public function destroy($id)
+    {
+        Announce::find($id)->delete();
+
+        return redirect()->intended('/announces/');
+    }
+
+    /**
+     * @param Requests\StoreAnnounceRequest $request
+     * @param $store
+     */
+    private function setAnnounceFields(Requests\StoreAnnounceRequest $request, $store)
+    {
+        $store->title = $request->title;
+        $store->content = $request->description;
+    }
+}
