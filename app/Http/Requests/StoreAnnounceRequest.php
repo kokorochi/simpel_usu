@@ -25,6 +25,18 @@ class StoreAnnounceRequest extends FormRequest {
         return [
             'title'       => 'required|min:20',
             'description' => 'required|min:100',
+            'image_name'  => 'image'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'title.required'       => 'Judul Pengumuman harus diisi',
+            'title.min'            => 'Judul Pengumuman minimal 20 karakter',
+            'description.required' => 'Deskripsi harus diisi',
+            'description.min'      => 'Deskripsi minimal 100 karakter',
+            'image_name.image'     => 'Gambar Pengumuman harus dalam bentuk JPG/PNG',
         ];
     }
 }

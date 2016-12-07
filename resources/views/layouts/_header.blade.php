@@ -48,18 +48,18 @@
                 <!--/ End sidebar shrink -->
 
                 <!-- Start form search -->
-                <li class="navbar-search">
-                    <!-- Just view on mobile screen-->
-                    <a href="#" class="trigger-search"><i class="fa fa-search"></i></a>
-                    <form class="navbar-form">
-                        <div class="form-group has-feedback">
-                            <input type="text" class="form-control typeahead rounded"
-                                   placeholder="Search for people, places and things">
-                            <button type="submit"
-                                    class="btn btn-theme fa fa-search form-control-feedback rounded"></button>
-                        </div>
-                    </form>
-                </li>
+                {{--<li class="navbar-search">--}}
+                    {{--<!-- Just view on mobile screen-->--}}
+                    {{--<a href="#" class="trigger-search"><i class="fa fa-search"></i></a>--}}
+                    {{--<form class="navbar-form">--}}
+                        {{--<div class="form-group has-feedback">--}}
+                            {{--<input type="text" class="form-control typeahead rounded"--}}
+                                   {{--placeholder="Search for people, places and things">--}}
+                            {{--<button type="submit"--}}
+                                    {{--class="btn btn-theme fa fa-search form-control-feedback rounded"></button>--}}
+                        {{--</div>--}}
+                    {{--</form>--}}
+                {{--</li>--}}
                 <!--/ End form search -->
 
             </ul><!-- /.nav navbar-nav navbar-left -->

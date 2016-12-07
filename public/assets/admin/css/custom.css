@@ -10,3 +10,10 @@
     padding: 5px 10px;
     margin-left: 35px;
 }
+
+.announce-image{
+    display: block;
+    max-width: 100%;
+    /*width: 750px;*/
+    /*margin: 0 auto;*/
+}

@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Symfony\Component\HttpFoundation\File\File;
 use View;
 use Illuminate\Support\Facades\Storage;
 
-class TestingController extends BlankonController
-{
+class TestingController extends BlankonController {
     public function __construct()
     {
         parent::__construct();
@@ -36,12 +36,29 @@ class TestingController extends BlankonController
         array_push($this->js['scripts'], 'admin/js/customize.js');
         array_push($this->js['scripts'], 'admin/js/pages/blankon.form.element.js');
     }
+
+    public function index()
+    {
+//        return (public_path('images'));
+//        $path = public_path('images\upload\testing');
+//        $visibility = Storage::getVisibility('images/1.jpg');
+
+//        return $visibility;
+//        $file = File::
+//        response()->download($file);
+
+//        return response()::file('1.jpg');
+
+//        return response()->download($path, '1.jpg', ['Content-Type' => 'image/jpg']);
+    }
+
     public function upload()
     {
         View::share('css', $this->css);
         View::share('js', $this->js);
         View::share('title', 'Upload Files');
         View::share('assetUrl', $this->assetUrl);
+
         return view('testing.file-upload');
     }
 
@@ -60,7 +77,7 @@ class TestingController extends BlankonController
 
         $path = Storage::url('images/');
 
-        $path  = storage_path().'/app/images/1.jpg';
+        $path = storage_path() . '/app/images/1.jpg';
 //        return $path;
 
         $content = Storage::get('images/1.jpg');

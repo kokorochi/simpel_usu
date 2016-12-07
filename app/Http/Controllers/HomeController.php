@@ -29,8 +29,10 @@ class HomeController extends BlankonController
 //        array_push($this->js['plugins'], 'global/plugins/bower_components/flot/jquery.flot.pie.js');
 //        array_push($this->js['plugins'], 'global/plugins/bower_components/dropzone/downloads/dropzone.min.js');
 //        array_push($this->js['plugins'], 'global/plugins/bower_components/jquery.gritter/js/jquery.gritter.min.js');
-//        array_push($this->js['plugins'], 'global/plugins/bower_components/skycons-html5/skycons.js');
+        array_push($this->js['plugins'], 'global/plugins/bower_components/masonry/dist/masonry.pkgd.min.js');
 
+//        array_push($this->js['scripts'], 'global/plugins/bower_components/masonry/dist/masonry.pkgd.min.js');
+        array_push($this->js['scripts'], 'admin/js/pages/blankon.blog.js');
         array_push($this->js['scripts'], 'admin/js/customize.js');
 
         View::share('css', $this->css);
@@ -40,10 +42,10 @@ class HomeController extends BlankonController
 
     public function index()
     {
-        $announces = Announce::orderBy('updated_at', 'DESC')->paginate(5);
+        $announces = Announce::orderBy('updated_at', 'DESC')->get();
         foreach ($announces as $announce) {
             $announce->content = strip_tags($announce->content);
-            $announce->content = substr($announce->content, 0, 500);
+            $announce->content = substr($announce->content, 0, 200);
         }
         return view('home/index', compact('announces'));
     }

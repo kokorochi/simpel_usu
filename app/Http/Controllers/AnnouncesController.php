@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Requests;
 use App\Announce;
+use Illuminate\Support\Facades\File;
 use View;
 
-class AnnouncesController extends BlankonController
-{
+class AnnouncesController extends BlankonController {
     private $pageTitle = 'Pengumuman';
     protected $deleteQuestion = 'Apakah anda yakin untuk menghapus Pengumuman ini?';
     protected $deleteUrl = 'announces';
@@ -25,10 +26,12 @@ class AnnouncesController extends BlankonController
         array_push($this->css['pages'], 'global/plugins/bower_components/animate.css/animate.min.css');
         array_push($this->css['pages'], 'global/plugins/bower_components/bootstrap-wysihtml5/src/bootstrap-wysihtml5.css');
         array_push($this->css['pages'], 'global/plugins/bower_components/summernote/dist/summernote.css');
+        array_push($this->css['pages'], 'global/plugins/bower_components/jasny-bootstrap-fileinput/css/jasny-bootstrap-fileinput.min.css');
 
         array_push($this->js['plugins'], 'global/plugins/bower_components/bootstrap-wysihtml5/lib/js/wysihtml5-0.3.0.min.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/bootstrap-wysihtml5/src/bootstrap-wysihtml5.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/summernote/dist/summernote.min.js');
+        array_push($this->js['plugins'], 'global/plugins/bower_components/jasny-bootstrap-fileinput/js/jasny-bootstrap.fileinput.min.js');
 
         array_push($this->js['scripts'], 'admin/js/pages/blankon.form.wysiwyg.js');
         array_push($this->js['scripts'], 'admin/js/pages/blankon.form.advanced.js');
@@ -54,7 +57,7 @@ class AnnouncesController extends BlankonController
             $announce->content = substr($announce->content, 0, 100);
             $i = $i + 1;
         }
-        
+
         return view('announce/announce-list', compact('announces'));
     }
 
@@ -63,17 +66,18 @@ class AnnouncesController extends BlankonController
         return view('announce/announce-create', compact('announce'));
     }
 
-    public function edit($id)   
+    public function edit($id)
     {
         $announce = Announce::find($id);
-        
+
         return view('announce/announce-edit', compact('announce'));
     }
 
     public function showSingleList($id)
     {
         $announce = Announce::find($id);
-        if (empty($announce)){
+        if (empty($announce))
+        {
             return abort(404);
         }
 
@@ -84,7 +88,14 @@ class AnnouncesController extends BlankonController
     {
         $store = new Announce;
         $this->setAnnounceFields($request, $store);
-        $store->created_by  = Auth::user()->nidn;
+        $store->created_by = Auth::user()->nidn;
+
+        if ($request->hasFile('image_name'))
+        {
+            $store->image_name = md5($request->file('image_name')->getClientOriginalName() . Carbon::now()->toDateTimeString()) . '.' . $request->file('image_name')->extension();
+            $path = public_path('images\upload\announces');
+            $request->file('image_name')->move($path, $store->image_name);
+        }
         $store->save();
 
         return redirect()->intended('/announces/');
@@ -95,6 +106,22 @@ class AnnouncesController extends BlankonController
         $store = Announce::find($id);
         $this->setAnnounceFields($request, $store);
         $store->updated_by = Auth::user()->nidn;
+        $path = public_path('images\upload\announces');
+
+        if ($request->delete_image === 'x' ||
+            ($request->hasFile('image_name') && $store->image_name !== null)
+        )
+        {
+//            dd($path . $store->image_name);
+            File::delete($path . DIRECTORY_SEPARATOR .$store->image_name);
+            $store->image_name = null;
+        }
+
+        if ($request->hasFile('image_name'))
+        {
+            $store->image_name = md5($request->file('image_name')->getClientOriginalName() . Carbon::now()->toDateTimeString()) . '.' . $request->file('image_name')->extension();
+            $request->file('image_name')->move($path, $store->image_name);
+        }
         $store->save();
 
         return redirect()->intended('/announces/');
