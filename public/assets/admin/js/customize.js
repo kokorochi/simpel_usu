@@ -135,4 +135,17 @@ $(document).ready(function() {
             x--;
         }
     })
+
+    if($("#radio-no").is(":checked")){
+        $("#revision-text-wrapper").show();
+    }else{
+        $("#revision-text-wrapper").hide();
+    }
+    $("input[name='is_approved']").on("change", function(){
+        if($("#radio-no").is(":checked")){
+            $("#revision-text-wrapper").show("");
+        }else{
+            $("#revision-text-wrapper").hide("");
+        }
+    });
 });

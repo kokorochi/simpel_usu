@@ -96,7 +96,6 @@
                                         </tr>
                                         </tfoot>
                                     </table>
-                                    {{ $dedications->render() }}
                                 </div><!-- /.table-responsive -->
                                 <!--/ End table horizontal scroll -->
                             @else

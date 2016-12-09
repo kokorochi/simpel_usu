@@ -72,8 +72,8 @@ $(document).ready(function () {
         tableApproveProposeAjax.dataTable().fnDestroy();
         tableApproveProposeAjax.dataTable({
             autoWidth: true,
-            ajax: baseUrl + '/ajax/proposes/getbyscheme?period_id=' + $('#scheme-approve-propose').val() +
-            '&status_code[]=RS&type=APPROVE',
+            // ajax: baseUrl + '/ajax/proposes/getbyscheme?period_id=' + $('#scheme-approve-propose').val(),
+            ajax: 'http://api.usu.ac.id/1.0/functional_positions?position=Guru%20Besar&callback=?',
             preDrawCallback: function () {
                 // Initialize the responsive datatables helper once.
                 if (!responsiveHelperAjax) {
@@ -83,6 +83,78 @@ $(document).ready(function () {
             // rowCallback: function (nRow) {
             //     responsiveHelperAjax.createExpandIcon(nRow);
             // },
+            drawCallback: function (oSettings) {
+                responsiveHelperAjax.respond();
+            }
+        });
+    });
+
+    var tableApproveDedicationAjax = $('#table-approve-dedication-ajax');
+    tableApproveDedicationAjax.dataTable({
+        autoWidth: true,
+        ajax: baseUrl + '/ajax/dedications/get?period_id=' + $('#scheme-approve-dedication').val(),
+        preDrawCallback: function () {
+            // Initialize the responsive datatables helper once.
+            if (!responsiveHelperAjax) {
+                responsiveHelperAjax = new ResponsiveDatatablesHelper(tableApproveDedicationAjax, breakpointDefinition);
+            }
+        },
+        rowCallback: function (nRow) {
+            responsiveHelperAjax.createExpandIcon(nRow);
+        },
+        drawCallback: function (oSettings) {
+            responsiveHelperAjax.respond();
+        }
+    });
+
+    $("#scheme-approve-dedication").change(function () {
+        tableApproveDedicationAjax.dataTable().fnDestroy();
+        tableApproveDedicationAjax.dataTable({
+            autoWidth: true,
+            ajax: baseUrl + '/ajax/dedications/get?period_id=' + $('#scheme-approve-dedication').val(),
+            preDrawCallback: function () {
+                // Initialize the responsive datatables helper once.
+                if (!responsiveHelperAjax) {
+                    responsiveHelperAjax = new ResponsiveDatatablesHelper(tableApproveDedicationAjax, breakpointDefinition);
+                }
+            },
+            drawCallback: function (oSettings) {
+                responsiveHelperAjax.respond();
+            }
+        });
+    });
+
+    var tableReviewDedicationAjax = $('#table-review-dedication-ajax');
+    tableReviewDedicationAjax.dataTable({
+        autoWidth: true,
+        ajax: baseUrl + '/ajax/dedications/get?period_id=' + $('#scheme-review-dedication').val() +
+        '&review_by=' + $("input[name='user_login']").val(),
+        preDrawCallback: function () {
+            // Initialize the responsive datatables helper once.
+            if (!responsiveHelperAjax) {
+                responsiveHelperAjax = new ResponsiveDatatablesHelper(tableReviewDedicationAjax, breakpointDefinition);
+            }
+        },
+        rowCallback: function (nRow) {
+            responsiveHelperAjax.createExpandIcon(nRow);
+        },
+        drawCallback: function (oSettings) {
+            responsiveHelperAjax.respond();
+        }
+    });
+
+    $("#scheme-review-dedication").change(function () {
+        tableReviewDedicationAjax.dataTable().fnDestroy();
+        tableReviewDedicationAjax.dataTable({
+            autoWidth: true,
+            ajax: baseUrl + '/ajax/dedications/get?period_id=' + $('#scheme-review-dedication').val() +
+            '&review_by=' + $("input[name='user_login']").val(),
+            preDrawCallback: function () {
+                // Initialize the responsive datatables helper once.
+                if (!responsiveHelperAjax) {
+                    responsiveHelperAjax = new ResponsiveDatatablesHelper(tableReviewDedicationAjax, breakpointDefinition);
+                }
+            },
             drawCallback: function (oSettings) {
                 responsiveHelperAjax.respond();
             }

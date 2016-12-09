@@ -106,6 +106,8 @@ Route::get('review-proposes/', 'ReviewProposeController@index');
 Route::get('review-proposes/{id}/review', 'ReviewProposeController@review');
 Route::post('review-proposes/{id}/review', 'ReviewProposeController@reviewUpdate');
 Route::get('review-proposes/{id}/print-review', 'ReviewProposeController@printReview');
+Route::get('review-proposes/dedication-list', 'ReviewProposeController@dedicationList');
+Route::get('review-proposes/{id}/dedication-display', 'ReviewProposeController@dedicationDisplay');
 // End Review Proposes Route
 
 // Start Approve Proposes Route
@@ -128,6 +130,9 @@ Route::put('dedications/{id}/output-method', 'DedicationController@updateOutputM
 Route::put('dedications/{id}/output-product', 'DedicationController@updateOutputProduct');
 Route::put('dedications/{id}/output-patent', 'DedicationController@updateOutputPatent');
 Route::put('dedications/{id}/output-guidebook', 'DedicationController@updateOutputGuidebook');
+Route::get('dedications/approve-list', 'DedicationController@approveList');
+Route::get('dedications/{id}/approve', 'DedicationController@approveDetail');
+Route::put('dedications/{id}/approve', 'DedicationController@approveUpdate');
 // End Dedication Route
 
 // AJAX Route
@@ -137,4 +142,5 @@ Route::get('ajax/members/lecturerNIDN', 'AJAXController@getLecturerByNIDN');
 Route::get('ajax/proposes/getbyscheme', 'AJAXController@getProposesByScheme');
 Route::get('ajax/reviewers/get', 'AJAXController@getReviewer');
 Route::get('ajax/reviewers/search', 'AJAXController@searchReviewer');
+Route::get('ajax/dedications/get', 'AJAXController@getDedication');
 // End AJAX Route

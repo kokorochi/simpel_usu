@@ -45,6 +45,7 @@ class AJAXController extends BlankonController {
 //            $ret['suggestions'][]['data'] = $lecturer->employee_card_serial_number;
 //        }
         $lecturers = json_encode($lecturers, JSON_PRETTY_PRINT);
+
         return response($lecturers, 200)->header('Content-Type', 'application/json');
     }
 
@@ -63,10 +64,11 @@ class AJAXController extends BlankonController {
         $period_id = Input::get("period_id");
         $status_codes = Input::get("status_code");
         $type = Input::get("type");
-        if($period_id == 0)
+        if ($period_id == 0)
         {
             $proposes = Propose::where('is_own', '1')->get();
-        }else{
+        } else
+        {
             $period = Period::find($period_id);
             $proposes = $period->propose()->get();
         }
@@ -89,17 +91,18 @@ class AJAXController extends BlankonController {
         {
             $data['data'][$i][0] = $propose->title;
             $data['data'][$i][1] = Lecturer::where('employee_card_serial_number', $propose->created_by)->first()->full_name;
-            if($propose->is_own === '1')
+            if ($propose->is_own === '1')
             {
                 $data['data'][$i][2] = $propose->proposesOwn()->first()->scheme;
-            }else{
+            } else
+            {
                 $data['data'][$i][2] = $period->scheme;
             }
             $data['data'][$i][3] = $propose->flowStatus()->orderBy('item', 'desc')->first()->statusCode()->first()->description;
-            if($type === 'ASSIGN')
+            if ($type === 'ASSIGN')
             {
                 $data['data'][$i][4] = '<td class="text-center"><a href="' . url('reviewers/assign', $propose->id) . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Assign"><i class="fa fa-plus-circle"></i></a></td>';
-            }elseif($type === 'APPROVE')
+            } elseif ($type === 'APPROVE')
             {
                 $data['data'][$i][4] = '<td class="text-center"><a href="' . url('approve-proposes', $propose->id) . '/approve' . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Approve"><i class="fa fa-check-square-o"></i></a></td>';
             }
@@ -145,6 +148,68 @@ class AJAXController extends BlankonController {
                 $data[$i]['full_name'] = $lecturer->full_name;
                 $i++;
             }
+        }
+        $data = json_encode($data, JSON_PRETTY_PRINT);
+
+        return response($data, 200)->header('Content-Type', 'application/json');
+    }
+
+    public function getDedication()
+    {
+        $period_id = Input::get("period_id");
+        $review_by = Input::get("review_by");
+        if ($period_id == 0)
+        {
+            $proposes = Propose::where('is_own', '1')->get();
+        } else
+        {
+            $period = Period::find($period_id);
+            $proposes = $period->propose()->get();
+        }
+
+        $dedications = new Collection();
+        foreach ($proposes as $propose)
+        {
+            $dedication = $propose->dedication()->first();
+            if ($dedication !== null)
+            {
+                if ($review_by !== null)
+                {
+                    $dedication_reviewer = $propose->dedicationReviewer()->where('nidn', $review_by)->first();
+                    if ($dedication_reviewer !== null)
+                    {
+                        $dedications->add($dedication);
+                    }
+                } else
+                {
+                    $dedications->add($dedication);
+                }
+            }
+        }
+
+        $i = 0;
+        $data = [];
+        foreach ($dedications as $dedication)
+        {
+            $propose = $dedication->propose()->first();
+            $data['data'][$i][0] = $propose->title;
+            $data['data'][$i][1] = Lecturer::where('employee_card_serial_number', $propose->created_by)->first()->full_name;
+            if ($propose->is_own === '1')
+            {
+                $data['data'][$i][2] = $propose->proposesOwn()->first()->scheme;
+            } else
+            {
+                $data['data'][$i][2] = $period->scheme;
+            }
+            $data['data'][$i][3] = $propose->flowStatus()->orderBy('item', 'desc')->first()->statusCode()->first()->description;
+            if ($review_by === null)
+            {
+                $data['data'][$i][4] = '<td class="text-center"><a href="' . url('dedications', $dedication->id) . '/approve' . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Approve"><i class="fa fa-check-square-o"></i></a></td>';
+            } else
+            {
+                $data['data'][$i][4] = '<td class="text-center"><a href="' . url('review-proposes', $dedication->id) . '/dedication-display' . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Approve"><i class="fa fa-search-plus"></i></a></td>';
+            }
+            $i++;
         }
         $data = json_encode($data, JSON_PRETTY_PRINT);
 

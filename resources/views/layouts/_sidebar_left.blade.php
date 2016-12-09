@@ -156,20 +156,36 @@ START @SIDEBAR LEFT
             <!-- End navigation - Update Usulan -->
 
             <!-- Start navigation - Usulan -->
-            <li {!! Request::is('proposes','proposes/*')? 'class="submenu active"' : 'class="submenu"' !!}>
+            {{--<li {!! Request::is('proposes','proposes/*')? 'class="submenu active"' : 'class="submenu"' !!}>--}}
+                {{--<a href="javascript:void(0);">--}}
+                    {{--<span class="icon"><i class="fa fa-file-powerpoint-o"></i></span>--}}
+                    {{--<span class="text">Usulan</span>--}}
+                    {{--<span class="arrow"></span>--}}
+                    {{--{!! Request::is('proposes', 'proposes/*') ? '<span class="selected"></span>' : null !!}--}}
+                {{--</a>--}}
+                {{--<ul>--}}
+                    {{--<li {!! Request::is('proposes','proposes/')? 'class="active"' : null !!}>--}}
+                        {{--<a href="{{url('proposes/')}}">List</a>--}}
+                    {{--</li>--}}
+                {{--</ul>--}}
+            {{--</li>--}}
+            <!-- End navigation - Usulan -->
+
+            <!-- Start navigation - Dedication -->
+            <li {!! Request::is('dedications','dedications/*')? 'class="submenu active"' : 'class="submenu"' !!}>
                 <a href="javascript:void(0);">
-                    <span class="icon"><i class="fa fa-file-powerpoint-o"></i></span>
-                    <span class="text">Usulan</span>
+                    <span class="icon"><i class="fa fa-black-tie"></i></span>
+                    <span class="text">Pengabdian</span>
                     <span class="arrow"></span>
-                    {!! Request::is('proposes', 'proposes/*') ? '<span class="selected"></span>' : null !!}
+                    {!! Request::is('dedications', 'dedications/*') ? '<span class="selected"></span>' : null !!}
                 </a>
                 <ul>
-                    <li {!! Request::is('proposes','proposes/')? 'class="active"' : null !!}>
-                        <a href="{{url('proposes/')}}">List</a>
+                    <li {!! Request::is('dedications','dedications/')? 'class="active"' : null !!}>
+                        <a href="{{url('dedications/approve-list')}}">List Pengabdian</a>
                     </li>
                 </ul>
             </li>
-            <!-- End navigation - Usulan -->
+            <!-- End navigation - Dedication -->
         @endcan
     <!-- End category - Operator -->
 
@@ -235,6 +251,9 @@ START @SIDEBAR LEFT
                 <ul>
                     <li {!! Request::is('review-proposes','review-proposes/')? 'class="active"' : null !!}>
                         <a href="{{url('review-proposes/')}}">Pengajuan</a>
+                    </li>
+                    <li {!! Request::is('review-proposes','review-proposes/dedication-list')? 'class="active"' : null !!}>
+                        <a href="{{url('review-proposes/dedication-list')}}">Pengabdian</a>
                     </li>
                 </ul>
             </li>

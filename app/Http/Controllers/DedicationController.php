@@ -7,6 +7,7 @@ use App\DedicationOutputGuidebook;
 use App\DedicationOutputMethod;
 use App\DedicationOutputPatent;
 use App\DedicationOutputProduct;
+use App\DedicationOutputRevision;
 use App\DedicationOutputService;
 use App\Period;
 use App\Propose;
@@ -35,7 +36,8 @@ class DedicationController extends BlankonController {
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('isLecturer');
+        $this->middleware('isLecturer')->except(['approveList', 'approveDetail', 'approveUpdate']);
+        $this->middleware('isOperator')->only(['approveList', 'approveDetail', 'approveUpdate']);
         parent::__construct();
 
         array_push($this->css['pages'], 'global/plugins/bower_components/fontawesome/css/font-awesome.min.css');
@@ -75,7 +77,13 @@ class DedicationController extends BlankonController {
 
     public function index()
     {
-        $dedications = Dedication::paginate(10);
+        $proposes = Propose::where('created_by', Auth::user()->nidn)->get();
+        $dedications = new Collection();
+        foreach ($proposes as $propose)
+        {
+            $dedication = $propose->dedication()->first();
+            if ($dedication !== null) $dedications->add($dedication);
+        }
         $data_not_found = 'Data tidak ditemukan';
 
         return view('dedication.dedication-list', compact(
@@ -94,16 +102,6 @@ class DedicationController extends BlankonController {
             return abort('404');
         }
 
-        $flow_status = $dedication->propose()->first()->flowStatus()->orderBy('item', 'desc')->first();
-        if ($flow_status->status_code === 'UD')
-        {
-            $dedication->propose()->first()->flowStatus()->create([
-                'item'        => $flow_status->item + 1,
-                'status_code' => 'LK', //Menunggu Laporan Kemajuan
-                'created_by'  => Auth::user()->nidn,
-            ]);
-        }
-
         $disabled = 'disabled';
         $propose = $dedication->propose()->first();
 
@@ -112,6 +110,23 @@ class DedicationController extends BlankonController {
             $this->setCSS404();
 
             return abort('404');
+        }
+
+        if ($propose->created_by !== Auth::user()->nidn)
+        {
+            $this->setCSS404();
+
+            return abort('403');
+        }
+
+        $flow_status = $dedication->propose()->first()->flowStatus()->orderBy('item', 'desc')->first();
+        if ($flow_status->status_code === 'UD')
+        {
+            $dedication->propose()->first()->flowStatus()->create([
+                'item'        => $flow_status->item + 1,
+                'status_code' => 'LK', //Menunggu Laporan Kemajuan
+                'created_by'  => Auth::user()->nidn,
+            ]);
         }
 
         $propose_own = $propose->proposesOwn()->first();
@@ -152,6 +167,7 @@ class DedicationController extends BlankonController {
         }
 
         $disable_final_amount = 'readonly';
+        $upd_mode = 'review';
 
         return view('dedication.dedication-edit', compact(
             'dedication',
@@ -170,7 +186,8 @@ class DedicationController extends BlankonController {
             'lecturer',
             'status_code',
             'disable_final_amount',
-            'disabled'
+            'disabled',
+            'upd_mode'
         ));
     }
 
@@ -325,6 +342,8 @@ class DedicationController extends BlankonController {
             if ($dedication_output_guidebook === null) $dedication_output_guidebook = new DedicationOutputGuidebook();
         }
 
+        $upd_mode = '';
+
         return view('dedication.dedication-output', compact(
             'dedication',
             'propose',
@@ -334,7 +353,8 @@ class DedicationController extends BlankonController {
             'dedication_output_method',
             'dedication_output_product',
             'dedication_output_patent',
-            'dedication_output_guidebook'
+            'dedication_output_guidebook',
+            'upd_mode'
         ));
     }
 
@@ -652,6 +672,144 @@ class DedicationController extends BlankonController {
 
             return response()->download($path, $file_ori, []);
         }
+    }
+
+    public function approveList()
+    {
+        $periods = Period::all();
+
+        $period = new Period();
+        $period->id = '0';
+        $period->scheme = 'Mandiri';
+        $periods->add($period);
+
+        $period = $periods[0];
+
+        return view('dedication.dedication-approve-list', compact(
+            'periods',
+            'period'
+        ));
+    }
+
+    public function approveDetail($id)
+    {
+        $dedication = Dedication::find($id);
+        if ($dedication === null)
+        {
+            $this->setCSS404();
+
+            return abort('404');
+        }
+        $propose = $dedication->propose()->first();
+        $output_code = $propose->outputType()->first()->output_code;
+
+        if ($output_code === 'JS')
+        {
+            $dedication_output_services = $dedication->dedicationOutputService()->get();
+            if ($dedication_output_services->isEmpty())
+            {
+                $dedication_output_services = new Collection();
+                for ($i = 0; $i < 5; $i++)
+                {
+                    $dedication_output_service = new DedicationOutputService();
+                    $dedication_output_services->add($dedication_output_service);
+                }
+            }
+        } elseif ($output_code === 'MT')
+        {
+            $dedication_output_methods = $dedication->dedicationOutputMethod()->get();
+            $dedication_output_method = $dedication->dedicationOutputMethod()->first();
+            if ($dedication_output_method === null) $dedication_output_method = new DedicationOutputMethod();
+        } elseif ($output_code === 'PB')
+        {
+            $dedication_output_product = $dedication->dedicationOutputProduct()->first();
+            if ($dedication_output_product === null) $dedication_output_product = new DedicationOutputProduct();
+        } elseif ($output_code === 'PT')
+        {
+            $dedication_output_patent = $dedication->dedicationOutputPatent()->first();
+            if ($dedication_output_patent === null) $dedication_output_patent = new DedicationOutputPatent();
+        } elseif ($output_code === 'BP')
+        {
+            $dedication_output_guidebook = $dedication->dedicationOutputGuidebook()->first();
+            if ($dedication_output_guidebook === null) $dedication_output_guidebook = new DedicationOutputGuidebook();
+        }
+
+        $dedication_output_revision = $dedication->dedicationOutputRevision()->orderBy('item', 'desc')->first();
+        if ($dedication_output_revision === null) $dedication_output_revision = new DedicationOutputRevision();
+
+        $disabled = 'disabled';
+        $upd_mode = 'approve';
+
+        return view('dedication.dedication-output', compact(
+            'dedication',
+            'propose',
+            'output_code',
+            'dedication_output_services',
+            'dedication_output_methods',
+            'dedication_output_method',
+            'dedication_output_product',
+            'dedication_output_patent',
+            'dedication_output_guidebook',
+            'dedication_output_revision',
+            'upd_mode',
+            'disabled'
+        ));
+
+
+        $dedication = Dedication::find($id);
+
+        return view('dedication.dedication-approve-detail');
+    }
+
+    public function approveUpdate(Requests\StoreApproveDedicationRequest $request, $id)
+    {
+        $dedication = Dedication::find($id);
+        if ($dedication === null)
+        {
+            $this->setCSS404();
+
+            return abort('404');
+        }
+
+        DB::transaction(function () use ($request, $dedication)
+        {
+            $flow_status = $dedication->propose()->first()->flowStatus()->orderBy('item', 'desc')->first();
+            if ($request->is_approved === 'no')
+            {
+                $dedication_output_revision = $dedication->dedicationOutputRevision()->orderBy('item', 'desc')->first();
+                if ($dedication_output_revision === null)
+                {
+                    $dedication_output_revision = new DedicationOutputRevision();
+                    $dedication_output_revision->item = 0;
+                }
+
+                $dedication_output_revision->revision_text = $request->revision_text;
+                if ($flow_status->status_code === 'RL')
+                {
+                    $dedication_output_revision->updated_by = Auth::user()->nidn;
+                    $dedication_output_revision->save();
+                } else
+                {
+                    $dedication_output_revision->created_by = Auth::user()->nidn;
+                    $dedication_output_revision->item = $dedication_output_revision->item + 1;
+                    $dedication->dedicationOutputRevision()->save($dedication_output_revision);
+                    $dedication->propose()->first()->flowStatus()->create([
+                        'item'        => $flow_status->item + 1,
+                        'status_code' => 'RL', // Revisi Luaran,
+                        'created_by'  => Auth::user()->nidn
+                    ]);
+                }
+            } else
+            {
+                $dedication->propose()->first()->flowStatus()->create([
+                    'item'        => $flow_status->item + 1,
+                    'status_code' => 'PS', // Pengabdian Selesai,
+                    'created_by'  => Auth::user()->nidn
+                ]);
+            }
+        });
+
+        return redirect()->intended($this->deleteUrl . '/approve-list');
     }
 
     private function setFlowStatuses($dedication)

@@ -71,7 +71,7 @@ class ApproveProposeController extends BlankonController {
 
         $period = new Period();
         $period->id = '0';
-        $period->scheme = 'mandiri';
+        $period->scheme = 'Mandiri';
         $periods->add($period);
 
         $period = $periods[0];

@@ -42,36 +42,39 @@ $errors->has('annotation') || old('annotation')
                             </div>
                         @endif
 
-                        <div class="clearfix"></div>
-                        <label class="control-label col-sm-4 col-md-3">Unggah Dokumen (skema, diagram, formula, rumus, dll) dalam 1 file</label>
-                        <div class="col-sm-7">
-                            <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-                                <div class="form-control input-sm" data-trigger="fileinput">
-                                    <i class="glyphicon glyphicon-file fileinput-exists"></i>
-                                    <span class="fileinput-filename"></span>
+                        @if($upd_mode !== 'approve')
+                            <div class="clearfix"></div>
+                            <label class="control-label col-sm-4 col-md-3">Unggah Dokumen (skema, diagram, formula,
+                                rumus, dll) dalam 1 file</label>
+                            <div class="col-sm-7">
+                                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                    <div class="form-control input-sm" data-trigger="fileinput">
+                                        <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                                        <span class="fileinput-filename"></span>
+                                    </div>
+                                                <span class="input-group-addon btn btn-success btn-file">
+                                                    <span class="fileinput-new">Select file</span>
+                                                    <span class="fileinput-exists">Change</span>
+                                                    <input type="file" name="file_name"
+                                                           value="">
+                                                </span>
+                                    <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
+                                       data-dismiss="fileinput">Remove</a>
                                 </div>
-                                            <span class="input-group-addon btn btn-success btn-file">
-                                                <span class="fileinput-new">Select file</span>
-                                                <span class="fileinput-exists">Change</span>
-                                                <input type="file" name="file_name"
-                                                       value="">
-                                            </span>
-                                <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                   data-dismiss="fileinput">Remove</a>
+                                @if($errors->has('file_name'))
+                                    <label class="error" for="file_name"
+                                           style="display: inline-block;">
+                                        {{ $errors->first('file_name') }}
+                                    </label>
+                                @endif
                             </div>
-                            @if($errors->has('file_name'))
-                                <label class="error" for="file_name"
-                                       style="display: inline-block;">
-                                    {{ $errors->first('file_name') }}
-                                </label>
-                            @endif
-                        </div>
+                        @endif
                     </div> <!-- /.form-group -->
                     <div class="form-group">
                         <label for="annotation" class="col-sm-4 col-md-3 control-label">Keterangan</label>
                         <div class="col-sm-7">
                             <textarea name="annotation" class="form-control input-sm" rows="12"
-                                      placeholder="">{{ $dedication_output_method->annotation }}</textarea>
+                                      placeholder="" {{$upd_mode !== 'approve' ? '' : 'disabled'}}>{{ $dedication_output_method->annotation }}</textarea>
                             @if($errors->has('annotation'))
                                 <label class="error" for="annotation" style="display: inline-block;">
                                     {{ $errors->first('annotation') }}
@@ -80,16 +83,18 @@ $errors->has('annotation') || old('annotation')
                         </div>
                     </div>
 
-                    {{ csrf_field() }}
-                    <input type="hidden" name="_method" value="PUT">
+                    @if($upd_mode !== 'approve')
+                        {{ csrf_field() }}
+                        <input type="hidden" name="_method" value="PUT">
 
-                    <div class="clearfix"></div>
-                    <div class="form-footer">
-                        <div class="col-sm-offset-4 col-md-offset-3">
-                            <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
-                            <button type="submit" class="btn btn-success btn-slideright">Submit</button>
-                        </div><!-- /.col-sm-offset-3 -->
-                    </div><!-- /.form-footer -->
+                        <div class="clearfix"></div>
+                        <div class="form-footer">
+                            <div class="col-sm-offset-4 col-md-offset-3">
+                                <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
+                                <button type="submit" class="btn btn-success btn-slideright">Submit</button>
+                            </div><!-- /.col-sm-offset-3 -->
+                        </div><!-- /.form-footer -->
+                    @endif
                 </form>
             </div>
         </div>

@@ -39,6 +39,9 @@
             @elseif($output_code === 'BP')
                 @include('form-input.dedication-output-guidebook')
             @endif
+            @if($upd_mode === 'approve')
+                @include('form-input.dedication-approve')
+            @endif
         </div><!-- /.body-content -->
         <!--/ End body content -->
 

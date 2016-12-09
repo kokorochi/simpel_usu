@@ -39,28 +39,30 @@
                             </div>
                         </div>
                     @endif
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3">Unggah Laporan Kemajuan (Kegiatan)</label>
-                        <div class="col-sm-7">
-                            <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-                                <div class="form-control input-sm" data-trigger="fileinput"><i
-                                            class="glyphicon glyphicon-file fileinput-exists"></i> <span
-                                            class="fileinput-filename"></span></div>
-                                            <span class="input-group-addon btn btn-success btn-file">
-                                                <span class="fileinput-new">Select file</span>
-                                                <span class="fileinput-exists">Change</span>
-                                                <input type="file" name="file_progress_activity">
-                                            </span>
-                                <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                   data-dismiss="fileinput">Remove</a>
+                    @if($upd_mode !== 'review')
+                        <div class="form-group">
+                            <label class="control-label col-sm-4 col-md-3">Unggah Laporan Kemajuan (Kegiatan)</label>
+                            <div class="col-sm-7">
+                                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                    <div class="form-control input-sm" data-trigger="fileinput"><i
+                                                class="glyphicon glyphicon-file fileinput-exists"></i> <span
+                                                class="fileinput-filename"></span></div>
+                                                <span class="input-group-addon btn btn-success btn-file">
+                                                    <span class="fileinput-new">Select file</span>
+                                                    <span class="fileinput-exists">Change</span>
+                                                    <input type="file" name="file_progress_activity">
+                                                </span>
+                                    <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
+                                       data-dismiss="fileinput">Remove</a>
+                                </div>
+                                @if($errors->has('file_progress_activity'))
+                                    <label class="error" for="file_progress_activity" style="display: inline-block;">
+                                        {{ $errors->first('file_progress_activity') }}
+                                    </label>
+                                @endif
                             </div>
-                            @if($errors->has('file_progress_activity'))
-                                <label class="error" for="file_progress_activity" style="display: inline-block;">
-                                    {{ $errors->first('file_progress_activity') }}
-                                </label>
-                            @endif
-                        </div>
-                    </div><!-- /.form-group -->
+                        </div><!-- /.form-group -->
+                    @endif
 
                     @if($dedication->file_progress_budgets !== null)
                         <div class="form-group">
@@ -78,39 +80,44 @@
                             </div>
                         </div>
                     @endif
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3">Unggah Laporan Kemajuan (Anggaran)</label>
-                        <div class="col-sm-7">
-                            <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-                                <div class="form-control input-sm" data-trigger="fileinput"><i
-                                            class="glyphicon glyphicon-file fileinput-exists"></i> <span
-                                            class="fileinput-filename"></span></div>
+                    @if($upd_mode !== 'review')
+                        <div class="form-group">
+                            <label class="control-label col-sm-4 col-md-3">Unggah Laporan Kemajuan (Anggaran)</label>
+                            <div class="col-sm-7">
+                                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                    <div class="form-control input-sm" data-trigger="fileinput"><i
+                                                class="glyphicon glyphicon-file fileinput-exists"></i> <span
+                                                class="fileinput-filename"></span></div>
                                             <span class="input-group-addon btn btn-success btn-file">
                                                 <span class="fileinput-new">Select file</span>
                                                 <span class="fileinput-exists">Change</span>
                                                 <input type="file" name="file_progress_budgets">
                                             </span>
-                                <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                   data-dismiss="fileinput">Remove</a>
+                                    <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
+                                       data-dismiss="fileinput">Remove</a>
+                                </div>
+                                @if($errors->has('file_progress_budgets'))
+                                    <label class="error" for="file_progress_budgets" style="display: inline-block;">
+                                        {{ $errors->first('file_progress_budgets') }}
+                                    </label>
+                                @endif
                             </div>
-                            @if($errors->has('file_progress_budgets'))
-                                <label class="error" for="file_progress_budgets" style="display: inline-block;">
-                                    {{ $errors->first('file_progress_budgets') }}
-                                </label>
-                            @endif
-                        </div>
-                    </div><!-- /.form-group -->
+                        </div><!-- /.form-group -->
+                    @endif
                 </div><!-- /.form-body -->
 
-                {{ csrf_field() }}
-                <input type="hidden" name="_method" value="PUT">
+                @if($upd_mode !== 'review')
+                    {{ csrf_field() }}
+                    <input type="hidden" name="_method" value="PUT">
 
-                <div class="form-footer">
-                    <div class="col-sm-offset-4 col-md-offset-3">
-                        <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
-                        <button type="submit" class="btn btn-success btn-slideright">Update Laporan Kemajuan</button>
-                    </div><!-- /.col-sm-offset-3 -->
-                </div><!-- /.form-footer -->
+                    <div class="form-footer">
+                        <div class="col-sm-offset-4 col-md-offset-3">
+                            <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
+                            <button type="submit" class="btn btn-success btn-slideright">Update Laporan Kemajuan
+                            </button>
+                        </div><!-- /.col-sm-offset-3 -->
+                    </div><!-- /.form-footer -->
+                @endif
             </div>
         </div>
     </div>

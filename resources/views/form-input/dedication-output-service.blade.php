@@ -62,53 +62,57 @@
                                     </div>
                                 @endif
 
-                                <div class="clearfix"></div>
-                                <label class="control-label col-sm-4 col-md-3">Unggah Dokumentasi</label>
-                                <div class="col-sm-6">
-                                    <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-                                        <div class="form-control input-sm" data-trigger="fileinput">
-                                            <i class="glyphicon glyphicon-file fileinput-exists"></i>
-                                            <span class="fileinput-filename"></span>
-                                        </div>
+                                @if($upd_mode !== 'approve')
+                                    <div class="clearfix"></div>
+                                    <label class="control-label col-sm-4 col-md-3">Unggah Dokumentasi</label>
+                                    <div class="col-sm-6">
+                                        <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                            <div class="form-control input-sm" data-trigger="fileinput">
+                                                <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                                                <span class="fileinput-filename"></span>
+                                            </div>
                                             <span class="input-group-addon btn btn-success btn-file">
                                                 <span class="fileinput-new">Select file</span>
                                                 <span class="fileinput-exists">Change</span>
                                                 <input type="file" name="file_name[]"
                                                        value="">
                                             </span>
-                                        <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                           data-dismiss="fileinput">Remove</a>
+                                            <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
+                                               data-dismiss="fileinput">Remove</a>
+                                        </div>
+                                        @if($errors->has('file_name.' . $key))
+                                            <label class="error" for="file_name[]"
+                                                   style="display: inline-block;">
+                                                {{ $errors->first('file_name.' . $key) }}
+                                            </label>
+                                        @endif
                                     </div>
-                                    @if($errors->has('file_name.' . $key))
-                                        <label class="error" for="file_name[]"
-                                               style="display: inline-block;">
-                                            {{ $errors->first('file_name.' . $key) }}
-                                        </label>
-                                    @endif
-                                </div>
 
-                                <div class="col-sm-1">
-                                    <a href="#" class="remove_field btn btn-sm btn-danger btn-stroke">
-                                        <i class="fa fa-minus"></i>
-                                    </a>
-                                </div>
+                                    <div class="col-sm-1">
+                                        <a href="#" class="remove_field btn btn-sm btn-danger btn-stroke">
+                                            <i class="fa fa-minus"></i>
+                                        </a>
+                                    </div>
+                                @endif
                             </div> <!-- /.form-group -->
                         @endforeach
                     </div>
 
-                    {{ csrf_field() }}
-                    <input type="hidden" name="_method" value="PUT">
+                    @if($upd_mode !== 'approve')
+                        {{ csrf_field() }}
+                        <input type="hidden" name="_method" value="PUT">
 
-                    <div class="clearfix"></div>
-                    <div class="form-footer">
-                        <div class="col-sm-offset-4 col-md-offset-3">
-                            <a id="add-dedication-service" href="#"
-                               class="add-dedication-service-button btn btn-success btn-stroke btn-slideright"><i
-                                        class="fa fa-plus"></i></a>
-                            <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
-                            <button type="submit" class="btn btn-success btn-slideright">Submit</button>
-                        </div><!-- /.col-sm-offset-3 -->
-                    </div><!-- /.form-footer -->
+                        <div class="clearfix"></div>
+                        <div class="form-footer">
+                            <div class="col-sm-offset-4 col-md-offset-3">
+                                <a id="add-dedication-service" href="#"
+                                   class="add-dedication-service-button btn btn-success btn-stroke btn-slideright"><i
+                                            class="fa fa-plus"></i></a>
+                                <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
+                                <button type="submit" class="btn btn-success btn-slideright">Submit</button>
+                            </div><!-- /.col-sm-offset-3 -->
+                        </div><!-- /.form-footer -->
+                    @endif
                 </form>
             </div>
         </div>

@@ -5,7 +5,7 @@
 
         <!-- Start page header -->
         <div class="header-content">
-            <h2><i class="fa fa-star"></i> {{ $pageTitle }} </h2>
+            <h2><i class="fa fa-pencil"></i>Review</h2>
             <div class="breadcrumb-wrapper hidden-xs">
                 <span class="label">Direktori anda:</span>
                 <ol class="breadcrumb">
@@ -18,7 +18,7 @@
                         {{ $pageTitle }}
                         <i class="fa fa-angle-right"></i>
                     </li>
-                    <li class="active">Assign</li>
+                    <li class="active">List Pengabdian</li>
                 </ol>
             </div><!-- /.breadcrumb-wrapper -->
         </div><!-- /.header-content -->
@@ -45,12 +45,13 @@
                                 <div class="form-group">
                                     <label for="scheme" class="col-sm-4 col-md-3 control-label">Scheme</label>
                                     <div class="col-sm-7 mb-10">
-                                        <select id="scheme-approve-propose" name="scheme" class="form-control input-sm">
+                                        <select id="scheme-review-dedication" name="scheme" class="form-control input-sm">
                                             @foreach($periods as $item)
                                                 <option value="{{$item->id}}" {{$period->id == $item->id ? 'selected' : null}}>{{$item->scheme}}</option>
                                             @endforeach
                                         </select>
                                     </div>
+                                    <input name="user_login" type="hidden" value="{{Auth::user()->nidn}}">
                                 </div>
                             </div>
                         </div>
@@ -60,7 +61,7 @@
                     <div class="panel rounded shadow">
                         <div class="panel-heading">
                             <div class="pull-left">
-                                <h3 class="panel-title">List Proposal Berdasarkan Scheme</h3>
+                                <h3 class="panel-title">List Pengabdian Berdasarkan Scheme</h3>
                             </div>
                             <div class="pull-right">
                                 <button class="btn btn-sm" data-action="collapse" data-container="body"
@@ -71,14 +72,14 @@
                         </div><!-- /.panel-heading -->
                         <div class="panel-body">
                             <!-- Start datatable -->
-                            <table id="table-approve-propose-ajax" class="table table-striped table-success">
+                            <table id="table-review-dedication-ajax" class="table table-striped table-success">
                                 <thead>
                                 <tr>
                                     <th data-class="expand">Judul</th>
                                     <th data-hide="phone">Ketua</th>
                                     <th data-hide="phone">Scheme</th>
                                     <th data-hide="phone">Status</th>
-                                    <th data-hide="phone,tablet">Approve</th>
+                                    <th data-hide="phone,tablet">Detail</th>
                                 </tr>
                                 </thead>
                                 <!--tbody section is required-->
@@ -90,7 +91,7 @@
                                     <th>Ketua</th>
                                     <th>Scheme</th>
                                     <th>Status</th>
-                                    <th>Approve</th>
+                                    <th>Detail</th>
                                 </tr>
                                 </tfoot>
                             </table>

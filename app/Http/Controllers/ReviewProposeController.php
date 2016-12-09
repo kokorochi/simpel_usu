@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Appraisal_i;
 use App\Conclusion;
+use App\Dedication;
 use App\Dedication_reviewer;
+use App\Dedication_type;
+use App\Member;
+use App\ModelSDM\Faculty;
 use App\ModelSDM\Lecturer;
+use App\Output_type;
+use App\Period;
 use App\Propose;
+use App\Propose_own;
 use App\ReviewPropose;
 use App\ReviewProposesI;
 use Carbon\Carbon;
@@ -30,7 +37,16 @@ class ReviewProposeController extends BlankonController {
         parent::__construct();
 
         array_push($this->css['pages'], 'global/plugins/bower_components/fontawesome/css/font-awesome.min.css');
+        array_push($this->css['pages'], 'global/plugins/bower_components/datatables/css/dataTables.bootstrap.css');
+        array_push($this->css['pages'], 'global/plugins/bower_components/datatables/css/datatables.responsive.css');
+        array_push($this->css['pages'], 'global/plugins/bower_components/jasny-bootstrap-fileinput/css/jasny-bootstrap-fileinput.min.css');
 
+        array_push($this->js['plugins'], 'global/plugins/bower_components/datatables/js/jquery.dataTables.min.js');
+        array_push($this->js['plugins'], 'global/plugins/bower_components/datatables/js/dataTables.bootstrap.js');
+        array_push($this->js['plugins'], 'global/plugins/bower_components/datatables/js/datatables.responsive.js');
+        array_push($this->js['plugins'], 'global/plugins/bower_components/jasny-bootstrap-fileinput/js/jasny-bootstrap.fileinput.min.js');
+
+        array_push($this->js['scripts'], 'admin/js/datatable-custom.js');
         array_push($this->js['scripts'], 'admin/js/customize.js');
 
         View::share('css', $this->css);
@@ -256,6 +272,100 @@ class ReviewProposeController extends BlankonController {
             'today_date',
             'lead',
             'reviewer'
+        ));
+    }
+
+    public function dedicationList()
+    {
+        $periods = Period::all();
+        $period = new Period();
+
+        return view('review-propose.review-dedication-list', compact('periods', 'period'));
+    }
+
+    public function dedicationDisplay($id)
+    {
+        $dedication = Dedication::find($id);
+        if ($dedication === null)
+        {
+            $this->setCSS404();
+
+            return abort('404');
+        }
+
+        $disabled = 'disabled';
+        $propose = $dedication->propose()->first();
+
+        if ($propose === null)
+        {
+            $this->setCSS404();
+
+            return abort('404');
+        }
+
+        $dedication_reviewer = $propose->dedicationReviewer()->where('nidn', Auth::user()->nidn)->first();
+
+        if ($dedication_reviewer === null)
+        {
+            $this->setCSS404();
+
+            return abort('403');
+        }
+
+        $propose_own = $propose->proposesOwn()->first();
+        $periods = $propose->period()->get();
+        $period = $propose->period()->first();
+        $dedication_partners = $propose->dedicationPartner()->get();
+        $dedication_partner = $propose->dedicationPartner()->first();
+        $members = $propose->member()->get();
+        foreach ($members as $member)
+        {
+            $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+        }
+        $member = $propose->member()->first();
+        $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
+        $faculties = Faculty::where('is_faculty', '1')->get();
+        $output_types = Output_type::all();
+        $dedication_types = Dedication_type::all();
+
+        if ($propose_own === null)
+        {
+            $propose_own = new Propose_own();
+        }
+        if ($periods === null)
+        {
+            $periods = new Collection();
+            $periods->add(new Period);
+        }
+        if ($period === null)
+        {
+            $period = new Period();
+        }
+
+        $disable_upload = true;
+        $status_code = $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code;
+        $disable_final_amount = 'readonly';
+        $upd_mode = 'review';
+
+        return view('dedication.dedication-edit', compact(
+            'dedication',
+            'propose',
+            'propose_own',
+            'periods',
+            'period',
+            'output_types',
+            'dedication_types',
+            'faculties',
+            'disable_upload',
+            'dedication_partners',
+            'dedication_partner',
+            'members',
+            'member',
+            'lecturer',
+            'status_code',
+            'disable_final_amount',
+            'disabled',
+            'upd_mode'
         ));
     }
 

@@ -103,7 +103,7 @@ class ProposeController extends BlankonController {
         $member = new Member;
         $members->add(new Member);
 
-        $faculties = Faculty::where('is_faculty', '1')->get();
+        $faculties = Faculty::where('is_faculty', '1')->where('faculty_code', '<>', 'SPS')->get();
 
         $disable_upload = false;
 
@@ -448,52 +448,49 @@ class ProposeController extends BlankonController {
         switch ($propose->faculty_code)
         {
             case 'FK':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                $dean = Lecturer::where('employee_card_serial_number', '0024056603')->first();
                 break;
             case 'FH':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                $dean = Lecturer::where('employee_card_serial_number', '0011055902')->first();
                 break;
             case 'FP':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                $dean = Lecturer::where('employee_card_serial_number', '0008085812')->first();
                 break;
             case 'FT':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                $dean = Lecturer::where('employee_card_serial_number', '0004016105')->first();
                 break;
             case 'FE':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                $dean = Lecturer::where('employee_card_serial_number', '0002065803')->first();
                 break;
             case 'FKG':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                $dean = Lecturer::where('employee_card_serial_number', '0014026503')->first();
                 break;
             case 'FIB':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                $dean = Lecturer::where('employee_card_serial_number', '0005086002')->first();
                 break;
             case 'FMIPA':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                $dean = Lecturer::where('employee_card_serial_number', '0023065803')->first();
                 break;
             case 'FISIP':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                $dean = Lecturer::where('employee_card_serial_number', '0030097401')->first();
                 break;
             case 'FKM':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                $dean = Lecturer::where('employee_card_serial_number', '0020036805')->first();
                 break;
             case 'FF':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                $dean = Lecturer::where('employee_card_serial_number', '0023075705')->first();
                 break;
             case 'FPSI':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                $dean = Lecturer::where('employee_card_serial_number', '0014127301')->first();
                 break;
             case 'FKEP':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
-                break;
-            case 'SPS':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                $dean = Lecturer::where('employee_card_serial_number', '0020077102')->first();
                 break;
             case 'FIKTI':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                $dean = Lecturer::where('employee_card_serial_number', '0017086108')->first();
                 break;
             case 'FAHUTA':
-                $dean = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                $dean = Lecturer::where('employee_card_serial_number', '0016047101')->first();
                 break;
         }
         if (! ($dean->front_degree === null || $dean->front_degree === '' || $dean->front_degree === '-'))

@@ -51,4 +51,9 @@ class Dedication extends Model
     {
         return $this->hasMany(DedicationOutputGuidebook::class);
     }
+
+    public function dedicationOutputRevision()
+    {
+        return $this->hasMany(DedicationOutputRevision::class);
+    }
 }

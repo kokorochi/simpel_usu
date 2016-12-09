@@ -6,10 +6,10 @@ $errors->has('publisher') || old('publisher') ||
 $errors->has('isbn') || old('isbn')
 )
     @php
-    $dedication_output_guidebook->title = old('title');
-    $dedication_output_guidebook->book_year = old('book_year');
-    $dedication_output_guidebook->publisher = old('publisher');
-    $dedication_output_guidebook->isbn = old('isbn');
+        $dedication_output_guidebook->title = old('title');
+        $dedication_output_guidebook->book_year = old('book_year');
+        $dedication_output_guidebook->publisher = old('publisher');
+        $dedication_output_guidebook->isbn = old('isbn');
     @endphp
 @endif
 {{--Get Old Value And Place It To VARIABLE--}}
@@ -35,7 +35,7 @@ $errors->has('isbn') || old('isbn')
                         <label for="title" class="col-sm-4 col-md-3 control-label">Judul Buku</label>
                         <div class="col-sm-7">
                             <input name="title" class="form-control input-sm" type="text"
-                                   value="{{ $dedication_output_guidebook->title }}">
+                                   value="{{ $dedication_output_guidebook->title }}" {{$upd_mode !== 'approve' ? '' : 'disabled'}}>
                             @if($errors->has('title'))
                                 <label class="error" for="title" style="display: inline-block;">
                                     {{ $errors->first('title') }}
@@ -48,7 +48,7 @@ $errors->has('isbn') || old('isbn')
                         <label for="book_year" class="col-sm-4 col-md-3 control-label">Tahun Buku</label>
                         <div class="col-sm-7">
                             <input name="book_year" class="form-control input-sm" type="text"
-                                   value="{{ $dedication_output_guidebook->book_year }}">
+                                   value="{{ $dedication_output_guidebook->book_year }}" {{$upd_mode !== 'approve' ? '' : 'disabled'}}>
                             @if($errors->has('book_year'))
                                 <label class="error" for="book_year" style="display: inline-block;">
                                     {{ $errors->first('book_year') }}
@@ -61,7 +61,7 @@ $errors->has('isbn') || old('isbn')
                         <label for="publisher" class="col-sm-4 col-md-3 control-label">Penerbit</label>
                         <div class="col-sm-7">
                             <input name="publisher" class="form-control input-sm" type="text"
-                                   value="{{ $dedication_output_guidebook->publisher }}">
+                                   value="{{ $dedication_output_guidebook->publisher }}" {{$upd_mode !== 'approve' ? '' : 'disabled'}}>
                             @if($errors->has('publisher'))
                                 <label class="error" for="publisher" style="display: inline-block;">
                                     {{ $errors->first('publisher') }}
@@ -74,7 +74,7 @@ $errors->has('isbn') || old('isbn')
                         <label for="isbn" class="col-sm-4 col-md-3 control-label">ISBN</label>
                         <div class="col-sm-7">
                             <input name="isbn" class="form-control input-sm" type="text"
-                                   value="{{ $dedication_output_guidebook->isbn }}">
+                                   value="{{ $dedication_output_guidebook->isbn }}" {{$upd_mode !== 'approve' ? '' : 'disabled'}}>
                             @if($errors->has('isbn'))
                                 <label class="error" for="isbn" style="display: inline-block;">
                                     {{ $errors->first('isbn') }}
@@ -100,24 +100,26 @@ $errors->has('isbn') || old('isbn')
                             </div>
                         @endif
 
-                        <div class="clearfix"></div>
-                        <label class="control-label col-sm-4 col-md-3">Unggah Sampul Depan</label>
-                        <div class="col-sm-7">
-                            <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-                                <div class="form-control input-sm" data-trigger="fileinput">
-                                    <i class="glyphicon glyphicon-file fileinput-exists"></i>
-                                    <span class="fileinput-filename"></span>
-                                </div>
+                        @if($upd_mode !== 'approve')
+                            <div class="clearfix"></div>
+                            <label class="control-label col-sm-4 col-md-3">Unggah Sampul Depan</label>
+                            <div class="col-sm-7">
+                                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                    <div class="form-control input-sm" data-trigger="fileinput">
+                                        <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                                        <span class="fileinput-filename"></span>
+                                    </div>
                                 <span class="input-group-addon btn btn-success btn-file">
                                     <span class="fileinput-new">Select file</span>
                                     <span class="fileinput-exists">Change</span>
                                     <input type="file" name="file_cover"
                                            value="">
                                 </span>
-                                <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                   data-dismiss="fileinput">Remove</a>
+                                    <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
+                                       data-dismiss="fileinput">Remove</a>
+                                </div>
                             </div>
-                        </div>
+                        @endif
                     </div> <!-- /.form-group -->
 
                     <div class="form-group">
@@ -137,24 +139,26 @@ $errors->has('isbn') || old('isbn')
                             </div>
                         @endif
 
-                        <div class="clearfix"></div>
-                        <label class="control-label col-sm-4 col-md-3">Unggah Sampul Belakang</label>
-                        <div class="col-sm-7">
-                            <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-                                <div class="form-control input-sm" data-trigger="fileinput">
-                                    <i class="glyphicon glyphicon-file fileinput-exists"></i>
-                                    <span class="fileinput-filename"></span>
-                                </div>
+                        @if($upd_mode !== 'approve')
+                            <div class="clearfix"></div>
+                            <label class="control-label col-sm-4 col-md-3">Unggah Sampul Belakang</label>
+                            <div class="col-sm-7">
+                                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                    <div class="form-control input-sm" data-trigger="fileinput">
+                                        <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                                        <span class="fileinput-filename"></span>
+                                    </div>
                                 <span class="input-group-addon btn btn-success btn-file">
                                     <span class="fileinput-new">Select file</span>
                                     <span class="fileinput-exists">Change</span>
                                     <input type="file" name="file_back"
                                            value="">
                                 </span>
-                                <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                   data-dismiss="fileinput">Remove</a>
+                                    <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
+                                       data-dismiss="fileinput">Remove</a>
+                                </div>
                             </div>
-                        </div>
+                        @endif
                     </div> <!-- /.form-group -->
 
                     <div class="form-group">
@@ -174,36 +178,40 @@ $errors->has('isbn') || old('isbn')
                             </div>
                         @endif
 
-                        <div class="clearfix"></div>
-                        <label class="control-label col-sm-4 col-md-3">Unggah Daftar Isi</label>
-                        <div class="col-sm-7">
-                            <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-                                <div class="form-control input-sm" data-trigger="fileinput">
-                                    <i class="glyphicon glyphicon-file fileinput-exists"></i>
-                                    <span class="fileinput-filename"></span>
+                        @if($upd_mode !== 'approve')
+                            <div class="clearfix"></div>
+                            <label class="control-label col-sm-4 col-md-3">Unggah Daftar Isi</label>
+                            <div class="col-sm-7">
+                                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                    <div class="form-control input-sm" data-trigger="fileinput">
+                                        <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                                        <span class="fileinput-filename"></span>
+                                    </div>
+                                    <span class="input-group-addon btn btn-success btn-file">
+                                        <span class="fileinput-new">Select file</span>
+                                        <span class="fileinput-exists">Change</span>
+                                        <input type="file" name="file_table_of_contents"
+                                               value="">
+                                    </span>
+                                    <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
+                                       data-dismiss="fileinput">Remove</a>
                                 </div>
-                                <span class="input-group-addon btn btn-success btn-file">
-                                    <span class="fileinput-new">Select file</span>
-                                    <span class="fileinput-exists">Change</span>
-                                    <input type="file" name="file_table_of_contents"
-                                           value="">
-                                </span>
-                                <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                   data-dismiss="fileinput">Remove</a>
                             </div>
-                        </div>
+                        @endif
                     </div> <!-- /.form-group -->
 
-                    {{ csrf_field() }}
-                    <input type="hidden" name="_method" value="PUT">
+                    @if($upd_mode !== 'approve')
+                        {{ csrf_field() }}
+                        <input type="hidden" name="_method" value="PUT">
 
-                    <div class="clearfix"></div>
-                    <div class="form-footer">
-                        <div class="col-sm-offset-4 col-md-offset-3">
-                            <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
-                            <button type="submit" class="btn btn-success btn-slideright">Submit</button>
-                        </div><!-- /.col-sm-offset-3 -->
-                    </div><!-- /.form-footer -->
+                        <div class="clearfix"></div>
+                        <div class="form-footer">
+                            <div class="col-sm-offset-4 col-md-offset-3">
+                                <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
+                                <button type="submit" class="btn btn-success btn-slideright">Submit</button>
+                            </div><!-- /.col-sm-offset-3 -->
+                        </div><!-- /.form-footer -->
+                    @endif
                 </form>
             </div>
         </div>
