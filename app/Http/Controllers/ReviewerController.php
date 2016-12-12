@@ -36,6 +36,7 @@ class ReviewerController extends BlankonController {
         parent::__construct();
 
         array_push($this->css['pages'], 'global/plugins/bower_components/fontawesome/css/font-awesome.min.css');
+        array_push($this->css['pages'], 'global/plugins/bower_components/animate.css/animate.min.css');
         array_push($this->css['pages'], 'global/plugins/bower_components/jquery-ui/themes/base/jquery-ui.css');
         array_push($this->css['pages'], 'global/plugins/bower_components/bootstrap-datepicker-vitalets/css/datepicker.css');
         array_push($this->css['pages'], 'global/plugins/bower_components/chosen_v1.2.0/chosen.min.css');

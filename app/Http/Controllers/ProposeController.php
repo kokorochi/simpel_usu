@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Storage;
 use View;
 
 class ProposeController extends BlankonController {
-    protected $pageTitle = 'Proposal';
+    protected $pageTitle = 'Usulan';
     protected $deleteQuestion = 'Apakah anda yakin untuk menghapus Pengajuan Proposal ini?';
     protected $deleteUrl = 'proposes';
     protected $lv_disable;

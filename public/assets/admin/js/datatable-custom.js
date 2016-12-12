@@ -1,7 +1,7 @@
 $(document).ready(function () {
     var getUrl = window.location,
-        baseUrl = getUrl.protocol + "//" + getUrl.host + "/";
-    baseUrl = baseUrl + "lppm_usu/public";
+        baseUrl = getUrl.protocol + "//" + getUrl.host;// + "/";
+    // baseUrl = baseUrl + "lppm_usu/public";
 
     var responsiveHelperAjax = undefined;
     var breakpointDefinition = {
@@ -72,8 +72,8 @@ $(document).ready(function () {
         tableApproveProposeAjax.dataTable().fnDestroy();
         tableApproveProposeAjax.dataTable({
             autoWidth: true,
-            // ajax: baseUrl + '/ajax/proposes/getbyscheme?period_id=' + $('#scheme-approve-propose').val(),
-            ajax: 'http://api.usu.ac.id/1.0/functional_positions?position=Guru%20Besar&callback=?',
+            ajax: baseUrl + '/ajax/proposes/getbyscheme?period_id=' + $('#scheme-approve-propose').val() +
+            '&status_code[]=RS&type=APPROVE',
             preDrawCallback: function () {
                 // Initialize the responsive datatables helper once.
                 if (!responsiveHelperAjax) {

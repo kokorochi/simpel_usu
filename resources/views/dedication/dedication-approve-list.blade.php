@@ -5,7 +5,7 @@
 
         <!-- Start page header -->
         <div class="header-content">
-            <h2><i class="fa fa-star"></i> {{ $pageTitle }} </h2>
+            <h2><i class="fa fa-black-tie"></i> {{ $pageTitle }} </h2>
             <div class="breadcrumb-wrapper hidden-xs">
                 <span class="label">Direktori anda:</span>
                 <ol class="breadcrumb">
@@ -60,7 +60,7 @@
                     <div class="panel rounded shadow">
                         <div class="panel-heading">
                             <div class="pull-left">
-                                <h3 class="panel-title">List Pengabdian Berdasarkan Scheme</h3>
+                                <h3 class="panel-title">Daftar Pengabdian Berdasarkan Scheme</h3>
                             </div>
                             <div class="pull-right">
                                 <button class="btn btn-sm" data-action="collapse" data-container="body"

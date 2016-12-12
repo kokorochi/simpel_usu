@@ -6,20 +6,20 @@
 
         <!-- Start page header -->
         <div class="header-content">
-            <h2><i class="fa fa-bullhorn"></i> List Pengumuman </h2>
+            <h2><i class="fa fa-bullhorn"></i>Daftar Pengumuman</h2>
             <div class="breadcrumb-wrapper hidden-xs">
                 <span class="label">Direktori anda:</span>
                 <ol class="breadcrumb">
                     <li>
                         <i class="fa fa-home"></i>
-                        <a href="{{url('/')}}">Home</a>
+                        <a href="{{url('/')}}">Beranda</a>
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li>
                         Pengumuman
                         <i class="fa fa-angle-right"></i>
                     </li>
-                    <li class="active">List</li>
+                    <li class="active">Daftar</li>
                 </ol>
             </div><!-- /.breadcrumb-wrapper -->
         </div><!-- /.header-content -->
@@ -31,7 +31,7 @@
             <div class="panel rounded shadow">
                 <div class="panel-heading">
                     <div class="pull-left">
-                        <h3 class="panel-title">List {{$pageTitle}}</h3>
+                        <h3 class="panel-title">Daftar {{$pageTitle}}</h3>
                     </div>
                     <div class="pull-right">
                         {{--<button class="btn btn-sm" data-action="refresh" data-container="body" data-toggle="tooltip" data-placement="top" data-title="Refresh"><i class="fa fa-refresh"></i></button>--}}
@@ -49,9 +49,9 @@
                                     <thead>
                                     <tr>
                                         <th class="text-center border-right">Id</th>
-                                        <th>Title</th>
-                                        <th>Content</th>
-                                        <th class="text-center">Action</th>
+                                        <th>Judul Pengumuman</th>
+                                        <th>Konten Pengumuman</th>
+                                        <th class="text-center">Aksi</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -64,7 +64,7 @@
                                                 {{--<a href="{{url('announces/list/' . $announce->id)}}" class="btn btn-success btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="View detail"><i class="fa fa-eye"></i></a>--}}
                                                 <a href="{{url('announces/' . $announce->id .'/edit')}}"
                                                    class="btn btn-primary btn-xs" data-toggle="tooltip"
-                                                   data-placement="top" data-original-title="Edit">
+                                                   data-placement="top" data-original-title="Ubah">
                                                     <i class="fa fa-pencil"></i>
                                                 </a>
                                                 <a href="#" class="modal_delete btn btn-danger btn-xs"
@@ -80,9 +80,9 @@
                                     <tfoot>
                                     <tr>
                                         <th class="text-center border-right">Id</th>
-                                        <th>Title</th>
-                                        <th>Content</th>
-                                        <th class="text-center">Action</th>
+                                        <th>Judul Pengumuman</th>
+                                        <th>Konten Pengumuman</th>
+                                        <th class="text-center">Aksi</th>
                                     </tr>
                                     </tfoot>
                                 </table>

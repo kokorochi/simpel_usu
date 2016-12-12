@@ -54,8 +54,10 @@ class AJAXController extends BlankonController {
         $input = Input::get("key_input");
         $lecturer = Lecturer::where('employee_card_serial_number', $input)->first();
 
-        $lecturer = json_encode($lecturer, JSON_PRETTY_PRINT);
 
+//        return json_encode($lecturer, JSON_PRETTY_PRINT);
+        $lecturer = json_encode($lecturer, JSON_PRETTY_PRINT);
+//
         return response($lecturer, 200)->header('Content-Type', 'application/json');
     }
 

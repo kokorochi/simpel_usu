@@ -5,20 +5,20 @@
 
         <!-- Start page header -->
         <div class="header-content">
-            <h2><i class="fa fa-star"></i> {{ $pageTitle }} </h2>
+            <h2><i class="fa fa-balance-scale"></i> {{ $pageTitle }} </h2>
             <div class="breadcrumb-wrapper hidden-xs">
                 <span class="label">Direktori anda:</span>
                 <ol class="breadcrumb">
                     <li>
                         <i class="fa fa-home"></i>
-                        <a href="{{url('/')}}">Home</a>
+                        <a href="{{url('/')}}">Beranda</a>
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li>
                         {{ $pageTitle }}
                         <i class="fa fa-angle-right"></i>
                     </li>
-                    <li class="active">Assign</li>
+                    <li class="active">Penentuan Reviewer</li>
                 </ol>
             </div><!-- /.breadcrumb-wrapper -->
         </div><!-- /.header-content -->
@@ -46,7 +46,7 @@
 
                 <div class="form-footer">
                     <div class="col-sm-offset-4 col-md-offset-3">
-                        <a href="{{url($deleteUrl) . '/assign'}}" class="btn btn-danger btn-slideright">Cancel</a>
+                        <a href="{{url($deleteUrl) . '/assign'}}" class="btn btn-teal btn-slideright">Kembali</a>
                         <button type="submit" class="btn btn-success btn-slideright">Submit</button>
                     </div><!-- /.col-sm-offset-3 -->
                 </div><ss!-- /.form-footer -->

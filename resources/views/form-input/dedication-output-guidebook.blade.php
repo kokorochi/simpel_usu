@@ -110,13 +110,13 @@ $errors->has('isbn') || old('isbn')
                                         <span class="fileinput-filename"></span>
                                     </div>
                                 <span class="input-group-addon btn btn-success btn-file">
-                                    <span class="fileinput-new">Select file</span>
-                                    <span class="fileinput-exists">Change</span>
+                                    <span class="fileinput-new">Pilih file</span>
+                                    <span class="fileinput-exists">Ubah</span>
                                     <input type="file" name="file_cover"
                                            value="">
                                 </span>
                                     <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                       data-dismiss="fileinput">Remove</a>
+                                       data-dismiss="fileinput">Hapus</a>
                                 </div>
                             </div>
                         @endif
@@ -149,13 +149,13 @@ $errors->has('isbn') || old('isbn')
                                         <span class="fileinput-filename"></span>
                                     </div>
                                 <span class="input-group-addon btn btn-success btn-file">
-                                    <span class="fileinput-new">Select file</span>
-                                    <span class="fileinput-exists">Change</span>
+                                    <span class="fileinput-new">Pilih file</span>
+                                    <span class="fileinput-exists">Ubah</span>
                                     <input type="file" name="file_back"
                                            value="">
                                 </span>
                                     <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                       data-dismiss="fileinput">Remove</a>
+                                       data-dismiss="fileinput">Hapus</a>
                                 </div>
                             </div>
                         @endif
@@ -188,13 +188,13 @@ $errors->has('isbn') || old('isbn')
                                         <span class="fileinput-filename"></span>
                                     </div>
                                     <span class="input-group-addon btn btn-success btn-file">
-                                        <span class="fileinput-new">Select file</span>
-                                        <span class="fileinput-exists">Change</span>
+                                        <span class="fileinput-new">Pilih file</span>
+                                        <span class="fileinput-exists">Ubah</span>
                                         <input type="file" name="file_table_of_contents"
                                                value="">
                                     </span>
                                     <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                       data-dismiss="fileinput">Remove</a>
+                                       data-dismiss="fileinput">Hapus</a>
                                 </div>
                             </div>
                         @endif
@@ -207,8 +207,8 @@ $errors->has('isbn') || old('isbn')
                         <div class="clearfix"></div>
                         <div class="form-footer">
                             <div class="col-sm-offset-4 col-md-offset-3">
-                                <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
-                                <button type="submit" class="btn btn-success btn-slideright">Submit</button>
+                                <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
+                                <button type="submit" class="btn btn-success btn-slideright">Simpan</button>
                             </div><!-- /.col-sm-offset-3 -->
                         </div><!-- /.form-footer -->
                     @endif

@@ -5,20 +5,20 @@
 
         <!-- Start page header -->
         <div class="header-content">
-            <h2><i class="fa fa-star"></i> {{ $pageTitle }} </h2>
+            <h2><i class="fa fa-black-tie"></i> {{ $pageTitle }} </h2>
             <div class="breadcrumb-wrapper hidden-xs">
                 <span class="label">Direktori anda:</span>
                 <ol class="breadcrumb">
                     <li>
                         <i class="fa fa-home"></i>
-                        <a href="{{url('/')}}">Home</a>
+                        <a href="{{url('/')}}">Beranda</a>
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li>
                         {{ $pageTitle }}
                         <i class="fa fa-angle-right"></i>
                     </li>
-                    <li class="active">Pengajuan Proposal</li>
+                    <li class="active">Ubah Pengabdian</li>
                 </ol>
             </div><!-- /.breadcrumb-wrapper -->
         </div><!-- /.header-content -->

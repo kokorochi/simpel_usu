@@ -6,20 +6,20 @@
 
         <!-- Start page header -->
         <div class="header-content">
-            <h2><i class="fa fa-star"></i> {{ $pageTitle }} </h2>
+            <h2><i class="fa fa-balance-scale"></i> {{ $pageTitle }} </h2>
             <div class="breadcrumb-wrapper hidden-xs">
                 <span class="label">Direktori anda:</span>
                 <ol class="breadcrumb">
                     <li>
                         <i class="fa fa-home"></i>
-                        <a href="{{url('/')}}">Home</a>
+                        <a href="{{url('/')}}">Beranda</a>
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li>
                         {{ $pageTitle }}
                         <i class="fa fa-angle-right"></i>
                     </li>
-                    <li class="active">List</li>
+                    <li class="active">Daftar</li>
                 </ol>
             </div><!-- /.breadcrumb-wrapper -->
         </div><!-- /.header-content -->
@@ -30,7 +30,7 @@
             <div class="panel rounded shadow">
                 <div class="panel-heading">
                     <div class="pull-left">
-                        <h3 class="panel-title">List {{$pageTitle}}</h3>
+                        <h3 class="panel-title">Daftar {{$pageTitle}}</h3>
                     </div>
                     <div class="pull-right">
                         <button class="btn btn-sm" data-action="collapse" data-container="body" data-toggle="tooltip"
@@ -51,7 +51,7 @@
                                             <th class="text-center">Program Studi</th>
                                             <th class="text-center">Tanggal Mulai</th>
                                             <th class="text-center">Tanggal Akhir</th>
-                                            <th class="text-center">Action</th>
+                                            <th class="text-center">Aksi</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -65,7 +65,7 @@
                                                 <td class="text-center">
                                                     <a href="{{url($deleteUrl . '/' . $auth->id .'/edit')}}"
                                                        class="btn btn-primary btn-xs" data-toggle="tooltip"
-                                                       data-placement="top" data-original-title="Edit">
+                                                       data-placement="top" data-original-title="Ubah">
                                                         <i class="fa fa-pencil"></i>
                                                     </a>
                                                     <a href="#" class="modal_delete btn btn-danger btn-xs"
@@ -85,7 +85,7 @@
                                             <th class="text-center">Program Studi</th>
                                             <th class="text-center">Tanggal Mulai</th>
                                             <th class="text-center">Tanggal Akhir</th>
-                                            <th class="text-center">Action</th>
+                                            <th class="text-center">Aksi</th>
                                         </tr>
                                         </tfoot>
                                     </table>

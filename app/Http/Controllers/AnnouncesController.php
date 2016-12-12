@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\ModelSDM\Employee;
+use App\ModelSDM\Lecturer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -78,8 +80,11 @@ class AnnouncesController extends BlankonController {
         $announce = Announce::find($id);
         if (empty($announce))
         {
+            $this->setCSS404();
+
             return abort(404);
         }
+        $announce->created_by_name = Employee::where('number_of_employee_holding', $announce->created_by)->first()->full_name;
 
         return view('announce/announce-single', compact('announce'));
     }
@@ -113,7 +118,7 @@ class AnnouncesController extends BlankonController {
         )
         {
 //            dd($path . $store->image_name);
-            File::delete($path . DIRECTORY_SEPARATOR .$store->image_name);
+            File::delete($path . DIRECTORY_SEPARATOR . $store->image_name);
             $store->image_name = null;
         }
 
@@ -142,5 +147,11 @@ class AnnouncesController extends BlankonController {
     {
         $store->title = $request->title;
         $store->content = $request->description;
+    }
+
+    private function setCSS404()
+    {
+        array_push($this->css['themes'], 'admin/css/pages/error-page.css');
+        View::share('css', $this->css);
     }
 }

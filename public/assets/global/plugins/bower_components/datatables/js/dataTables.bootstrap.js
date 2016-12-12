@@ -5,7 +5,15 @@ $.extend( true, $.fn.dataTable.defaults, {
             "t"+
             "<'row'<'col-xs-6'i><'col-xs-6'p>>",
     "oLanguage": {
-        "sLengthMenu": "_MENU_ records per page"
+        "sLengthMenu": "_MENU_ jumlah data per halaman",
+        "sInfo": "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+        "sSearch": "Cari",
+        "sZeroRecords": "No matching records found",
+        "sInfoEmpty": "Tidak ada data",
+        "oPaginate": {
+            "sPrevious": "Sebelumnya",
+            "sNext": "Selanjutnya",
+        }
     }
 } );
 

@@ -4,20 +4,20 @@
     <section id="page-content">
         <!-- Start page header -->
         <div class="header-content">
-            <h2><i class="fa fa-bullhorn"></i> Pengumuman </h2>
+            <h2><i class="fa fa-bullhorn"></i>Pengumuman</h2>
             <div class="breadcrumb-wrapper hidden-xs">
                 <span class="label">Direktori anda:</span>
                 <ol class="breadcrumb">
                     <li>
                         <i class="fa fa-home"></i>
-                        <a href="{{url('/')}}">Home</a>
+                        <a href="{{url('/')}}">Beranda</a>
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li>
                         Pengumuman
                         <i class="fa fa-angle-right"></i>
                     </li>
-                    <li class="active">Edit</li>
+                    <li class="active">Ubah</li>
                 </ol>
             </div><!-- /.breadcrumb-wrapper -->
         </div><!-- /.header-content -->
@@ -29,7 +29,7 @@
                     <div class="panel rounded shadow">
                         <div class="panel-heading">
                             <div class="pull-left">
-                                <h3 class="panel-title">Edit Pengumuman</h3>
+                                <h3 class="panel-title">Ubah Pengumuman</h3>
                             </div>
                             <div class="pull-right">
                                 <button class="btn btn-sm" data-action="collapse" data-container="body"
@@ -105,13 +105,13 @@
                                                     <span class="fileinput-filename"></span>
                                                 </div>
                                             <span class="input-group-addon btn btn-success btn-file">
-                                                <span class="fileinput-new">Select file</span>
-                                                <span class="fileinput-exists">Change</span>
+                                                <span class="fileinput-new">Pilih file</span>
+                                                <span class="fileinput-exists">Ubah</span>
                                                 <input type="file" name="image_name"
                                                        value="">
                                             </span>
                                                 <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                                   data-dismiss="fileinput">Remove</a>
+                                                   data-dismiss="fileinput">Hapus</a>
                                             </div>
                                             @if($errors->has('image_name'))
                                                 <label class="error" for="image_name"
@@ -159,8 +159,8 @@
                                     <div class="form-footer">
                                         <div class="col-sm-offset-3">
                                             <a href="{{url('announces')}}"
-                                               class="btn btn-danger btn-slideright">Cancel</a>
-                                            <button type="submit" class="btn btn-success btn-slideright">Submit</button>
+                                               class="btn btn-teal btn-slideright">Kembali</a>
+                                            <button type="submit" class="btn btn-success btn-slideright">Ubah</button>
                                         </div>
                                     </div>
                                 </div><!-- /.form-body -->

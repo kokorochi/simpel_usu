@@ -42,8 +42,8 @@ var BlankonApp = function(){
         handleBaseURL: function () {
             var getUrl = window.location,
                 // baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
-                baseUrl = getUrl .protocol + "//" + getUrl.host + "/";
-            baseUrl = baseUrl + "lppm_usu/public";
+                baseUrl = getUrl .protocol + "//" + getUrl.host;
+            // baseUrl = baseUrl + "lppm_usu/public";
             return baseUrl;
         },
 

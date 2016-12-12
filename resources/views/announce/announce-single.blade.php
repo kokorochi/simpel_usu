@@ -6,13 +6,13 @@
 
         <!-- Start page header -->
         <div class="header-content">
-            <h2><i class="fa fa-file-text"></i> Detail Pengumuman </h2>
+            <h2><i class="fa fa-bullhorn"></i>Detail Pengumuman</h2>
             <div class="breadcrumb-wrapper hidden-xs">
                 <span class="label">Direktori anda:</span>
                 <ol class="breadcrumb">
                     <li>
                         <i class="fa fa-home"></i>
-                        <a href="{{url('dashboard/index')}}">Dashboard</a>
+                        <a href="{{url('dashboard/index')}}">Beranda</a>
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li class="active">Detail Pengumuman</li>
@@ -32,7 +32,7 @@
                         <div class="panel-body">
                             <h3 class="blog-title">{{ $announce->title }}</h3>
                             <ul class="blog-meta">
-                                <li>Oleh: {{ $announce->created_by }}</li>
+                                <li>Oleh: {{ $announce->created_by_name }}</li>
                                 <li><?php echo date("d M Y", strtotime($announce->created_at)) ?></li>
                             </ul>
                             @if($announce->image_name !== null)

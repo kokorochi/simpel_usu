@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ModelSDM\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,6 +48,19 @@ class HomeController extends BlankonController
             $announce->content = strip_tags($announce->content);
             $announce->content = substr($announce->content, 0, 200);
         }
+
+        foreach ($announces as $announce)
+        {
+            $employee = Employee::where('number_of_employee_holding', $announce->created_by)->first();
+            if($employee !== null)
+            {
+                $announce->created_by_name = $employee->full_name;
+            }
+            else{
+                $announce->created_by_name = $announce->created_by;
+            }
+        }
+
         return view('home/index', compact('announces'));
     }
 }

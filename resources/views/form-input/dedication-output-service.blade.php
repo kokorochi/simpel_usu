@@ -72,13 +72,13 @@
                                                 <span class="fileinput-filename"></span>
                                             </div>
                                             <span class="input-group-addon btn btn-success btn-file">
-                                                <span class="fileinput-new">Select file</span>
-                                                <span class="fileinput-exists">Change</span>
+                                                <span class="fileinput-new">Pilih file</span>
+                                                <span class="fileinput-exists">Ubah</span>
                                                 <input type="file" name="file_name[]"
                                                        value="">
                                             </span>
                                             <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                               data-dismiss="fileinput">Remove</a>
+                                               data-dismiss="fileinput">Hapus</a>
                                         </div>
                                         @if($errors->has('file_name.' . $key))
                                             <label class="error" for="file_name[]"
@@ -108,8 +108,8 @@
                                 <a id="add-dedication-service" href="#"
                                    class="add-dedication-service-button btn btn-success btn-stroke btn-slideright"><i
                                             class="fa fa-plus"></i></a>
-                                <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
-                                <button type="submit" class="btn btn-success btn-slideright">Submit</button>
+                                <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
+                                <button type="submit" class="btn btn-success btn-slideright">Simpan</button>
                             </div><!-- /.col-sm-offset-3 -->
                         </div><!-- /.form-footer -->
                     @endif

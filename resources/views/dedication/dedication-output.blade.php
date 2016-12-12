@@ -6,7 +6,7 @@
 
         <!-- Start page header -->
         <div class="header-content">
-            <h2><i class="fa fa-star"></i> {{ $pageTitle }} </h2>
+            <h2><i class="fa fa-black-tie"></i> {{ $pageTitle }} </h2>
             <div class="breadcrumb-wrapper hidden-xs">
                 <span class="label">Direktori anda:</span>
                 <ol class="breadcrumb">
@@ -19,7 +19,7 @@
                         {{ $pageTitle }}
                         <i class="fa fa-angle-right"></i>
                     </li>
-                    <li class="active">List</li>
+                    <li class="active">Luaran</li>
                 </ol>
             </div><!-- /.breadcrumb-wrapper -->
         </div><!-- /.header-content -->

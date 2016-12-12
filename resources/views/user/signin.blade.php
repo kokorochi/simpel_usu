@@ -58,7 +58,7 @@
                         <div class="col-xs-6">
                             <div class="ckbox ckbox-theme">
                                 <input id="rememberme" type="checkbox">
-                                <label for="rememberme" class="rounded">Remember me</label>
+                                <label for="rememberme" class="rounded">Ingat saya</label>
                             </div>
                         </div>
                         {{--<div class="col-xs-6 text-right">--}}
@@ -67,8 +67,8 @@
                     </div>
                 </div><!-- /.form-group -->
                 <div class="form-group">
-                    <button type="submit" class="btn btn-theme btn-lg btn-block no-margin rounded" id="login-btn">Sign
-                        In
+                    <button type="submit" class="btn btn-theme btn-lg btn-block no-margin rounded" id="login-btn">
+                        Masuk
                     </button>
                 </div><!-- /.form-group -->
                 {{ csrf_field() }}

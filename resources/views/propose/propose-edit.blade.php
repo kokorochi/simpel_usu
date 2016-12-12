@@ -5,20 +5,20 @@
 
         <!-- Start page header -->
         <div class="header-content">
-            <h2><i class="fa fa-star"></i> {{ $pageTitle }} </h2>
+            <h2><i class="fa fa-file-powerpoint-o"></i> {{ $pageTitle }} </h2>
             <div class="breadcrumb-wrapper hidden-xs">
                 <span class="label">Direktori anda:</span>
                 <ol class="breadcrumb">
                     <li>
                         <i class="fa fa-home"></i>
-                        <a href="{{url('/')}}">Home</a>
+                        <a href="{{url('/')}}">Beranda</a>
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li>
                         {{ $pageTitle }}
                         <i class="fa fa-angle-right"></i>
                     </li>
-                    <li class="active">Pengajuan Proposal</li>
+                    <li class="active">Ubah Usulan</li>
                 </ol>
             </div><!-- /.breadcrumb-wrapper -->
         </div><!-- /.header-content -->
@@ -55,12 +55,12 @@
                             <div class="form-footer">
                                 <div class="col-sm-offset-4 col-md-offset-3">
                                     <a href="{{url('proposes', $propose->id) . '/print-confirmation'}}" target="_blank"
-                                       class="btn btn-default btn-slideright">
+                                       class="btn btn-primary btn-stroke btn-dashed btn-slideright">
                                         <i class="fa fa-print"></i> Print
                                     </a>
-                                    <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
+                                    <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
                                     @if($disable_upload === false)
-                                        <button type="submit" class="btn btn-success btn-slideright">Submit</button>
+                                        <button type="submit" class="btn btn-success btn-slideright">Ubah</button>
                                     @endif
                                 </div><!-- /.col-sm-offset-3 -->
                             </div><!-- /.form-footer -->

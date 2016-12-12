@@ -48,12 +48,12 @@
                                                 class="glyphicon glyphicon-file fileinput-exists"></i> <span
                                                 class="fileinput-filename"></span></div>
                                                 <span class="input-group-addon btn btn-success btn-file">
-                                                    <span class="fileinput-new">Select file</span>
-                                                    <span class="fileinput-exists">Change</span>
+                                                    <span class="fileinput-new">Pilih file</span>
+                                                    <span class="fileinput-exists">Ubah</span>
                                                     <input type="file" name="file_progress_activity">
                                                 </span>
                                     <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                       data-dismiss="fileinput">Remove</a>
+                                       data-dismiss="fileinput">Hapus</a>
                                 </div>
                                 @if($errors->has('file_progress_activity'))
                                     <label class="error" for="file_progress_activity" style="display: inline-block;">
@@ -89,12 +89,12 @@
                                                 class="glyphicon glyphicon-file fileinput-exists"></i> <span
                                                 class="fileinput-filename"></span></div>
                                             <span class="input-group-addon btn btn-success btn-file">
-                                                <span class="fileinput-new">Select file</span>
-                                                <span class="fileinput-exists">Change</span>
+                                                <span class="fileinput-new">Pilih file</span>
+                                                <span class="fileinput-exists">Ubah</span>
                                                 <input type="file" name="file_progress_budgets">
                                             </span>
                                     <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                       data-dismiss="fileinput">Remove</a>
+                                       data-dismiss="fileinput">Hapus</a>
                                 </div>
                                 @if($errors->has('file_progress_budgets'))
                                     <label class="error" for="file_progress_budgets" style="display: inline-block;">
@@ -112,7 +112,7 @@
 
                     <div class="form-footer">
                         <div class="col-sm-offset-4 col-md-offset-3">
-                            <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
+                            <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
                             <button type="submit" class="btn btn-success btn-slideright">Update Laporan Kemajuan
                             </button>
                         </div><!-- /.col-sm-offset-3 -->

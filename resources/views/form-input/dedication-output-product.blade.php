@@ -52,13 +52,13 @@
                                         <span class="fileinput-filename"></span>
                                     </div>
                                     <span class="input-group-addon btn btn-success btn-file">
-                                        <span class="fileinput-new">Select file</span>
-                                        <span class="fileinput-exists">Change</span>
+                                        <span class="fileinput-new">Pilih file</span>
+                                        <span class="fileinput-exists">Ubah</span>
                                         <input type="file" name="file_blueprint"
                                                value="">
                                     </span>
                                     <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                       data-dismiss="fileinput">Remove</a>
+                                       data-dismiss="fileinput">Hapus</a>
                                 </div>
                                 @if($errors->has('file_blueprint'))
                                     <label class="error" for="file_blueprint"
@@ -97,13 +97,13 @@
                                         <span class="fileinput-filename"></span>
                                     </div>
                                 <span class="input-group-addon btn btn-success btn-file">
-                                    <span class="fileinput-new">Select file</span>
-                                    <span class="fileinput-exists">Change</span>
+                                    <span class="fileinput-new">Pilih file</span>
+                                    <span class="fileinput-exists">Ubah</span>
                                     <input type="file" name="file_finished_good"
                                            value="">
                                 </span>
                                     <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                       data-dismiss="fileinput">Remove</a>
+                                       data-dismiss="fileinput">Hapus</a>
                                 </div>
                                 @if($errors->has('file_finished_good'))
                                     <label class="error" for="file_finished_good"
@@ -142,13 +142,13 @@
                                         <span class="fileinput-filename"></span>
                                     </div>
                                 <span class="input-group-addon btn btn-success btn-file">
-                                    <span class="fileinput-new">Select file</span>
-                                    <span class="fileinput-exists">Change</span>
+                                    <span class="fileinput-new">Pilih file</span>
+                                    <span class="fileinput-exists">Ubah</span>
                                     <input type="file" name="file_working_pic"
                                            value="">
                                 </span>
                                     <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                       data-dismiss="fileinput">Remove</a>
+                                       data-dismiss="fileinput">Hapus</a>
                                 </div>
                                 @if($errors->has('file_working_pic'))
                                     <label class="error" for="file_working_pic"
@@ -167,8 +167,8 @@
                         <div class="clearfix"></div>
                         <div class="form-footer">
                             <div class="col-sm-offset-4 col-md-offset-3">
-                                <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
-                                <button type="submit" class="btn btn-success btn-slideright">Submit</button>
+                                <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
+                                <button type="submit" class="btn btn-success btn-slideright">Simpan</button>
                             </div><!-- /.col-sm-offset-3 -->
                         </div><!-- /.form-footer -->
                     @endif

@@ -111,13 +111,13 @@ $errors->has('patent_type') || old('patent_type')
                                         <span class="fileinput-filename"></span>
                                     </div>
                                             <span class="input-group-addon btn btn-success btn-file">
-                                                <span class="fileinput-new">Select file</span>
-                                                <span class="fileinput-exists">Change</span>
+                                                <span class="fileinput-new">Pilh file</span>
+                                                <span class="fileinput-exists">Ubah</span>
                                                 <input type="file" name="file_patent"
                                                        value="">
                                             </span>
                                     <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                       data-dismiss="fileinput">Remove</a>
+                                       data-dismiss="fileinput">Hapus</a>
                                 </div>
                                 @if($errors->has('file_patent'))
                                     <label class="error" for="file_patent"
@@ -136,8 +136,8 @@ $errors->has('patent_type') || old('patent_type')
                         <div class="clearfix"></div>
                         <div class="form-footer">
                             <div class="col-sm-offset-4 col-md-offset-3">
-                                <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
-                                <button type="submit" class="btn btn-success btn-slideright">Submit</button>
+                                <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
+                                <button type="submit" class="btn btn-success btn-slideright">Simpan</button>
                             </div><!-- /.col-sm-offset-3 -->
                         </div><!-- /.form-footer -->
                     @endif

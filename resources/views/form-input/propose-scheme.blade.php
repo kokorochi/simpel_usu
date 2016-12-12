@@ -27,7 +27,7 @@ $errors->has('period_id')           || old('period_id')
         <div class="panel rounded shadow">
             <div class="panel-heading">
                 <div class="pull-left">
-                    <h3 class="panel-title">Pengajuan {{$pageTitle}}</h3>
+                    <h3 class="panel-title">Pengajuan Usulan</h3>
                 </div>
                 <div class="pull-right">
                     <a class="btn btn-sm" data-action="collapse" data-container="body" data-toggle="tooltip"

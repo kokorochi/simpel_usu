@@ -20,20 +20,20 @@ $errors->has('end_date') || old('end_date'))
 
         <!-- Start page header -->
         <div class="header-content">
-            <h2><i class="fa fa-star"></i> {{ $pageTitle }} </h2>
+            <h2><i class="fa fa-balance-scale"></i> {{ $pageTitle }} </h2>
             <div class="breadcrumb-wrapper hidden-xs">
                 <span class="label">Direktori anda:</span>
                 <ol class="breadcrumb">
                     <li>
                         <i class="fa fa-home"></i>
-                        <a href="{{url('/')}}">Home</a>
+                        <a href="{{url('/')}}">Beranda</a>
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li>
                         {{ $pageTitle }}
                         <i class="fa fa-angle-right"></i>
                     </li>
-                    <li class="active">Create</li>
+                    <li class="active">Tambah</li>
                 </ol>
             </div><!-- /.breadcrumb-wrapper -->
         </div><!-- /.header-content -->
@@ -49,7 +49,7 @@ $errors->has('end_date') || old('end_date'))
                         <div class="panel">
                             <div class="panel-heading">
                                 <div class="pull-left">
-                                    <h3 class="panel-title">Create Reviewer</h3>
+                                    <h3 class="panel-title">Tambah Reviewer</h3>
                                 </div>
                                 <div class="pull-right">
                                     <a class="btn btn-sm" data-action="collapse" data-container="body"
@@ -149,8 +149,8 @@ $errors->has('end_date') || old('end_date'))
 
                             <div class="form-footer">
                                 <div class="col-sm-offset-4 col-md-offset-3">
-                                    <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Cancel</a>
-                                    <button type="submit" class="btn btn-success btn-slideright">Submit</button>
+                                    <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
+                                    <button type="submit" class="btn btn-success btn-slideright">Tambah</button>
                                 </div><!-- /.col-sm-offset-3 -->
                             </div><!-- /.form-footer -->
                         </div><!-- /.panel -->

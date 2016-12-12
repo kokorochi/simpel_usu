@@ -13,7 +13,7 @@
         <div class="panel">
             <div class="panel-heading">
                 <div class="pull-left">
-                    <h3 class="panel-title">Unggah Data</h3>
+                    <h3 class="panel-title">Unggah Usulan</h3>
                 </div>
                 <div class="pull-right">
                     <a class="btn btn-sm" data-action="collapse" data-container="body" data-toggle="tooltip"
@@ -50,12 +50,12 @@
                                                     class="glyphicon glyphicon-file fileinput-exists"></i> <span
                                                     class="fileinput-filename"></span></div>
                                         <span class="input-group-addon btn btn-success btn-file">
-                                            <span class="fileinput-new">Select file</span>
-                                            <span class="fileinput-exists">Change</span>
+                                            <span class="fileinput-new">Pilih file</span>
+                                            <span class="fileinput-exists">Ubah</span>
                                             <input type="file" name="file_propose">
                                         </span>
                                         <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
-                                           data-dismiss="fileinput">Remove</a>
+                                           data-dismiss="fileinput">Hapus</a>
                                     </div>
                                     @if($errors->has('file_propose'))
                                         <label class="error" for="file_propose" style="display: inline-block;">

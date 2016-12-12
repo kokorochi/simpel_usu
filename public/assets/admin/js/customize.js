@@ -3,8 +3,8 @@
  */
 $(document).ready(function() {
     var getUrl = window.location,
-        baseUrl = getUrl.protocol + "//" + getUrl.host + "/";
-    baseUrl = baseUrl + "lppm_usu/public";
+        baseUrl = getUrl.protocol + "//" + getUrl.host;// + "/";
+    // baseUrl = baseUrl + "lppm_usu/public";
 
     // Handle Additional Fields For Appraisal
     var max_fields      = 20; //maximum input boxes allowed
@@ -98,7 +98,6 @@ $(document).ready(function() {
 
     $(".input-reviewer").on('change', function(){
         $.get(baseUrl + '/ajax/members/lecturerNIDN', {key_input: $('.input-value').val()}, function(data){
-            data = JSON.parse(data);
             $.each(data, function(key, value){
                 $("input[name='" + key + "']").val(data[key]);
             });

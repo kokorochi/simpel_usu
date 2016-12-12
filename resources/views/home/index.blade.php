@@ -6,13 +6,13 @@
 
     <!-- Start page header -->
     <div class="header-content">
-        <h2><i class="fa fa-home"></i> Home </h2>
+        <h2><i class="fa fa-home"></i>Beranda</h2>
         <div class="breadcrumb-wrapper hidden-xs">
             <span class="label">Direktori anda: </span>
             <ol class="breadcrumb">
                 <li>
                     <i class="fa fa-home"></i>
-                    <a href="{{url('dashboard/index')}}">Home</a>
+                    <a href="{{url('dashboard/index')}}">Beranda</a>
                 </li>
             </ol>
         </div><!-- /.breadcrumb-wrapper -->
@@ -21,18 +21,6 @@
 
     <!-- Start body content -->
     <div class="body-content animated fadeIn">
-
-        <!--
-
-        Start blog list
-        |=========================================================================================================================|
-        |  TABLE OF CONTENTS                                                                               |
-        |=========================================================================================================================|
-        |  01. blog-grid                |  Variant style blog post type grid                                                      |
-        |  02. blog-list                |  Variant style blog post type list                                                      |
-        |=========================================================================================================================|
-
-        -->
 
         <div id="blog-grid" class="announces row">
             {{--<div class="row">--}}
@@ -48,7 +36,7 @@
                                     <h4 class="blog-title"><a href="{{ url('announces/' . $announce->id) }}">{{$announce->title}}</a>
                                     </h4>
                                     <ul class="blog-meta">
-                                        <li>By: {{$announce->created_by}}</li>
+                                        <li>By: {{$announce->created_by_name}}</li>
                                         <li>{{ date("d M Y", strtotime($announce->created_at)) }}</li>
                                     </ul>
                                     <div class="blog-summary">

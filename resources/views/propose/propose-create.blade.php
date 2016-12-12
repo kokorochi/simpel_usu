@@ -5,13 +5,13 @@
 
         <!-- Start page header -->
         <div class="header-content">
-            <h2><i class="fa fa-star"></i> {{ $pageTitle }} </h2>
+            <h2><i class="fa fa-file-powerpoint-o"></i> {{ $pageTitle }} </h2>
             <div class="breadcrumb-wrapper hidden-xs">
                 <span class="label">Direktori anda:</span>
                 <ol class="breadcrumb">
                     <li>
                         <i class="fa fa-home"></i>
-                        <a href="{{url('/')}}">Home</a>
+                        <a href="{{url('/')}}">Beranda</a>
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li>
@@ -37,7 +37,7 @@
 
                 @include('form-input.propose-detail')
 
-                @include('form-input.propose-upload')
+                {{--@include('form-input.propose-upload')--}}
 
                 <div class="row">
                     <div class="col-md-12">
@@ -47,8 +47,8 @@
 
                             <div class="form-footer">
                                 <div class="col-sm-offset-4 col-md-offset-3">
-                                    <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Cancel</a>
-                                    <button type="submit" class="btn btn-success btn-slideright">Submit</button>
+                                    <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
+                                    <button type="submit" class="btn btn-success btn-slideright">Tambah</button>
                                 </div><!-- /.col-sm-offset-3 -->
                             </div><!-- /.form-footer -->
                         </div><!-- /.panel -->

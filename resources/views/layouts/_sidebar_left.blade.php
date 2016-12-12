@@ -35,7 +35,7 @@ START @SIDEBAR LEFT
         <li {!! Request::is('/', '/') ? 'class="active"' : null !!}>
             <a href="{{url('/')}}">
                 <span class="icon"><i class="fa fa-home"></i></span>
-                <span class="text">Home</span>
+                <span class="text">Beranda</span>
                 {!! Request::is('/', '/') ? '<span class="selected"></span>' : null !!}
             </a>
         </li>
@@ -46,7 +46,7 @@ START @SIDEBAR LEFT
             <li {!! Request::is('user', 'user/login') ? 'class="active"' : null !!}>
                 <a href="{{url('user/login')}}">
                     <span class="icon"><i class="fa fa-sign-in"></i></span>
-                    <span class="text">Login</span>
+                    <span class="text">Masuk</span>
                     {!! Request::is('user', 'user/login') ? '<span class="selected"></span>' : null !!}
                 </a>
             </li>
@@ -70,10 +70,10 @@ START @SIDEBAR LEFT
                 </a>
                 <ul>
                     <li {!! Request::is('announces','announces/create')? 'class="active"' : null !!}>
-                        <a href="{{url('announces/create')}}">Create</a>
+                        <a href="{{url('announces/create')}}">Tambah</a>
                     </li>
                     <li {!! Request::is('announces','announces/list')? 'class="active"' : null !!}>
-                        <a href="{{url('announces/')}}">List</a>
+                        <a href="{{url('announces/')}}">Daftar</a>
                     </li>
                 </ul>
             </li>
@@ -89,10 +89,10 @@ START @SIDEBAR LEFT
                 </a>
                 <ul>
                     <li {!! Request::is('appraisals','appraisals/create')? 'class="active"' : null !!}>
-                        <a href="{{url('appraisals/create')}}">Create</a>
+                        <a href="{{url('appraisals/create')}}">Tambah</a>
                     </li>
                     <li {!! Request::is('appraisals','appraisals/')? 'class="active"' : null !!}>
-                        <a href="{{url('appraisals/')}}">List</a>
+                        <a href="{{url('appraisals/')}}">Daftar</a>
                     </li>
                 </ul>
             </li>
@@ -108,10 +108,10 @@ START @SIDEBAR LEFT
                 </a>
                 <ul>
                     <li {!! Request::is('periods','periods/create')? 'class="active"' : null !!}>
-                        <a href="{{url('periods/create')}}">Create</a>
+                        <a href="{{url('periods/create')}}">Tambah</a>
                     </li>
                     <li {!! Request::is('periods','periods/')? 'class="active"' : null !!}>
-                        <a href="{{url('periods/')}}">List</a>
+                        <a href="{{url('periods/')}}">Daftar</a>
                     </li>
                 </ul>
             </li>
@@ -127,13 +127,13 @@ START @SIDEBAR LEFT
                 </a>
                 <ul>
                     <li {!! Request::is('reviewers','reviewers/create')? 'class="active"' : null !!}>
-                        <a href="{{url('reviewers/create')}}">Create</a>
+                        <a href="{{url('reviewers/create')}}">Tambah</a>
                     </li>
                     <li {!! Request::is('reviewers','reviewers/')? 'class="active"' : null !!}>
-                        <a href="{{url('reviewers/')}}">List</a>
+                        <a href="{{url('reviewers/')}}">Daftar</a>
                     </li>
                     <li {!! Request::is('reviewers','reviewers/assign')? 'class="active"' : null !!}>
-                        <a href="{{url('reviewers/assign')}}">Assign</a>
+                        <a href="{{url('reviewers/assign')}}">Penentuan</a>
                     </li>
                 </ul>
             </li>
@@ -149,7 +149,7 @@ START @SIDEBAR LEFT
                 </a>
                 <ul>
                     <li {!! Request::is('approve-proposes','approve-proposes/')? 'class="active"' : null !!}>
-                        <a href="{{url('approve-proposes/')}}">List</a>
+                        <a href="{{url('approve-proposes/')}}">Daftar Usulan</a>
                     </li>
                 </ul>
             </li>
@@ -181,7 +181,7 @@ START @SIDEBAR LEFT
                 </a>
                 <ul>
                     <li {!! Request::is('dedications','dedications/')? 'class="active"' : null !!}>
-                        <a href="{{url('dedications/approve-list')}}">List Pengabdian</a>
+                        <a href="{{url('dedications/approve-list')}}">Daftar Pengabdian</a>
                     </li>
                 </ul>
             </li>
@@ -200,7 +200,7 @@ START @SIDEBAR LEFT
             <li {!! Request::is('proposes','proposes/*')? 'class="submenu active"' : 'class="submenu"' !!}>
                 <a href="javascript:void(0);">
                     <span class="icon"><i class="fa fa-file-powerpoint-o"></i></span>
-                    <span class="text">Proposal</span>
+                    <span class="text">Usulan</span>
                     <span class="arrow"></span>
                     {!! Request::is('proposes', 'proposes/*') ? '<span class="selected"></span>' : null !!}
                 </a>
@@ -209,7 +209,7 @@ START @SIDEBAR LEFT
                         <a href="{{url('proposes/create')}}">Pengajuan</a>
                     </li>
                     <li {!! Request::is('proposes','proposes/')? 'class="active"' : null !!}>
-                        <a href="{{url('proposes/')}}">List Pengajuan</a>
+                        <a href="{{url('proposes/')}}">Daftar Pengajuan</a>
                     </li>
                 </ul>
             </li>
@@ -225,7 +225,7 @@ START @SIDEBAR LEFT
                 </a>
                 <ul>
                     <li {!! Request::is('dedications','dedications/')? 'class="active"' : null !!}>
-                        <a href="{{url('dedications/')}}">List Pengabdian</a>
+                        <a href="{{url('dedications/')}}">Daftar Pengabdian</a>
                     </li>
                 </ul>
             </li>
@@ -250,7 +250,7 @@ START @SIDEBAR LEFT
                 </a>
                 <ul>
                     <li {!! Request::is('review-proposes','review-proposes/')? 'class="active"' : null !!}>
-                        <a href="{{url('review-proposes/')}}">Pengajuan</a>
+                        <a href="{{url('review-proposes/')}}">Usulan</a>
                     </li>
                     <li {!! Request::is('review-proposes','review-proposes/dedication-list')? 'class="active"' : null !!}>
                         <a href="{{url('review-proposes/dedication-list')}}">Pengabdian</a>
