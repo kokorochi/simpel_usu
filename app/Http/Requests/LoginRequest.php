@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class LoginRequest extends FormRequest
-{
+class LoginRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,7 +25,7 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'nidn' => 'required',
+            'nidn'     => 'required',
             'password' => 'required'
         ];
     }
@@ -33,7 +33,7 @@ class LoginRequest extends FormRequest
     public function messages()
     {
         return [
-            'nidn.required' => 'NIDN harus diisi',
+            'nidn.required'     => 'NIDN harus diisi',
             'password.required' => 'Password harus diisi',
         ];
     }
@@ -62,11 +62,28 @@ class LoginRequest extends FormRequest
     private function checkBeforeSave()
     {
         $ret = [];
-        if($this->nidn === '' || $this->password === '') return $ret;
-        if(! (Auth::attempt(['nidn' => $this->nidn, 'password' => $this->password])))
+        if ($this->nidn === '' || $this->password === '') return $ret;
+
+        $user = User::where('nidn', $this->nidn)->first();
+        if ($user !== null)
+        {
+            if (strlen($user->password) === 40)
+            {
+                $pass_sha1 = sha1($this->password);
+                if($pass_sha1 === $user->password)
+                {
+                    // Login Success For First Time User, Change the user password to bcrypt
+                    $user->password = bcrypt($this->password);
+                    $user->save();
+                }
+            }
+        }
+
+        if (! (Auth::attempt(['nidn' => $this->nidn, 'password' => $this->password], $this->remember_me)))
         {
             array_push($ret, 'NIDN / Password yang dimasukkan salah');
         }
+
         return $ret;
     }
 }

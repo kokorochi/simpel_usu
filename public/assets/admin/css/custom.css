@@ -17,3 +17,7 @@
     /*width: 750px;*/
     /*margin: 0 auto;*/
 }
+
+.sign-body .form-group:first-child #password-confirm-error{
+    left: -230px;
+}

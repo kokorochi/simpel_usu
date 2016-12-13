@@ -25,6 +25,8 @@ Route::get('tests', 'TestingController@index');
 Route::get('user/login', 'LoginController@showLoginForm');
 Route::post('user/login', 'LoginController@doLogin');
 Route::get('user/logout', 'LoginController@doLogout');
+Route::get('user/reset', 'LoginController@reset');
+Route::put('user/reset', 'LoginController@doReset');
 // End Login Route
 
 // Announces Route

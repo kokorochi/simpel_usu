@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,14 +19,7 @@ class LoginController extends BlankonController {
     public function __construct()
     {
         parent::__construct();
-    }
 
-    public function showLoginForm()
-    {
-        if (Auth::user())
-        {
-            return redirect()->intended('/');
-        }
         array_push($this->css['themes'], 'admin/css/pages/sign.css');
 
         array_push($this->css['pages'], 'global/plugins/bower_components/fontawesome/css/font-awesome.min.css');
@@ -39,6 +33,14 @@ class LoginController extends BlankonController {
         View::share('css', $this->css);
         View::share('js', $this->js);
         View::share('title', $this->pageTitle . ' | ' . $this->mainTitle);
+    }
+
+    public function showLoginForm()
+    {
+        if (Auth::user())
+        {
+            return redirect()->intended('/');
+        }
 
         return view('user.signin');
     }
@@ -56,8 +58,28 @@ class LoginController extends BlankonController {
         {
             unset($this->v_auths);
             Auth::logout();
+        }
 
+        return redirect()->intended('/');
+    }
+
+    public function reset()
+    {
+        if (Auth::user())
+        {
+            return view('user.reset');
+        } else
+        {
             return redirect()->intended('/');
         }
+    }
+
+    public function doReset(Requests\StoreResetPasswordRequest $request)
+    {
+        $user = User::find(Auth::user()->id);
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        return redirect()->intended('/');
     }
 }
