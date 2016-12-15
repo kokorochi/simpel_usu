@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Appraisal_i extends Model
 {
-    protected $table = 'Appraisals_i';
+    protected $table = 'appraisals_i';
     protected $fillable = ['id', 'item', 'aspect', 'quality'];
     public $timestamps = false;
 

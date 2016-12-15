@@ -98,7 +98,7 @@ class AnnouncesController extends BlankonController {
         if ($request->hasFile('image_name'))
         {
             $store->image_name = md5($request->file('image_name')->getClientOriginalName() . Carbon::now()->toDateTimeString()) . '.' . $request->file('image_name')->extension();
-            $path = public_path('images\upload\announces');
+            $path = public_path('images/upload/announces');
             $request->file('image_name')->move($path, $store->image_name);
         }
         $store->save();
@@ -111,7 +111,7 @@ class AnnouncesController extends BlankonController {
         $store = Announce::find($id);
         $this->setAnnounceFields($request, $store);
         $store->updated_by = Auth::user()->nidn;
-        $path = public_path('images\upload\announces');
+        $path = public_path('images/upload/announces');
 
         if ($request->delete_image === 'x' ||
             ($request->hasFile('image_name') && $store->image_name !== null)
