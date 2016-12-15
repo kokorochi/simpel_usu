@@ -1,6 +1,7 @@
 /node_modules
 /public/storage
 /public/images/upload/*
+/public/images/upload/announces/*
 /storage/*.key
 /vendor
 /.idea
@@ -12,3 +13,4 @@ awstatsicons
 icon/
 stats/
 /config/constant.php
+/config/database.php
