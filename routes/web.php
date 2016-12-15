@@ -146,5 +146,3 @@ Route::get('ajax/reviewers/get', 'AJAXController@getReviewer');
 Route::get('ajax/reviewers/search', 'AJAXController@searchReviewer');
 Route::get('ajax/dedications/get', 'AJAXController@getDedication');
 // End AJAX Route
-
-Route::get('testing/initiate-lecturer', 'TestingController@initiateLecturer');
