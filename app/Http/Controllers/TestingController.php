@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\ModelSDM\Lecturer;
+use App\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -86,5 +89,33 @@ class TestingController extends BlankonController {
 
         return response()->download($path, '1.jpg', ['Content-Type' => 'image/jpg']);
 
+    }
+
+    public function initiateLecturer()
+    {
+        $lecturers = Lecturer::all();
+        $clone_lecturers = new Collection();
+        foreach ($lecturers as $lecturer)
+        {
+            if($lecturer->employee_card_serial_number !== null && $lecturer->employee_card_serial_number !== '')
+            {
+                $clone_lecturer = new User();
+                $clone_lecturer->nidn = $lecturer->employee_card_serial_number;
+                $clone_lecturer->password = $lecturer->password;
+                $clone_lecturers->add($clone_lecturer);
+            }
+        }
+        $clone_lecturers->unique('nidn');
+        foreach ($clone_lecturers as $clone_lecturer)
+        {
+            $user = User::where('nidn', $clone_lecturer->nidn)->first();
+            if($user === null)
+            {
+                $user = new User();
+                $user->nidn = $clone_lecturer->nidn;
+                $user->password = $clone_lecturer->password;
+                $user->save();
+            }
+        }
     }
 }
