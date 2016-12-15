@@ -52,6 +52,13 @@ class BlankonController extends Controller {
                 if ($user_info === null) // NIP (Operator)
                 {
                     $user_info = Employee::where('number_of_employee_holding', Auth::user()->nidn)->first();
+                    if($user_info === null) //Super User
+                    {
+                        $user_info = new Lecturer();
+                        $user_info->full_name = "Super User";
+                        $user_info->employee_card_serial_number = 'SuperUser';
+                        $user_info->number_of_employee_holding = 'SuperUser';
+                    }
                 }
                 View::share(compact('user_info'));
 

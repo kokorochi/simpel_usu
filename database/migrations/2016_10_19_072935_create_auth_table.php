@@ -13,7 +13,7 @@ class CreateAuthTable extends Migration
      */
     public function up()
     {
-        Schema::create('Auths', function (Blueprint $table) {
+        Schema::create('auths', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id', false);
             $table->unsignedInteger('auth_object_ref_id', false);
@@ -33,6 +33,6 @@ class CreateAuthTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Auths');
+        Schema::dropIfExists('auths');
     }
 }

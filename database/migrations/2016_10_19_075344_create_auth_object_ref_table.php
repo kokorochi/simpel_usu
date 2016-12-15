@@ -13,7 +13,7 @@ class CreateAuthObjectRefTable extends Migration
      */
     public function up()
     {
-        Schema::create('Auth_Object_Ref', function (Blueprint $table) {
+        Schema::create('auth_object_ref', function (Blueprint $table) {
             $table->increments('id');
             $table->string('object_desc', 60);
             $table->string('created_by', 30);
@@ -29,6 +29,6 @@ class CreateAuthObjectRefTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Auth_Object_Ref');
+        Schema::dropIfExists('auth_object_ref');
     }
 }
