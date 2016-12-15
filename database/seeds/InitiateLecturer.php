@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class InitiateLecturer extends Seeder
-{
+class InitiateLecturer extends Seeder {
     /**
      * Run the database seeds.
      *
@@ -15,9 +14,10 @@ class InitiateLecturer extends Seeder
         foreach ($lecturers as $lecturer)
         {
             $store = new \App\User();
-            $store->nidn = $lecturer->employee_card_serial_number;
-            $store->password = $lecturer->password;
-            $store->save();
+            $store->create([
+                'nidn'     => $lecturer->employee_card_serial_number,
+                'password' => $lecturer->password,
+            ]);
         }
     }
 }
