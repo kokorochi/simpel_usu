@@ -70,11 +70,17 @@ class LoginRequest extends FormRequest {
             if (strlen($user->password) === 40)
             {
                 $pass_sha1 = sha1($this->password);
-                if($pass_sha1 === $user->password)
+                if ($pass_sha1 === $user->password)
                 {
                     // Login Success For First Time User, Change the user password to bcrypt
                     $user->password = bcrypt($this->password);
                     $user->save();
+                    $user->auths()->create([
+                        'auth_object_ref_id' => '4',
+                        'begin_date'         => '2000-01-01',
+                        'end_date'           => '9999-12-31',
+                        'created_by'         => 'admin',
+                    ]);
                 }
             }
         }
