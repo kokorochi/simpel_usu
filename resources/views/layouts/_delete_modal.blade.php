@@ -14,7 +14,7 @@
                     <i class="fa fa-times"></i> Tidak
                 </button>
                 {{--<button type="button" class="btn btn-theme"><i class="fa fa-check"></i> Ya</button>--}}
-                <form class="delete_action pull-right" action="{{ url( $deleteUrl . '/id') }}" method="POST">
+                <form class="delete_action pull-right" action="{{ url( $deleteUrl . '/actionid') }}" method="POST">
                     <button class="btn btn-theme" name="submit">
                         <i class="fa fa-check"></i> Ya
                     </button>

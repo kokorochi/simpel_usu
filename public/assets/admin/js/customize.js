@@ -62,7 +62,7 @@ $(document).ready(function() {
     $(".modal_delete").on('click', function() {
         var id = $(this).data('id');
         removeForm = $("form.delete_action");
-        removeForm.attr('action', removeForm.attr('action').replace(/id/, id));
+        removeForm.attr('action', removeForm.attr('action').replace(/actionid/, id));
     });
     // End Handle Delete Confirmation Modal
 
