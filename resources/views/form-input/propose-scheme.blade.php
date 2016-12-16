@@ -120,7 +120,7 @@ $errors->has('period_id')           || old('period_id')
                             </div>
                         </div> <!-- /#own-wrapper -->
 
-                        @if($propose->is_own === null)
+                        @if($propose->is_own === null && ! ($periods->isEmpty()))
                             <div id="scheme-wrapper" class="col-sm-12">
                                 <label for="period_id" class="col-sm-4 col-md-3 control-label">Scheme</label>
                                 <div class="col-sm-7 mb-10">
@@ -175,8 +175,8 @@ $errors->has('period_id')           || old('period_id')
 
                                 <label for="annotation" class="col-sm-4 col-md-3 control-label">Keterangan</label>
                                 <div class="col-sm-7">
-                                    <textarea id="input-annotation" name="annotation" class="form-control input-sm" rows="5"
-                                              placeholder="Enter text ..." disabled>{{ $period->annotation }}</textarea>
+            <textarea id="input-annotation" name="annotation" class="form-control input-sm" rows="5"
+                      placeholder="Enter text ..." disabled>{{ $period->annotation }}</textarea>
                                 </div>
                             </div> <!-- /#scheme-wrapper -->
                         @endif

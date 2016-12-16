@@ -7,7 +7,9 @@ use App\ModelSDM\Lecturer;
 use App\Output_type;
 use App\Period;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreProposeRequest extends FormRequest {
     /**
@@ -154,6 +156,16 @@ class StoreProposeRequest extends FormRequest {
             }
         }
 
+        //Check file partner contract
+        foreach ($this->input('partner_name') as $key => $item)
+        {
+            if($this->file('file_partner_contract.' . $key) === null)
+            {
+                array_push($ret, 'Surat Kesediaan Kerjasama harus diunggah');
+                break 1;
+            }
+        }
+
         //Check Member NIDN with SIMSDM Lecturer Table
         foreach ($this->input('member_nidn') as $key => $member_nidn)
         {
@@ -173,6 +185,45 @@ class StoreProposeRequest extends FormRequest {
         if (! Output_type::where('id', $this->input('output_type'))->exists())
         {
             array_push($ret, 'Luaran yang dipilih tidak valid');
+        }
+
+        //Check Member Duplicate
+        $member_collection = $this->input('member_nidn');
+        array_push($member_collection, Auth::user()->nidn);
+        $member_collection = array_unique($member_collection);
+        if (count($member_collection) !== ( count($this->input('member_nidn')) + 1 ))
+        {
+            array_push($ret, 'Anggota yang dipilih tidak boleh duplikasi');
+        }
+        
+        //Check Head Dedication Creation times
+        $i_as_member = 0;
+        $year = date('Y', strtotime(Carbon::now()->toDateString()));
+        $periods = Period::where('years', $year)->get();
+        foreach ($periods as $period)
+        {
+            $propose = $period->propose()->where('created_by', Auth::user()->nidn)->where('is_own', null)->get();
+            foreach ($propose as $item)
+            {
+                $flow_status = $item->flowStatus()->where('status_code', '<>', 'UT')->first();
+                if($flow_status !== null)
+                {
+                    array_push($ret, '1 Dosen hanya bisa menjadi ( ketua penlitian sebanyak 1 kali dan menjadi anggota sebanyak 2 kali ) atau ( anggota sebanyak 3 kali ) dalam 1 tahun');
+                    break 2;
+                }
+
+                $member = $item->member()->where('nidn', Auth::user()->nidn)->where('status', 'accepted')->first();
+                if($member !== null)
+                {
+                    $i_as_member++;
+                    if($i_as_member >= 3)
+                    {
+                        array_push($ret, '1 Dosen hanya bisa menjadi ( ketua penlitian sebanyak 1 kali dan menjadi anggota sebanyak 2 kali ) atau ( anggota sebanyak 3 kali ) dalam 1 tahun');
+                        break 2;
+                    }
+                }
+            }
+
         }
 
         return $ret;

@@ -64,6 +64,11 @@ $errors->has('member_areas_of_expertise.' . $ctr_old) || old('member_areas_of_ex
                             <input name="areas_of_expertise" type="text"
                                    class="form-control input-sm"
                                    value="{{$propose->areas_of_expertise}}" {{$disabled}} />
+                            @if($errors->has('areas_of_expertise'))
+                                <label class="error" for="areas_of_expertise" style="display: inline-block;">
+                                    {{$errors->first('areas_of_expertise')}}
+                                </label>
+                            @endif
                         </div>
                     </div><!-- /.form-group -->
 
@@ -98,7 +103,6 @@ $errors->has('member_areas_of_expertise.' . $ctr_old) || old('member_areas_of_ex
                                 <label for="member_areas_of_expertise[]" class="col-sm-4 col-md-3 control-label">Bidang
                                     Keahlian</label>
                                 <div class="col-sm-7">
-                                    {{--{{'abc' . old('member_display.0')}}--}}
                                     <input name="member_areas_of_expertise[]" type="text"
                                            class="form-control input-sm mb-15"
                                            value="{{$member->areas_of_expertise}}" {{$disabled === null ? '' : ( $member->member_nidn === Auth::user()->nidn ? '' : 'disabled') }} />

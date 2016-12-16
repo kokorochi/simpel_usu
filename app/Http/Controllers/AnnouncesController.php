@@ -84,7 +84,11 @@ class AnnouncesController extends BlankonController {
 
             return abort(404);
         }
-        $announce->created_by_name = Employee::where('number_of_employee_holding', $announce->created_by)->first()->full_name;
+        $user_info = $this->getEmployee($announce->created_by);
+        if($user_info !== null)
+        {
+            $announce->created_by_name = $user_info->full_name;
+        }
 
         return view('announce/announce-single', compact('announce'));
     }

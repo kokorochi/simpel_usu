@@ -89,7 +89,7 @@ $errors->has('bank_account_no') || old('bank_account_no')
 
                     <div class="form-group">
                         <label for="time_period" class="col-sm-4 col-md-3 control-label">Jangka Waktu
-                            Pelaksanaan</label>
+                            Pelaksanaan (Bulan)</label>
                         <div class="col-sm-7">
                             <input name="time_period" class="form-control input-sm" type="text"
                                    maxlength="2" data-inputmask="'alias': 'decimal', 'rightAlign': false"

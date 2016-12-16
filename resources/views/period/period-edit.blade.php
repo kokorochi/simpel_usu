@@ -62,7 +62,7 @@
                                 </div><!-- /.form-group -->
 
                                 <div class="form-group">
-                                    <label for="category_type" class="col-sm-3 control-label">Kategori</label>
+                                    <label for="category_type" class="col-sm-3 control-label">Jenis Sumber Dana</label>
                                     <div class="col-sm-7">
                                         <select name="category_type" class="form-control input-sm">
                                             @foreach($category_types as $category_type)

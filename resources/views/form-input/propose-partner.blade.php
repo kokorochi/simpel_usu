@@ -94,6 +94,7 @@ $errors->has('partner_distance.' . $ctr_old) || old('partner_distance.' . $ctr_o
                                     lokasi mitra (KM)</label>
                                 <div class="col-sm-7">
                                     <input name="partner_distance[]" class="form-control input-sm mb-10" type="text"
+                                           maxlength="2" data-inputmask="'alias': 'numeric', 'rightAlign': false"
                                            value="{{ $dedication_partner->distance }}" {{$disabled}}>
                                     @if($errors->has('partner_distance.' . $key))
                                         <label class="error" for="partner_name[]" style="display: inline-block;">

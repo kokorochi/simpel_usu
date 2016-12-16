@@ -43,7 +43,7 @@ class PeriodController extends BlankonController
         array_push($this->js['scripts'], 'admin/js/pages/blankon.form.picker.js');
         array_push($this->js['scripts'], 'admin/js/customize.js');
 
-        $this->category_types       = Category_type::all();
+        $this->category_types       = Category_type::where('category_name', '<>', 'Mandiri')->get();
         $this->dedication_types     = Dedication_type::all();
         $this->appraisals           = Appraisal::all();
 

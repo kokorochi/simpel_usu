@@ -84,9 +84,15 @@ class ProposeController extends BlankonController {
         $propose = new Propose();
         $propose_own = new Propose_own();
 
-        $periods = Period::all();
-        $period = $periods[0];
-
+        $periods = Period::where('propose_begda', '<=', Carbon::now()->toDateString())->where('propose_endda', '>=', Carbon::now()->toDateString())->get();
+        if ($periods->isEmpty())
+        {
+            $period = new Period();
+            $propose->is_own = '1';
+        } else
+        {
+            $period = $periods[0];
+        }
         $output_types = Output_type::all();
 
         $category_types = Category_type::all();
@@ -97,7 +103,7 @@ class ProposeController extends BlankonController {
         $dedication_partner = new Dedication_partner;
         $dedication_partners->add(new Dedication_partner);
 
-        $lecturer = Lecturer::where('employee_card_serial_number', Auth::user()->nidn)->first();
+        $lecturer = $this->getEmployee(Auth::user()->nidn);
 
         $members = new Collection;
         $member = new Member;

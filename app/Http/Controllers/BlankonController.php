@@ -30,7 +30,7 @@ class BlankonController extends Controller {
     // sidebar left class	
     public $sidebarClass = "sidebar-circle";
 
-    public $mainTitle = 'LPPM USU - Pengabdian Masyarakat';
+    public $mainTitle = 'LPM USU - Pengabdian Masyarakat';
 
     public $v_auths = [];
 
@@ -48,18 +48,7 @@ class BlankonController extends Controller {
         {
             if (Auth::user())
             {
-                $user_info = Lecturer::where('employee_card_serial_number', Auth::user()->nidn)->first();
-                if ($user_info === null) // NIP (Operator)
-                {
-                    $user_info = Employee::where('number_of_employee_holding', Auth::user()->nidn)->first();
-                    if($user_info === null) //Super User
-                    {
-                        $user_info = new Lecturer();
-                        $user_info->full_name = "Super User";
-                        $user_info->employee_card_serial_number = 'SuperUser';
-                        $user_info->number_of_employee_holding = 'SuperUser';
-                    }
-                }
+                $user_info = $this->getEmployee(Auth::user()->nidn);
                 View::share(compact('user_info'));
 
                 $i = 0;
@@ -70,9 +59,9 @@ class BlankonController extends Controller {
                     $propose = $member->propose()->first();
 //                    if ($propose->period()->where('years', '>=', intval(Carbon::now()->toDateString()))->exists())
 //                    {
-                        $notifications[$i]['propose_id'] = $propose->id;
-                        $notifications[$i]['propose_title'] = $propose->title;
-                        $i++;
+                    $notifications[$i]['propose_id'] = $propose->id;
+                    $notifications[$i]['propose_title'] = $propose->title;
+                    $i++;
 //                    }
                 }
                 View::share(compact('notifications'));
@@ -130,6 +119,24 @@ class BlankonController extends Controller {
         View::share('assetUrl', $this->assetUrl);
         View::share('bodyClass', $this->bodyClass);
         View::share('sidebarClass', $this->sidebarClass);
+    }
+
+    public function getEmployee($nidn)
+    {
+        $ret = Employee::where('number_of_employee_holding', $nidn)->first();
+        if ($ret === null)
+        {
+            $ret = Lecturer::where('employee_card_serial_number', $nidn)->first();
+            if ($ret === null)
+            {
+                $ret = new Lecturer();
+                $ret->full_name = "Super User";
+                $ret->employee_card_serial_number = 'SuperUser';
+                $ret->number_of_employee_holding = 'SuperUser';
+            }
+        }
+
+        return $ret;
     }
 
     /**
