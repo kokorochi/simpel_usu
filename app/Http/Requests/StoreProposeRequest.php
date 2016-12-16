@@ -87,8 +87,8 @@ class StoreProposeRequest extends FormRequest {
             'bank_account_name.required'  => 'Nama Pemilik Bank tidak boleh kosong',
             'bank_account_no.required'    => 'Nomor Rekening Bank tidak boleh kosong',
 
-            'file_partner_contract.required' => 'Surat Kesediaan Kerjasama tidak boleh kosong',
-            'file_partner_contract.mimes'    => 'Surat Kesediaan Kerjasama harus dalam bentuk PDF',
+            'file_partner_contract.*.required' => 'Surat Kesediaan Kerjasama tidak boleh kosong',
+            'file_partner_contract.*.mimes'    => 'Surat Kesediaan Kerjasama harus dalam bentuk PDF',
         ];
     }
 

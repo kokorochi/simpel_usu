@@ -73,6 +73,14 @@ class StoreAssignReviewerRequest extends FormRequest {
             }
         }
 
+        //Check Duplicate Reviewer
+        $member_collection = $this->input('nidn');
+        $member_collection = array_unique($member_collection);
+        if (count($member_collection) !== ( count($this->input('nidn'))))
+        {
+            array_push($ret, 'Reviewer yang dipilih tidak boleh duplikasi');
+        }
+
         $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
         if ($flow_status->status_code !== 'MR' &&
             $flow_status->status_code !== 'PR')

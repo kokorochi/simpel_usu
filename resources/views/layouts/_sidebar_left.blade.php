@@ -98,6 +98,25 @@ START @SIDEBAR LEFT
             </li>
             <!-- End navigation - Appraisal -->
 
+            <!-- Start navigation - Funding Sources -->
+            <li {!! Request::is('category-types','category-types/*')? 'class="submenu active"' : 'class="submenu"' !!}>
+                <a href="javascript:void(0);">
+                    <span class="icon"><i class="fa fa-money"></i></span>
+                    <span class="text">Sumber Dana</span>
+                    <span class="arrow"></span>
+                    {!! Request::is('category-types', 'category-types/*') ? '<span class="selected"></span>' : null !!}
+                </a>
+                <ul>
+                    <li {!! Request::is('category-types','category-types/create')? 'class="active"' : null !!}>
+                        <a href="{{url('category-types/create')}}">Tambah</a>
+                    </li>
+                    <li {!! Request::is('category-types','category-types/list')? 'class="active"' : null !!}>
+                        <a href="{{url('category-types/')}}">Daftar</a>
+                    </li>
+                </ul>
+            </li>
+            <!--/ End navigation - Funding Sources -->
+
             <!-- Start navigation - Period -->
             <li {!! Request::is('periods','periods/*')? 'class="submenu active"' : 'class="submenu"' !!}>
                 <a href="javascript:void(0);">

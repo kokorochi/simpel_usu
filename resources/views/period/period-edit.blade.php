@@ -270,8 +270,8 @@
 
                                 <div class="form-footer">
                                     <div class="col-sm-offset-3">
-                                        <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Cancel</a>
-                                        <button type="submit" class="btn btn-success btn-slideright">Submit</button>
+                                        <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
+                                        <button type="submit" class="btn btn-success btn-slideright">Ubah</button>
                                     </div>
                                 </div>
                             </div><!-- /.form-body -->

@@ -55,6 +55,18 @@ Route::put('appraisals/{id}/edit', 'AppraisalController@update');
 Route::delete('appraisals/{id}', 'AppraisalController@destroy');
 //End Appraisal Route
 
+// Category Types Route
+Route::get('category-types/', 'CategoryTypeController@index');
+
+Route::get('category-types/create', 'CategoryTypeController@create');
+Route::post('category-types/create', 'CategoryTypeController@store');
+
+Route::get('category-types/{id}/edit', 'CategoryTypeController@edit');
+Route::put('category-types/{id}/edit', 'CategoryTypeController@update');
+
+Route::delete('category-types/{id}', 'CategoryTypeController@destroy');
+// End Category Types Route
+
 // Periods Route
 Route::get('periods/', 'PeriodController@index');
 

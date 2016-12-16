@@ -45,6 +45,8 @@
                     @include('form-input.propose-revision')
                 @endif
 
+                @include('form-input.propose-print-selection')
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="panel">
@@ -54,13 +56,13 @@
 
                             <div class="form-footer">
                                 <div class="col-sm-offset-4 col-md-offset-3">
-                                    <a href="{{url('proposes', $propose->id) . '/print-confirmation'}}" target="_blank"
+                                    <button name="submit_button" type="submit" value="print"
                                        class="btn btn-primary btn-stroke btn-dashed btn-slideright">
                                         <i class="fa fa-print"></i> Print
-                                    </a>
+                                    </button>
                                     <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
                                     @if($disable_upload === false)
-                                        <button type="submit" class="btn btn-success btn-slideright">Ubah</button>
+                                        <button name="submit_button" type="submit" class="btn btn-success btn-slideright" value="edit">Ubah</button>
                                     @endif
                                 </div><!-- /.col-sm-offset-3 -->
                             </div><!-- /.form-footer -->
@@ -69,7 +71,6 @@
                 </div><!-- /.row -->
             </form>
         </div><!-- /.body-content -->
-
         <!-- Start footer content -->
     @include('layouts._footer-admin')
     <!--/ End footer content -->

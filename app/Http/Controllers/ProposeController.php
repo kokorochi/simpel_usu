@@ -400,47 +400,244 @@ class ProposeController extends BlankonController {
         ));
     }
 
-    public function update(Requests\UpdateProposeRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        $propose = Propose::find($id);
-        if ($propose === null)
+        if ($request->submit_button === 'print')
         {
-            $this->setCSS404();
+            $propose = Propose::find($id);
+            $dedication_partners = $propose->dedicationPartner()->get();
+            $lecturer = Lecturer::where('employee_card_serial_number', Auth::user()->nidn)->first();
+            $lppm_head = Lecturer::where('employee_card_serial_number', '0001096202')->first();
 
-            return abort('404');
+            if($request->sign_2 === 'secretary')
+            {
+                $lppm_head = Lecturer::where('employee_card_serial_number', '0009016502')->first();
+            }
+
+            $lppm_head->full_name = $lppm_head->front_degree . ' ' . $lppm_head->full_name . ', ' . $lppm_head->behind_degree;
+
+            switch ($propose->faculty_code)
+            {
+                case 'FK':
+                    $dean = Lecturer::where('employee_card_serial_number', '0024056603')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0025076506')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0005056702')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0021127302')->first();
+                    break;
+                case 'FH':
+                    $dean = Lecturer::where('employee_card_serial_number', '0011055902')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0013026203')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0028016803')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0001087301')->first();
+                    break;
+                case 'FP':
+                    $dean = Lecturer::where('employee_card_serial_number', '0008085812')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0002056904')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0001025904')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0002116403')->first();
+                    break;
+                case 'FT':
+                    $dean = Lecturer::where('employee_card_serial_number', '0004016105')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0024125605')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0031126118')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0020086807')->first();
+                    break;
+                case 'FE':
+                    $dean = Lecturer::where('employee_card_serial_number', '0002065803')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0013105907')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0002036006')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0007047403')->first();
+                    break;
+                case 'FKG':
+                    $dean = Lecturer::where('employee_card_serial_number', '0014026503')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0012076404')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0002107801')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0020105502')->first();
+                    break;
+                case 'FIB':
+                    $dean = Lecturer::where('employee_card_serial_number', '0005086002')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0029086106')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0027056012')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0025096203')->first();
+                    break;
+                case 'FMIPA':
+                    $dean = Lecturer::where('employee_card_serial_number', '0023065803')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0023016305')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0015085603')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0010116812')->first();
+                    break;
+                case 'FISIP':
+                    $dean = Lecturer::where('employee_card_serial_number', '0030097401')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0008037204')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0005107901')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0026026003')->first();
+                    break;
+                case 'FKM':
+                    $dean = Lecturer::where('employee_card_serial_number', '0020036805')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0001056505')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '000111684')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0010115809')->first();
+                    break;
+                case 'FF':
+                    $dean = Lecturer::where('employee_card_serial_number', '0023075705')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0020057505')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0015027803')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0020058001')->first();
+                    break;
+                case 'FPSI':
+                    $dean = Lecturer::where('employee_card_serial_number', '0014127301')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0019087303')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0011117406')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0009096602')->first();
+                    break;
+                case 'FKEP':
+                    $dean = Lecturer::where('employee_card_serial_number', '0020077102')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0015067901')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0026077702')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0027037502')->first();
+                    break;
+                case 'FIKTI':
+                    $dean = Lecturer::where('employee_card_serial_number', '0017086108')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0016077001')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0029018304')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0027017403')->first();
+                    break;
+                case 'FAHUTA':
+                    $dean = Lecturer::where('employee_card_serial_number', '0016047101')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0009047002')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0009017404')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0021048001')->first();
+                    break;
+            }
+            if ($request->sign_1 === 'vice_dean_1')
+            {
+                $dean = $vice_dean_1;
+            } elseif ($request->sign_1 === 'vice_dean_2')
+            {
+                $dean = $vice_dean_2;
+            } elseif ($request->sign_1 === 'vice_dean_3')
+            {
+                $dean = $vice_dean_3;
+            }
+            if (! ($dean->front_degree === null || $dean->front_degree === '' || $dean->front_degree === '-'))
+            {
+                $dean->full_name = $dean->front_degree . ' ' . $dean->full_name;
+            }
+            if (! ($dean->behind_degree === null || $dean->behind_degree === '' || $dean->behind_degree === '-'))
+            {
+                $dean->full_name = $dean->full_name . ', ' . $dean->behind_degree;
+            }
+
+            $members = $propose->member()->get();
+            $month = date('M', strtotime(Carbon::now()->toDateString()));
+            switch ($month)
+            {
+                case 'Jan':
+                    $month = 'Januari';
+                    break;
+                case 'Feb':
+                    $month = 'Pebruari';
+                    break;
+                case 'Mar':
+                    $month = 'Maret';
+                    break;
+                case 'Apr':
+                    $month = 'April';
+                    break;
+                case 'May':
+                    $month = 'Mei';
+                    break;
+                case 'Jun':
+                    $month = 'Juni';
+                    break;
+                case 'Jul':
+                    $month = 'Juli';
+                    break;
+                case 'Aug':
+                    $month = 'Agustus';
+                    break;
+                case 'Sep':
+                    $month = 'September';
+                    break;
+                case 'Oct':
+                    $month = 'Oktober';
+                    break;
+                case 'Nov':
+                    $month = 'Nopember';
+                    break;
+                case 'Dec':
+                    $month = 'Desember';
+                    break;
+            }
+            $today_date = date('d', strtotime(Carbon::now()->toDateString())) . ' ' .
+                $month . ' ' . date('Y', strtotime(Carbon::now()->toDateString()));
+
+            $sign_1 = $request->sign_1;
+            $sign_2 = $request->sign_2;
+
+            return view('printing.print-confirmation', compact(
+                'propose',
+                'dedication_partners',
+                'lecturer',
+                'members',
+                'today_date',
+                'lppm_head',
+                'dean',
+                'sign_1',
+                'sign_2'
+            ));
+        } else
+        {
+            $this->validate(
+                $request,
+                [
+                    'file_propose' => 'required|mimes:pdf'
+                ],
+                [
+                    'file_propose.required' => 'Usulan harus diunggah',
+                    'file_propose.mimes'    => 'Usulan harus dalam bentuk PDF'
+                ]);
+
+            $propose = Propose::find($id);
+            if ($propose === null)
+            {
+                $this->setCSS404();
+
+                return abort('404');
+            }
+            DB::transaction(function () use ($propose, $request)
+            {
+                $path = Storage::url('upload/' . md5(Auth::user()->nidn) . '/propose/');
+                if ($propose->file_propose !== null) //Delete old propose that already uploaded
+                {
+                    Storage::delete($path . $propose->file_propose);
+                }
+                $propose->file_propose_ori = $request->file('file_propose')->getClientOriginalName();
+                $propose->file_propose = md5($request->file('file_propose')->getClientOriginalName() . Carbon::now()->toDateTimeString()) . $propose->id . '.pdf';
+                $propose->save();
+
+                $request->file('file_propose')->storeAs($path, $propose->file_propose);
+
+                $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
+                $store_flow_status = new FlowStatus();
+                $store_flow_status->item = $flow_status->item + 1;
+                if ($propose->is_own === '1')
+                {
+                    $store_flow_status->status_code = 'RS'; // Review Selesai, Menunggu Hasil
+                } else
+                {
+                    $store_flow_status->status_code = 'PR'; // Penentuan Reviewer
+                }
+                $store_flow_status->created_by = Auth::user()->nidn;
+
+                if ($flow_status->status_code === 'UU')
+                {
+                    $propose->flowStatus()->save($store_flow_status);
+                }
+            });
+
+            return redirect()->intended('/proposes');
         }
-        DB::transaction(function () use ($propose, $request)
-        {
-            $path = Storage::url('upload/' . md5(Auth::user()->nidn) . '/propose/');
-            if ($propose->file_propose !== null) //Delete old propose that already uploaded
-            {
-                Storage::delete($path . $propose->file_propose);
-            }
-            $propose->file_propose_ori = $request->file('file_propose')->getClientOriginalName();
-            $propose->file_propose = md5($request->file('file_propose')->getClientOriginalName() . Carbon::now()->toDateTimeString()) . $propose->id . '.pdf';
-            $propose->save();
-
-            $request->file('file_propose')->storeAs($path, $propose->file_propose);
-
-            $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
-            $store_flow_status = new FlowStatus();
-            $store_flow_status->item = $flow_status->item + 1;
-            if ($propose->is_own === '1')
-            {
-                $store_flow_status->status_code = 'RS'; // Review Selesai, Menunggu Hasil
-            } else
-            {
-                $store_flow_status->status_code = 'PR'; // Penentuan Reviewer
-            }
-            $store_flow_status->created_by = Auth::user()->nidn;
-
-            if ($flow_status->status_code === 'UU')
-            {
-                $propose->flowStatus()->save($store_flow_status);
-            }
-        });
-
-        return redirect()->intended('/proposes');
     }
 
     public function printConfirmation($id)

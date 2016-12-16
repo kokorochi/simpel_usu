@@ -85,7 +85,7 @@ $(document).ready(function() {
 
     $("select[name='period_id']").change(function(){
         $.get(baseUrl + '/ajax/periods/get', {period_id: $(this).val()}, function(data){
-            data = JSON.parse(data);
+            // data = JSON.parse(data);
             $.each(data, function(key, value){
                 if(key == 'annotation'){
                     $("textarea[name='" + key + "']").val(data[key]);

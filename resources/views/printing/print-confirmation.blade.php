@@ -231,7 +231,13 @@
             <td class="print-col-2 text-center">Medan, {{$today_date}}</td>
         </tr>
         <tr>
-            <td class="print-col-1 text-center">Dekan,</td>
+            <td class="print-col-1 text-center">
+                @if($sign_1 === 'dean') Dekan,
+                @elseif($sign_1 === 'vice_dean_1') Wakil Dekan 1,
+                @elseif($sign_1 === 'vice_dean_2') Wakil Dekan 2,
+                @elseif($sign_1 === 'vice_dean_3') Wakil Dekan 3,
+                @endif
+            </td>
             <td class="print-col-2 text-center">Ketua Tim Pengusul,</td>
         </tr>
         <tr>
@@ -262,7 +268,11 @@
             <td class="print-col-1 text-center">Lembaga Pengabdian Kepada Masyarakat</td>
         </tr>
         <tr>
-            <td class="print-col-1 text-center">Ketua,</td>
+            <td class="print-col-1 text-center">
+                @if($sign_2 === 'head') Ketua,
+                @elseif($sign_2 === 'secretary') Sekretaris,
+                @endif
+            </td>
         </tr>
         <tr>
             <td class="print-col-1 text-center">&nbsp</td>
