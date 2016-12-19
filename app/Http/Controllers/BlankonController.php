@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DownloadLog;
 use App\Member;
 use App\ModelSDM\Lecturer;
 use App\ModelSDM\Employee;
@@ -169,6 +170,17 @@ class BlankonController extends Controller {
             'global/plugins/bower_components/html5shiv/dist/html5shiv.min.js',
             'global/plugins/bower_components/respond-minmax/dest/respond.min.js'
         ];
+    }
+
+    public function storeDownloadLog($propose_id, $download_type, $file_name_ori, $file_name, $created_by)
+    {
+        DownloadLog::create([
+            'propose_id' => $propose_id,
+            'download_type' => $download_type,
+            'file_name_ori' => $file_name_ori,
+            'file_name' => $file_name,
+            'created_by' => $created_by,
+        ]);
     }
 
 }

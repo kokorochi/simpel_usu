@@ -275,25 +275,34 @@ class DedicationController extends BlankonController {
     {
 //        dd($id . ' ' . $type);
         $dedication = Dedication::find($id);
-        $nidn = $dedication->propose()->first()->created_by;
+        $propose = $dedication->propose()->first();
+        $nidn = $propose->created_by;
         if ($type == 1)
         {
             $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/progress/' . $dedication->file_progress_activity);
+
+            $this->storeDownloadLog($propose->id, 'progress activity', $dedication->file_progress_activity_ori, $dedication->file_progress_activity, $nidn);
 
             return response()->download($path, $dedication->file_progress_activity_ori, ['Content-Type' => 'application/pdf']);
         } elseif ($type == 2)
         {
             $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/progress/' . $dedication->file_progress_budgets);
 
+            $this->storeDownloadLog($propose->id, 'progress budgets', $dedication->file_progress_budgets_ori, $dedication->file_progress_budgets, $nidn);
+
             return response()->download($path, $dedication->file_progress_budgets_ori, ['Content-Type' => 'application/pdf']);
         } elseif ($type == 3)
         {
             $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/final/' . $dedication->file_final_activity);
 
+            $this->storeDownloadLog($propose->id, 'final activity', $dedication->file_final_activity_ori, $dedication->file_final_activity, $nidn);
+
             return response()->download($path, $dedication->file_final_activity_ori, ['Content-Type' => 'application/pdf']);
         } elseif ($type == 4)
         {
             $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/final/' . $dedication->file_final_budgets);
+
+            $this->storeDownloadLog($propose->id, 'final budgets', $dedication->file_final_budgets_ori, $dedication->file_final_budgets, $nidn);
 
             return response()->download($path, $dedication->file_final_budgets_ori, ['Content-Type' => 'application/pdf']);
         }
@@ -587,8 +596,11 @@ class DedicationController extends BlankonController {
 
                 return abort('404');
             }
-            $nidn = $dedication_output_service->dedication()->first()->propose()->first()->created_by;
+            $propose = $dedication_output_service->dedication()->first()->propose()->first();
+            $nidn = $propose->created_by;
             $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/dedication-output/services/' . $dedication_output_service->file_name);
+
+            $this->storeDownloadLog($propose->id, 'output services', $dedication_output_service->file_name_ori, $dedication_output_service->file_name, $nidn);
 
             return response()->download($path, $dedication_output_service->file_name_ori, ['Content-Type' => 'images/jpeg']);
         } elseif ($type == 2) //Method
@@ -600,8 +612,11 @@ class DedicationController extends BlankonController {
 
                 return abort('404');
             }
-            $nidn = $dedication_output_method->dedication()->first()->propose()->first()->created_by;
+            $propose = $dedication_output_method->dedication()->first()->propose()->first();
+            $nidn = $propose->created_by;
             $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/dedication-output/methods/' . $dedication_output_method->file_name);
+
+            $this->storeDownloadLog($propose->id, 'output methods', $dedication_output_method->file_name_ori, $dedication_output_method->file_name, $nidn);
 
             return response()->download($path, $dedication_output_method->file_name_ori, []);
         } elseif ($type == 3) //Product
@@ -613,19 +628,23 @@ class DedicationController extends BlankonController {
 
                 return abort('404');
             }
-            $nidn = $dedication_output_product->dedication()->first()->propose()->first()->created_by;
+            $propose = $dedication_output_product->dedication()->first()->propose()->first();
+            $nidn = $propose->created_by;
             if ($subtype == 1)
             {
                 $file_ori = $dedication_output_product->file_blueprint_ori;
                 $file = $dedication_output_product->file_blueprint;
+                $this->storeDownloadLog($propose->id, 'output products blueprint', $dedication_output_product->file_blueprint_ori, $dedication_output_product->file_blueprint, $nidn);
             } elseif ($subtype == 2)
             {
                 $file_ori = $dedication_output_product->file_finished_good_ori;
                 $file = $dedication_output_product->file_finished_good;
+                $this->storeDownloadLog($propose->id, 'output products FG', $dedication_output_product->file_finished_good_ori, $dedication_output_product->file_finished_good, $nidn);
             } elseif ($subtype == 3)
             {
                 $file_ori = $dedication_output_product->file_working_pic_ori;
                 $file = $dedication_output_product->file_working_pic;
+                $this->storeDownloadLog($propose->id, 'output products WP', $dedication_output_product->file_working_pic_ori, $dedication_output_product->file_working_pic, $nidn);
             }
 
             $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/dedication-output/products/' . $file);
@@ -640,8 +659,11 @@ class DedicationController extends BlankonController {
 
                 return abort('404');
             }
-            $nidn = $dedication_output_patent->dedication()->first()->propose()->first()->created_by;
+            $propose = $dedication_output_patent->dedication()->first()->propose()->first();
+            $nidn = $propose->created_by;
             $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/dedication-output/patents/' . $dedication_output_patent->file_patent);
+
+            $this->storeDownloadLog($propose->id, 'output patents', $dedication_output_patent->file_patent_ori, $dedication_output_patent->file_patent, $nidn);
 
             return response()->download($path, $dedication_output_patent->file_patent_ori, []);
         } elseif ($type == 5) //Guidebook
@@ -653,19 +675,23 @@ class DedicationController extends BlankonController {
 
                 return abort('404');
             }
-            $nidn = $dedication_output_guidebook->dedication()->first()->propose()->first()->created_by;
+            $propose = $dedication_output_guidebook->dedication()->first()->propose()->first();
+            $nidn = $propose->created_by;
             if ($subtype == 1)
             {
                 $file_ori = $dedication_output_guidebook->file_cover_ori;
                 $file = $dedication_output_guidebook->file_cover;
+                $this->storeDownloadLog($propose->id, 'output guidebooks', $dedication_output_guidebook->file_cover_ori, $dedication_output_guidebook->file_cover, $nidn);
             } elseif ($subtype == 2)
             {
                 $file_ori = $dedication_output_guidebook->file_back_ori;
                 $file = $dedication_output_guidebook->file_back;
+                $this->storeDownloadLog($propose->id, 'output guidebooks', $dedication_output_guidebook->file_back_ori, $dedication_output_guidebook->file_back, $nidn);
             } elseif ($subtype == 3)
             {
                 $file_ori = $dedication_output_guidebook->file_table_of_contents_ori;
                 $file = $dedication_output_guidebook->file_table_of_contents;
+                $this->storeDownloadLog($propose->id, 'output guidebooks', $dedication_output_guidebook->file_table_of_contents_ori, $dedication_output_guidebook->file_table_of_contents, $nidn);
             }
 
             $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/dedication-output/guidebooks/' . $file);

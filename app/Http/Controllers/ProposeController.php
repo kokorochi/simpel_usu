@@ -785,6 +785,8 @@ class ProposeController extends BlankonController {
             $nidn = $dedication_partner->propose()->first()->created_by;
             $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/contract/' . $dedication_partner->file_partner_contract);
 
+            $this->storeDownloadLog($dedication_partner->propose()->first()->id, 'contract', $dedication_partner->file_partner_contract_ori, $dedication_partner->file_partner_contract, $nidn);
+
             return response()->download($path, $dedication_partner->file_partner_contract_ori, ['Content-Type' => 'application/pdf']);
         } elseif ($type == 2)
         {
@@ -792,12 +794,16 @@ class ProposeController extends BlankonController {
             $nidn = $propose->created_by;
             $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/propose/' . $propose->file_propose);
 
+            $this->storeDownloadLog($propose->id, 'propose', $propose->file_propose_ori, $propose->file_propose, $nidn);
+
             return response()->download($path, $propose->file_propose_ori, ['Content-Type' => 'application/pdf']);
         } elseif ($type == 3)
         {
             $propose = Propose::find($id);
             $nidn = $propose->created_by;
             $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/propose/' . $propose->file_propose_final);
+
+            $this->storeDownloadLog($propose->id, 'propose final', $propose->file_propose_final_ori, $propose->file_propose_final, $nidn);
 
             return response()->download($path, $propose->file_propose_final_ori, ['Content-Type' => 'application/pdf']);
         } else

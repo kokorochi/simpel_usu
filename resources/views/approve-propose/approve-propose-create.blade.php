@@ -36,8 +36,6 @@
 
             @include('form-input.propose-detail')
 
-            @include('form-input.propose-upload')
-
             @if(!$dedication_reviewers->isEmpty())
                 @include('form-input.propose-reviewer')
             @endif
