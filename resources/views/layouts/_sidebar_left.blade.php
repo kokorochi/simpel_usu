@@ -16,7 +16,7 @@ START @SIDEBAR LEFT
         <div class="sidebar-content">
             <div class="media">
                 <a class="pull-left has-notif avatar" href="{{url('page/profile')}}">
-                    <img src="{{ $assetUrl }}images/50x50.png" alt="admin">
+                    <img src="{{ $user_info->photo }}" alt="admin">
                     <i class="online"></i>
                 </a>
                 <div class="media-body">

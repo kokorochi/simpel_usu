@@ -258,7 +258,7 @@
                     <li class="dropdown navbar-profile">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="meta">
-                            <span class="avatar"><img src="{{ $assetUrl }}images/35x35.png" class="img-circle"
+                            <span class="avatar"><img src="{{ $user_info->photo }}" class="img-circle"
                                                       alt="admin"></span>
                             <span class="text hidden-xs hidden-sm text-muted">{{ $user_info->full_name }}</span>
                             <span class="caret"></span>
@@ -284,10 +284,10 @@
             <!--/ End profile -->
 
                 <!-- Start settings -->
-            {{--<li class="navbar-setting pull-right">--}}
-            {{--<a href="javascript:void(0);"><i class="fa fa-cog fa-spin"></i></a>--}}
-            {{--</li><!-- /.navbar-setting pull-right -->--}}
-            <!--/ End settings -->
+                {{--<li class="navbar-setting pull-right">--}}
+                    {{--<a href="javascript:void(0);"><i class="fa fa-cog fa-spin"></i></a>--}}
+                {{--</li><!-- /.navbar-setting pull-right -->--}}
+                <!--/ End settings -->
 
             </ul>
             <!--/ End right navigation -->

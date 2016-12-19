@@ -21,3 +21,13 @@
 .sign-body .form-group:first-child #password-confirm-error{
     left: -230px;
 }
+
+.navbar-toolbar .navbar-right .navbar-profile > a .meta .avatar img{
+    width: auto;
+    max-height: 35px;
+}
+
+.sidebar-content img{
+    width: auto;
+    max-height: 50px;
+}
