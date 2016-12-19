@@ -138,6 +138,10 @@ class AnnouncesController extends BlankonController {
 
     public function destroy($id)
     {
+        $announce = Announce::find($id);
+        $path = public_path('images/upload/announces');
+        if($announce->image_name !== null) File::delete($path . DIRECTORY_SEPARATOR . $announce->image_name);
+
         Announce::find($id)->delete();
 
         return redirect()->intended('/announces/');
