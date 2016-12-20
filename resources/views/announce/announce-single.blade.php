@@ -29,18 +29,21 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
                     <div class="panel panel-default panel-blog rounded shadow">
+
                         <div class="panel-body">
                             <h3 class="blog-title">{{ $announce->title }}</h3>
                             <ul class="blog-meta">
                                 <li>Oleh: {{ $announce->created_by_name }}</li>
                                 <li><?php echo date("d M Y", strtotime($announce->created_at)) ?></li>
                             </ul>
+                            <hr>
                             @if($announce->image_name !== null)
                                 <div class="blog-img">
                                     <img src="{{url('images/upload/announces', $announce->image_name)}}" alt=""
                                          class="img-responsive">
                                 </div>
                             @endif
+                            <hr>
                             {!! $announce->content !!}
                         </div><!-- panel-body -->
                     </div><!-- panel-blog -->

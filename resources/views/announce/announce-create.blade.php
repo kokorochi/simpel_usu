@@ -86,18 +86,28 @@
                                     </div><!-- /.form-group -->
 
                                     <div class="form-group">
-                                        <label for="description" class="col-sm-4 col-md-3 control-label">Konten
-                                            Pengumuman</label>
-                                        <div class="col-sm-7">
-                                            <textarea name="description" class="form-control input-sm" rows="12"
-                                                      placeholder="Konten pengumuman...">{{ old('description') }}</textarea>
-                                            @if($errors->has('description'))
-                                                <label class="error" for="description" style="display: inline-block;">
-                                                    {{ $errors->first('description') }}
-                                                </label>
-                                            @endif
+                                        <div class="inner-all">
+                                            <div class="form-horizontal">
+                                                <div class="form-group">
+                                                    <textarea name="description" id="summernote-textarea" class="form-control" rows="10" placeholder="Konten pengumuman..."></textarea>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div><!-- /.form-group -->
+                                    </div>
+
+                                    {{--<div class="form-group">--}}
+                                        {{--<label for="description" class="col-sm-4 col-md-3 control-label">Konten--}}
+                                            {{--Pengumuman</label>--}}
+                                        {{--<div class="col-sm-7">--}}
+                                            {{--<textarea name="description" class="form-control input-sm" rows="12"--}}
+                                                      {{--placeholder="Konten pengumuman...">{{ old('description') }}</textarea>--}}
+                                            {{--@if($errors->has('description'))--}}
+                                                {{--<label class="error" for="description" style="display: inline-block;">--}}
+                                                    {{--{{ $errors->first('description') }}--}}
+                                                {{--</label>--}}
+                                            {{--@endif--}}
+                                        {{--</div>--}}
+                                    {{--</div><!-- /.form-group -->--}}
 
                                     {{ csrf_field() }}
 

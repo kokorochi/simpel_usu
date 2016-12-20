@@ -34,8 +34,8 @@ class StoreAnnounceRequest extends FormRequest {
         return [
             'title.required'       => 'Judul Pengumuman harus diisi',
             'title.min'            => 'Judul Pengumuman minimal 20 karakter',
-            'description.required' => 'Deskripsi harus diisi',
-            'description.min'      => 'Deskripsi minimal 100 karakter',
+            'description.required' => 'Konten pengumuman harus diisi',
+            'description.min'      => 'Konten pengumuman minimal 100 karakter',
             'image_name.image'     => 'Gambar Pengumuman harus dalam bentuk JPG/PNG',
         ];
     }
