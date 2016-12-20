@@ -84,7 +84,7 @@ $errors->has('score.' . $ctr_old) || old('score.' . $ctr_old)
                                 <div class="input-group">
                                     <input name="file_partner_contract[]" class="form-control input-sm"
                                            type="text" disabled
-                                           value="{{ $propose->file_propose }}">
+                                           value="{{ $propose->file_propose_ori }}">
                                         <span class="input-group-btn">
                                         {{--<button type="button" class="btn btn-default">Go!</button>--}}
                                             <a href="{{url('proposes', $propose->id) . '/download/2' }}"

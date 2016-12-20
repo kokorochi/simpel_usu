@@ -92,6 +92,7 @@ class BlankonController extends Controller {
             'admin/css/components.css',
             'admin/css/plugins.css',
             'admin/css/themes/laravel.theme.css' => ['id' => ''],
+            'admin/css/themes/red.theme.css' => ['id' => 'theme'],
             'admin/css/custom.css',
         ];
 

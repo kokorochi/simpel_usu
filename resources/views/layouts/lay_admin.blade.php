@@ -142,7 +142,7 @@
             <!--/ END PAGE CONTENT -->
 
             <!-- START @SIDEBAR RIGHT -->
-{{--            	@include('layouts._sidebar_right')--}}
+            	@include('layouts._sidebar_right')
             <!--/ END SIDEBAR RIGHT -->
 
 	    <!-- START @ALL MODALS --> 	

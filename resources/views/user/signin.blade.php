@@ -6,7 +6,7 @@
 
         <!-- Brand -->
         <div class="brand">
-            <a href="{{url('/')}}"><img src="{{$assetUrl}}images/Logo LPM USU.png" alt="brand logo"/></a>
+            <a href="{{url('/')}}"><img src="{{$assetUrl}}images/Logo LPM USU 2.png" alt="brand logo"/></a>
         </div>
         <!--/ Brand -->
 
