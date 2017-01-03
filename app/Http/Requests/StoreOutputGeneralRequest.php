@@ -3,10 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Research;
-use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreUpdateProgressRequest extends FormRequest {
+class StoreOutputGeneralRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,18 +24,14 @@ class StoreUpdateProgressRequest extends FormRequest {
     public function rules()
     {
         return [
-            'file_progress_activity' => 'required|mimes:pdf',
-            'file_progress_budgets'  => 'required|mimes:pdf',
+//            'file_name.0' => 'required',
         ];
     }
 
     public function messages()
     {
         return [
-            'file_progress_activity.required' => 'Laporan Kemajuan (Kegiatan) harus diisi',
-            'file_progress_budgets.required'  => 'Laporan Kemajuan (Anggaran) harus diisi',
-            'file_progress_activity.mimes'    => 'Laporan Kemajuan (Kegiatan) harus dalam bentuk PDF',
-            'file_progress_budgets.mimes'     => 'Laporan Kemajuan (Anggaran) harus dalam bentuk PDF',
+//            'file_name.0.required' => 'Minimal harus upload 1 file luaran'
         ];
     }
 
@@ -64,13 +59,28 @@ class StoreUpdateProgressRequest extends FormRequest {
     private function checkBeforeSave()
     {
         $ret = [];
-
-        $period = Research::find($this->id)->propose()->first()->period()->first();
-        $today_date = Carbon::now()->toDateString();
-
-        if ($period->first_begda >= $today_date || $period->first_endda <= $today_date)
+        $research = Research::find($this->id);
+        if ($research !== null)
         {
-            array_push($ret, 'Tidak dalam masa update Laporan Kemajuan');
+            $research_output_generals = $research->researchOutputGeneral()->get();
+            $ctr_output = $research_output_generals->count();
+
+            $ctr_delete = 0;
+            if ($this->input('delete_output') !== null)
+            {
+                foreach ($this->input('delete_output') as $key => $item)
+                {
+                    if ($item === '1')
+                    {
+                        $ctr_delete++;
+                    }
+                }
+            }
+            $ctr_output = $ctr_output - $ctr_delete;
+            if ($this->file(['file_name']) === null && $ctr_output === 0)
+            {
+                array_push($ret, 'Minimal harus ada 1 luaran yang diunggah');
+            }
         }
 
         return $ret;

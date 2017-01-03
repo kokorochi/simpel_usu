@@ -14,7 +14,7 @@
 
             <!-- Start brand -->
             <a class="navbar-brand" href="{{url('/')}}">
-                <img class="logo" src="{{$assetUrl.'images/Logo LPM USU.png'}}" alt="brand logo"/>
+                <img class="logo" src="{{$assetUrl.'images/Logo LP USU.png'}}" alt="brand logo"/>
             </a><!-- /.navbar-brand -->
             <!--/ End brand -->
 

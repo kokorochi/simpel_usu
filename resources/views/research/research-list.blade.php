@@ -41,7 +41,7 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12">
-                            @if(!$dedications->isEmpty())
+                            @if(!$researches->isEmpty())
                                 <div class="table-responsive mb-20">
                                     <table class="table table-striped table-success">
                                         <thead>
@@ -54,11 +54,11 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($dedications as $dedication)
-                                            @php($propose = $dedication->propose()->first())
+                                        @foreach($researches as $research)
+                                            @php($propose = $research->propose()->first())
                                             @php($status_code = $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code)
                                             <tr>
-                                                <td class="text-center border-right">{{ $dedication->id }}</td>
+                                                <td class="text-center border-right">{{ $research->id }}</td>
                                                 <td class="text-center border-right">{{ $propose->title }}</td>
                                                 <td class="text-center border-right">
                                                     @if($propose->is_own === null)
@@ -70,13 +70,13 @@
                                                 <td class="text-center border-right">{{ $propose->flowStatus()->orderBy('item', 'desc')->first()
                                                    ->statusCode()->first()->description }}</td>
                                                 <td class="text-center">
-                                                    <a href="{{url($deleteUrl . '/' . $dedication->id .'/edit')}}"
+                                                    <a href="{{url($deleteUrl . '/' . $research->id .'/edit')}}"
                                                        class="btn btn-primary btn-xs" data-toggle="tooltip"
                                                        data-placement="top" data-original-title="Edit">
                                                         <i class="fa fa-pencil"></i>
                                                     </a>
-                                                    @if($status_code === 'UL' || $status_code === 'VL' || $status_code === 'PS')
-                                                        <a href="{{url($deleteUrl . '/' . $dedication->id .'/output')}}"
+                                                    @if($status_code === 'UL' || $status_code === 'VL' || $status_code === 'RL' || $status_code === 'PS')
+                                                        <a href="{{url($deleteUrl . '/' . $research->id .'/output')}}"
                                                            class="btn btn-success btn-xs" data-toggle="tooltip"
                                                            data-placement="top" data-original-title="Unggah Luaran">
                                                             <i class="fa fa-upload"></i>

@@ -30,13 +30,11 @@
 
             @include('form-input.propose-scheme')
 
-            @include('form-input.propose-partner')
-
             @include('form-input.propose-member')
 
             @include('form-input.propose-detail')
 
-            @if(!$dedication_reviewers->isEmpty())
+            @if(!$research_reviewers->isEmpty())
                 @include('form-input.propose-reviewer')
             @endif
 

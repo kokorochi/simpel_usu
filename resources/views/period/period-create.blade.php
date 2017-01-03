@@ -66,11 +66,11 @@
                                 </div><!-- /.form-group -->
 
                                 <div class="form-group">
-                                    <label for="dedication_type" class="col-sm-3 control-label">Jenis Pengabdian</label>
+                                    <label for="research_type" class="col-sm-3 control-label">Jenis Penelitian</label>
                                     <div class="col-sm-7">
-                                        <select name="dedication_type" class="form-control input-sm">
-                                            @foreach($dedication_types as $dedication_type)
-                                                <option value="{{$dedication_type->id}}" {{old('dedication_type') == $category_type->id ? 'selected' : null}}>{{$dedication_type->dedication_name}}</option>
+                                        <select name="research_type" class="form-control input-sm">
+                                            @foreach($research_types as $research_type)
+                                                <option value="{{$research_type->id}}" {{old('research_type') == $category_type->id ? 'selected' : null}}>{{$research_type->research_name}}</option>
                                             @endforeach
                                         </select>
                                     </div>

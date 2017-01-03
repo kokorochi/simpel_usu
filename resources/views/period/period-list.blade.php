@@ -49,7 +49,7 @@
                                         <th class="text-center border-right">Id</th>
                                         <th class="text-center">Tahun</th>
                                         <th class="text-center">Kategori</th>
-                                        <th class="text-center">Jenis Pengabdian</th>
+                                        <th class="text-center">Jenis Penelitian</th>
                                         <th>Scheme</th>
                                         <th>Sumber Dana</th>
                                         <th class="text-center">Action</th>
@@ -61,7 +61,7 @@
                                             <td class="text-center border-right">{{ $period->id }}</td>
                                             <td class="text-center border-right">{{ $period->years }}</td>
                                             <td class="text-center border-right">{{ $period->categoryType->category_name }}</td>
-                                            <td class="text-center border-right">{{ $period->dedicationType->dedication_name }}</td>
+                                            <td class="text-center border-right">{{ $period->researchType->research_name }}</td>
                                             <td>{{ $period->scheme }}</td>
                                             <td>{{ $period->sponsor }}</td>
                                             <td class="text-center">
@@ -80,7 +80,7 @@
                                         <th class="text-center border-right">Id</th>
                                         <th class="text-center">Tahun</th>
                                         <th class="text-center">Kategori</th>
-                                        <th class="text-center">Jenis Pengabdian</th>
+                                        <th class="text-center">Jenis Penelitian</th>
                                         <th>Scheme</th>
                                         <th>Sumber Dana</th>
                                         <th class="text-center">Action</th>

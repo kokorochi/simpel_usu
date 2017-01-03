@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Dedication;
+use App\Research;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -65,7 +65,7 @@ class StoreUpdateFinalRequest extends FormRequest {
     {
         $ret = [];
 
-        $period = Dedication::find($this->id)->propose()->first()->period()->first();
+        $period = Research::find($this->id)->propose()->first()->period()->first();
         $today_date = Carbon::now()->toDateString();
 
         if ($period->last_begda > $today_date || $period->last_endda < $today_date)

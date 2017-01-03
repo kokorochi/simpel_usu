@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDedicationPartnersTables extends Migration
+class CreateResearchReviewersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,15 @@ class CreateDedicationPartnersTables extends Migration
      */
     public function up()
     {
-        Schema::create('dedication_partners', function (Blueprint $table) {
+        Schema::create('research_reviewers', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('propose_id', false, true);
             $table->smallInteger('item', false, true);
-            $table->string('name');
-            $table->string('territory');
-            $table->string('city');
-            $table->string('province');
-            $table->smallInteger('distance', false, true);
-            $table->string('file_partner_contract_ori');
-            $table->string('file_partner_contract');
+            $table->string('nidn');
+            $table->string('created_by', 30);
+            $table->string('updated_by', 30)->nullable();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -34,6 +32,6 @@ class CreateDedicationPartnersTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dedication_partners');
+        Schema::dropIfExists('research_reviewers');
     }
 }

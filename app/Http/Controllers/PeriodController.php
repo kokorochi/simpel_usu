@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Http\Requests;
 use App\Category_type;
-use App\Dedication_type;
+use App\ResearchType;
 use App\Appraisal;
 use App\Period;
 use View;
@@ -18,7 +18,7 @@ class PeriodController extends BlankonController
     protected $deleteQuestion = 'Apakah anda yakin untuk menghapus Periode ini?';
     protected $deleteUrl = 'periods';
     protected $category_types;
-    protected $dedication_types;
+    protected $research_types;
     protected $appraisals;
 
     public function __construct()
@@ -44,7 +44,7 @@ class PeriodController extends BlankonController
         array_push($this->js['scripts'], 'admin/js/customize.js');
 
         $this->category_types       = Category_type::where('category_name', '<>', 'Mandiri')->get();
-        $this->dedication_types     = Dedication_type::all();
+        $this->research_types     = ResearchType::all();
         $this->appraisals           = Appraisal::all();
 
         View::share('css', $this->css);
@@ -54,7 +54,7 @@ class PeriodController extends BlankonController
         View::share('deleteQuestion', $this->deleteQuestion);
         View::share('deleteUrl', $this->deleteUrl);
         View::share('category_types', $this->category_types);
-        View::share('dedication_types', $this->dedication_types);
+        View::share('research_types', $this->research_types);
         View::share('appraisals', $this->appraisals);
     }
 
@@ -92,7 +92,7 @@ class PeriodController extends BlankonController
     {
         $periods = new period;
         $this->setPeriodFields($request, $periods);
-        $periods->created_by        = Auth::user()->nidn;
+        $periods->created_by = Auth::user()->nidn;
         $periods->save();
 
         return redirect()->intended('periods/');
@@ -122,7 +122,7 @@ class PeriodController extends BlankonController
     {
         $periods->years = $request->years;
         $periods->category_type_id = $request->category_type;
-        $periods->dedication_type_id = $request->dedication_type;
+        $periods->research_type_id = $request->research_type;
         $periods->appraisal_id = $request->appraisal_type;
         $periods->scheme = $request->scheme;
         $periods->sponsor = $request->sponsor;

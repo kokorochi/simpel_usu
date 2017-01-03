@@ -31,7 +31,7 @@
             <form class="" action="{{url('proposes/create')}}" method="POST" enctype="multipart/form-data">
                 @include('form-input.propose-scheme')
 
-                @include('form-input.propose-partner')
+                {{--@include('form-input.propose-partner')--}}
 
                 @include('form-input.propose-member')
 

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDedicationTypesTable extends Migration
+class CreateResearchOutputGeneralsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateDedicationTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('dedication_types', function (Blueprint $table) {
+        Schema::create('research_output_generals', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('dedication_name');
-            $table->string('created_by', 30);
-            $table->string('updated_by', 30)->nullable();
+            $table->integer('research_id', false, true);
+            $table->tinyInteger('item', false, true);
+            $table->string('file_name_ori');
+            $table->string('file_name');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateDedicationTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dedication_types');
+        Schema::dropIfExists('research_output_generals');
     }
 }

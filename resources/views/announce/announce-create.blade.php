@@ -41,7 +41,7 @@
                         </div><!-- /.panel-heading -->
 
                         <div class="panel-body no-padding">
-                            <form class="form-horizontal form-bordered" action="{{url('announces/create')}}"
+                            <form id="submit-form" class="form-horizontal form-bordered" action="{{url('announces/create')}}"
                                   enctype="multipart/form-data"
                                   method="POST">
                                 <div class="form-body">
@@ -115,7 +115,7 @@
                                         <div class="col-sm-offset-3">
                                             <a href="{{url('announces')}}"
                                                class="btn btn-teal btn-slideright">Kembali</a>
-                                            <button type="submit" class="btn btn-success btn-slideright">Tambah</button>
+                                            <button id="submit" type="submit" class="btn btn-success btn-slideright">Tambah</button>
                                         </div>
                                     </div>
                                 </div><!-- /.form-body -->

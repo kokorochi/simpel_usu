@@ -38,9 +38,9 @@ class Period extends Model
         return $this->belongsTo(Category_type::class);
     }
 
-    public function dedicationType()
+    public function researchType()
     {
-        return $this->belongsTo(Dedication_type::class);
+        return $this->belongsTo(ResearchType::class);
     }
 
     public function appraisal()

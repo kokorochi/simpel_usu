@@ -17,7 +17,7 @@ class CreateProposeOwnsTable extends Migration
             $table->increments('id');
             $table->integer('propose_id', false, true);
             $table->smallInteger('years', false, true);
-            $table->integer('dedication_type', false, true);
+            $table->integer('research_type', false, true);
             $table->string('scheme');
             $table->string('sponsor');
             $table->smallInteger('member', false, true);

@@ -60,9 +60,12 @@ class BlankonController extends Controller {
                     $propose = $member->propose()->first();
 //                    if ($propose->period()->where('years', '>=', intval(Carbon::now()->toDateString()))->exists())
 //                    {
-                    $notifications[$i]['propose_id'] = $propose->id;
-                    $notifications[$i]['propose_title'] = $propose->title;
-                    $i++;
+                    if ($propose !== null)
+                    {
+                        $notifications[$i]['propose_id'] = $propose->id;
+                        $notifications[$i]['propose_title'] = $propose->title;
+                        $i++;
+                    }
 //                    }
                 }
                 View::share(compact('notifications'));
@@ -92,7 +95,7 @@ class BlankonController extends Controller {
             'admin/css/components.css',
             'admin/css/plugins.css',
             'admin/css/themes/laravel.theme.css' => ['id' => ''],
-            'admin/css/themes/red.theme.css' => ['id' => 'theme'],
+            'admin/css/themes/red.theme.css'     => ['id' => 'theme'],
             'admin/css/custom.css',
         ];
 
@@ -138,7 +141,7 @@ class BlankonController extends Controller {
             }
         }
 
-        if($ret->photo === null || $ret->photo === "")
+        if ($ret->photo === null || $ret->photo === "")
         {
             $ret->photo = 'photo.jpg';
         }
@@ -182,11 +185,11 @@ class BlankonController extends Controller {
     public function storeDownloadLog($propose_id, $download_type, $file_name_ori, $file_name, $created_by)
     {
         DownloadLog::create([
-            'propose_id' => $propose_id,
+            'propose_id'    => $propose_id,
             'download_type' => $download_type,
             'file_name_ori' => $file_name_ori,
-            'file_name' => $file_name,
-            'created_by' => $created_by,
+            'file_name'     => $file_name,
+            'created_by'    => $created_by,
         ]);
     }
 

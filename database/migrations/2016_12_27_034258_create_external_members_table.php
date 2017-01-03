@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDedicationOutputServicesTable extends Migration
+class CreateExternalMembersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateDedicationOutputServicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('dedication_output_services', function (Blueprint $table) {
+        Schema::create('external_members', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('dedication_id', false, true);
-            $table->smallInteger('item', false, true);
-            $table->string('file_name_ori');
-            $table->string('file_name');
+            $table->integer('member_id', false, true);
+            $table->string('name');
+            $table->string('affiliation');
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateDedicationOutputServicesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dedication_output_services');
+        Schema::dropIfExists('external_members');
     }
 }

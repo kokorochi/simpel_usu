@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Dedication;
+use App\Research;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\DB;
 use View;
 use App\Period;
 use App\Propose;
-use App\Dedication_reviewer;
+use App\ResearchReviewer;
 use App\ModelSDM\Lecturer;
 use App\Propose_own;
 use App\Member;
-use App\Dedication_type;
+use App\ResearchType;
 use App\Output_type;
 use App\ModelSDM\Faculty;
 use Illuminate\Support\Facades\Auth;
@@ -93,20 +93,20 @@ class ApproveProposeController extends BlankonController {
         }
         $propose->final_amount = $propose->total_amount;
 
-        $dedication_reviewers = Dedication_reviewer::where('propose_id', $propose->id)->get();
-        $dedication_reviewer = new Dedication_reviewer;
-        if ($dedication_reviewers->isEmpty() &&
+        $research_reviewers = ResearchReviewer::where('propose_id', $propose->id)->get();
+        $research_reviewer = new ResearchReviewer();
+        if ($research_reviewers->isEmpty() &&
             $propose->is_own !== '1'
         )
         {
-            $dedication_reviewers = new Collection();
-            $dedication_reviewers->add($dedication_reviewer);
+            $research_reviewers = new Collection();
+            $research_reviewers->add($research_reviewer);
         } else
         {
-            foreach ($dedication_reviewers as $dedication_reviewer)
+            foreach ($research_reviewers as $research_reviewer)
             {
-                $dedication_reviewer->display = Lecturer::where('employee_card_serial_number', $dedication_reviewer->nidn)->first()->full_name;
-                $dedication_reviewer->disabled = 'readonly';
+                $research_reviewer->display = Lecturer::where('employee_card_serial_number', $research_reviewer->nidn)->first()->full_name;
+                $research_reviewer->disabled = 'readonly';
             }
         }
         if ($propose->is_own === '1')
@@ -121,10 +121,17 @@ class ApproveProposeController extends BlankonController {
         $members = $propose->member()->get();
         foreach ($members as $member)
         {
-            $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+            if ($member->external === '1')
+            {
+                $external_member = $member->externalMember()->first();
+                $member->external_name = $external_member->name;
+                $member->external_affiliation = $external_member->affiliation;
+            } else
+            {
+                $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+            }
         }
-        $dedication_partners = $propose->dedicationPartner()->get();
-        $dedication_types = Dedication_type::all();
+        $research_types = ResearchType::all();
         $output_types = Output_type::all();
         $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
         $faculties = Faculty::where('is_faculty', 1)->get();
@@ -136,15 +143,14 @@ class ApproveProposeController extends BlankonController {
 
         return view('approve-propose/approve-propose-create', compact(
             'propose',
-            'dedication_reviewers',
+            'research_reviewers',
             'lecturer',
             'output_types',
             'faculties',
             'propose_own',
             'periods',
             'period',
-            'dedication_partners',
-            'dedication_types',
+            'research_types',
             'members',
             'disabled',
             'disable_upload',
@@ -191,10 +197,10 @@ class ApproveProposeController extends BlankonController {
             ]);
             if ($status_code === 'UD')
             {
-                $propose->dedication()->create([
+                $propose->research()->create([
                     'created_by' => Auth::user()->nidn,
                 ]);
-                if($propose->is_own === '1')
+                if ($propose->is_own === '1')
                 {
                     $propose->flowStatus()->create([
                         'item'        => $flow_status->item + 1,

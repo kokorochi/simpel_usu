@@ -25,7 +25,7 @@ class AJAXController extends BlankonController {
 
         $period = Period::find($period_id);
         $period->category_name = $period->categoryType->category_name;
-        $period->dedication_name = $period->dedicationType->dedication_name;
+        $period->research_name = $period->researchType->research_name;
 
         $period = json_encode($period, JSON_PRETTY_PRINT);
 
@@ -156,7 +156,7 @@ class AJAXController extends BlankonController {
         return response($data, 200)->header('Content-Type', 'application/json');
     }
 
-    public function getDedication()
+    public function getResearch()
     {
         $period_id = Input::get("period_id");
         $review_by = Input::get("review_by");
@@ -169,31 +169,31 @@ class AJAXController extends BlankonController {
             $proposes = $period->propose()->get();
         }
 
-        $dedications = new Collection();
+        $researches = new Collection();
         foreach ($proposes as $propose)
         {
-            $dedication = $propose->dedication()->first();
-            if ($dedication !== null)
+            $research = $propose->research()->first();
+            if ($research !== null)
             {
                 if ($review_by !== null)
                 {
-                    $dedication_reviewer = $propose->dedicationReviewer()->where('nidn', $review_by)->first();
-                    if ($dedication_reviewer !== null)
+                    $research_reviewer = $propose->researchReviewer()->where('nidn', $review_by)->first();
+                    if ($research_reviewer !== null)
                     {
-                        $dedications->add($dedication);
+                        $researches->add($research);
                     }
                 } else
                 {
-                    $dedications->add($dedication);
+                    $researches->add($research);
                 }
             }
         }
 
         $i = 0;
         $data = [];
-        foreach ($dedications as $dedication)
+        foreach ($researches as $research)
         {
-            $propose = $dedication->propose()->first();
+            $propose = $research->propose()->first();
             $data['data'][$i][0] = $propose->title;
             $data['data'][$i][1] = Lecturer::where('employee_card_serial_number', $propose->created_by)->first()->full_name;
             if ($propose->is_own === '1')
@@ -206,10 +206,10 @@ class AJAXController extends BlankonController {
             $data['data'][$i][3] = $propose->flowStatus()->orderBy('item', 'desc')->first()->statusCode()->first()->description;
             if ($review_by === null)
             {
-                $data['data'][$i][4] = '<td class="text-center"><a href="' . url('dedications', $dedication->id) . '/approve' . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Approve"><i class="fa fa-check-square-o"></i></a></td>';
+                $data['data'][$i][4] = '<td class="text-center"><a href="' . url('researches', $research->id) . '/approve' . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Approve"><i class="fa fa-check-square-o"></i></a></td>';
             } else
             {
-                $data['data'][$i][4] = '<td class="text-center"><a href="' . url('review-proposes', $dedication->id) . '/dedication-display' . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Approve"><i class="fa fa-search-plus"></i></a></td>';
+                $data['data'][$i][4] = '<td class="text-center"><a href="' . url('review-proposes', $research->id) . '/research-display' . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Approve"><i class="fa fa-search-plus"></i></a></td>';
             }
             $i++;
         }

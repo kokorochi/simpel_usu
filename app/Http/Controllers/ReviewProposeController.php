@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Appraisal_i;
 use App\Conclusion;
-use App\Dedication;
-use App\Dedication_reviewer;
-use App\Dedication_type;
+use App\Research;
+use App\ResearchReviewer;
+use App\ResearchType;
 use App\Member;
 use App\ModelSDM\Faculty;
 use App\ModelSDM\Lecturer;
@@ -60,17 +60,18 @@ class ReviewProposeController extends BlankonController {
     public function index()
     {
         $proposes = new Collection;
-        $dedication_reviewers = Dedication_reviewer::where('nidn', Auth::user()->nidn)->get();
-        foreach ($dedication_reviewers as $dedication_reviewer)
+        $research_reviewers = ResearchReviewer::where('nidn', Auth::user()->nidn)->get();
+        foreach ($research_reviewers as $research_reviewer)
         {
-            $propose = $dedication_reviewer->propose()->first();
+            $propose = $research_reviewer->propose()->first();
             $period = $propose->period()->first();
             if ($period->review_begda <= Carbon::now()->toDateString() &&
                 $period->review_endda >= Carbon::now()->toDateString()
             )
             {
                 if ($propose->flowStatus()->orderBy('item', 'desc')->first()->status_code === 'MR' ||
-                    $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code === 'RS')
+                    $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code === 'RS'
+                )
                 {
                     $proposes->add($propose);
                 }
@@ -166,9 +167,9 @@ class ReviewProposeController extends BlankonController {
             $review_proposes_i->add($review_propose_i);
         }
 
-        $ctr_dedication_reviewers = count($propose->dedicationReviewer()->get());
+        $ctr_research_reviewers = count($propose->researchReviewer()->get());
         $ctr_review_proposes = count(ReviewPropose::where('propose_id', $id)->get());
-        $count = $ctr_dedication_reviewers - $ctr_review_proposes;
+        $count = $ctr_research_reviewers - $ctr_review_proposes;
 
         DB::transaction(function () use ($review_propose, $review_proposes_i, $count, $propose)
         {
@@ -244,7 +245,7 @@ class ReviewProposeController extends BlankonController {
         }
         $today_date = date('d', strtotime(Carbon::now()->toDateString())) . ' ' .
             $month . ' ' . date('Y', strtotime(Carbon::now()->toDateString()));
-        
+
         $lead = $review_propose->propose()->first()->created_by;
         $lead = Lecturer::where('employee_card_serial_number', $lead)->first();
         if (! ($lead->front_degree === null || $lead->front_degree === '' || $lead->front_degree === '-'))
@@ -275,18 +276,18 @@ class ReviewProposeController extends BlankonController {
         ));
     }
 
-    public function dedicationList()
+    public function researchList()
     {
         $periods = Period::all();
         $period = new Period();
 
-        return view('review-propose.review-dedication-list', compact('periods', 'period'));
+        return view('review-propose.review-research-list', compact('periods', 'period'));
     }
 
-    public function dedicationDisplay($id)
+    public function researchDisplay($id)
     {
-        $dedication = Dedication::find($id);
-        if ($dedication === null)
+        $research = Research::find($id);
+        if ($research === null)
         {
             $this->setCSS404();
 
@@ -294,7 +295,7 @@ class ReviewProposeController extends BlankonController {
         }
 
         $disabled = 'disabled';
-        $propose = $dedication->propose()->first();
+        $propose = $research->propose()->first();
 
         if ($propose === null)
         {
@@ -303,9 +304,9 @@ class ReviewProposeController extends BlankonController {
             return abort('404');
         }
 
-        $dedication_reviewer = $propose->dedicationReviewer()->where('nidn', Auth::user()->nidn)->first();
+        $research_reviewer = $propose->researchReviewer()->where('nidn', Auth::user()->nidn)->first();
 
-        if ($dedication_reviewer === null)
+        if ($research_reviewer === null)
         {
             $this->setCSS404();
 
@@ -315,18 +316,24 @@ class ReviewProposeController extends BlankonController {
         $propose_own = $propose->proposesOwn()->first();
         $periods = $propose->period()->get();
         $period = $propose->period()->first();
-        $dedication_partners = $propose->dedicationPartner()->get();
-        $dedication_partner = $propose->dedicationPartner()->first();
         $members = $propose->member()->get();
         foreach ($members as $member)
         {
-            $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+            if ($member->external === '1')
+            {
+                $external_member = $member->externalMember()->first();
+                $member->external_name = $external_member->name;
+                $member->external_affiliation = $external_member->affiliation;
+            } else
+            {
+                $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+            }
         }
         $member = $propose->member()->first();
         $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
         $faculties = Faculty::where('is_faculty', '1')->get();
         $output_types = Output_type::all();
-        $dedication_types = Dedication_type::all();
+        $research_types = ResearchType::all();
 
         if ($propose_own === null)
         {
@@ -347,18 +354,16 @@ class ReviewProposeController extends BlankonController {
         $disable_final_amount = 'readonly';
         $upd_mode = 'review';
 
-        return view('dedication.dedication-edit', compact(
-            'dedication',
+        return view('research.research-edit', compact(
+            'research',
             'propose',
             'propose_own',
             'periods',
             'period',
             'output_types',
-            'dedication_types',
+            'research_types',
             'faculties',
             'disable_upload',
-            'dedication_partners',
-            'dedication_partner',
             'members',
             'member',
             'lecturer',

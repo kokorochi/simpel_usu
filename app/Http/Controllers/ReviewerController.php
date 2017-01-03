@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Auths;
-use App\Dedication_partner;
-use App\Dedication_reviewer;
-use App\Dedication_type;
+use App\ResearchReviewer;
+use App\ResearchType;
 use App\FlowStatus;
 use App\Member;
 use App\ModelSDM\Faculty;
@@ -160,18 +159,18 @@ class ReviewerController extends BlankonController {
     {
         $disable_reviewer = false;
         $propose = Propose::find($id);
-        $dedication_reviewers = Dedication_reviewer::where('propose_id', $propose->id)->get();
-        $dedication_reviewer = new Dedication_reviewer;
-        if ($dedication_reviewers->isEmpty())
+        $research_reviewers = ResearchReviewer::where('propose_id', $propose->id)->get();
+        $research_reviewer = new ResearchReviewer();
+        if ($research_reviewers->isEmpty())
         {
-            $dedication_reviewers = new Collection;
-            $dedication_reviewers->add($dedication_reviewer);
+            $research_reviewers = new Collection;
+            $research_reviewers->add($research_reviewer);
         } else
         {
-            foreach ($dedication_reviewers as $dedication_reviewer)
+            foreach ($research_reviewers as $research_reviewer)
             {
-                $dedication_reviewer->display = Lecturer::where('employee_card_serial_number', $dedication_reviewer->nidn)->first()->full_name;
-                $dedication_reviewer->disabled = 'readonly';
+                $research_reviewer->display = Lecturer::where('employee_card_serial_number', $research_reviewer->nidn)->first()->full_name;
+                $research_reviewer->disabled = 'readonly';
             }
         }
         $propose_own = new Propose_own;
@@ -180,10 +179,16 @@ class ReviewerController extends BlankonController {
         $members = $propose->member()->get();
         foreach ($members as $member)
         {
-            $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+            if($member->external === '1')
+            {
+                $external_member = $member->externalMember()->first();
+                $member->external_name = $external_member->name;
+                $member->external_affiliation = $external_member->affiliation;
+            }else{
+                $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+            }
         }
-        $dedication_partners = $propose->dedicationPartner()->get();
-        $dedication_types = Dedication_type::all();
+        $research_types = ResearchType::all();
         $output_types = Output_type::all();
         $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
         $faculties = Faculty::where('is_faculty', 1)->get();
@@ -192,15 +197,14 @@ class ReviewerController extends BlankonController {
 
         return view('reviewer/reviewer-assign', compact(
             'propose',
-            'dedication_reviewers',
+            'research_reviewers',
             'lecturer',
             'output_types',
             'faculties',
             'propose_own',
             'periods',
             'period',
-            'dedication_partners',
-            'dedication_types',
+            'research_types',
             'members',
             'disabled',
             'disable_upload',
@@ -217,40 +221,40 @@ class ReviewerController extends BlankonController {
 
             return abort('404');
         }
-        $dedication_reviewers = $propose->dedicationReviewer()->withTrashed()->get();
+        $research_reviewers = $propose->researchReviewer()->withTrashed()->get();
         $item_no = 1;
-        if ($dedication_reviewers->isEmpty() === false)
+        if ($research_reviewers->isEmpty() === false)
         {
-            $item_no = $dedication_reviewers->sortByDesc('item')->first()->item;
+            $item_no = $research_reviewers->sortByDesc('item')->first()->item;
         }
 
-        $dedication_review_restore = new Collection;
-        $dedication_review_new = new Collection;
-        $dedication_review_delete = new Collection;
+        $research_review_restore = new Collection;
+        $research_review_new = new Collection;
+        $research_review_delete = new Collection;
         foreach ($request->nidn as $item)
         {   
-            $dedication_review = $dedication_reviewers->where('nidn', $item)->first();
-            if ($dedication_review !== null)
+            $research_review = $research_reviewers->where('nidn', $item)->first();
+            if ($research_review !== null)
             {
-                $dedication_review_restore->add($dedication_review);
+                $research_review_restore->add($research_review);
             } else
             {
-                $dedication_review = new Dedication_reviewer;
-                $dedication_review->propose_id = $id;
-                $dedication_review->nidn = $item;
-                $dedication_review->item = $item_no++;
-                $dedication_review_new->add($dedication_review);
+                $research_review = new ResearchReviewer();
+                $research_review->propose_id = $id;
+                $research_review->nidn = $item;
+                $research_review->item = $item_no++;
+                $research_review_new->add($research_review);
             }
         }
 
-        foreach ($dedication_reviewers as $dedication_reviewer)
+        foreach ($research_reviewers as $research_reviewer)
         {
-            if ($dedication_reviewer->deleted_at === null)
+            if ($research_reviewer->deleted_at === null)
             {
-                $pos = array_search($dedication_reviewer->nidn, $request->nidn);
+                $pos = array_search($research_reviewer->nidn, $request->nidn);
                 if ($pos === false)
                 {
-                    $dedication_review_delete->add($dedication_reviewer);
+                    $research_review_delete->add($research_reviewer);
                 }
             }
         }
@@ -260,19 +264,19 @@ class ReviewerController extends BlankonController {
         $flow_statuses->status_code = 'MR'; //Menunggu diReview
         $flow_statuses->created_by = Auth::user()->nidn;
 
-        DB::transaction(function() use($dedication_review_new, $dedication_review_restore, $dedication_review_delete, $flow_statuses){
-            foreach ($dedication_review_restore as $item)
+        DB::transaction(function() use($research_review_new, $research_review_restore, $research_review_delete, $flow_statuses){
+            foreach ($research_review_restore as $item)
             {
                 $item->restore();
                 $item->updated_by = Auth::user()->nidn;
                 $item->save();
             }
-            foreach ($dedication_review_new as $item)
+            foreach ($research_review_new as $item)
             {
                 $item->created_by = Auth::user()->nidn;
                 $item->save();
             }
-            foreach ($dedication_review_delete as $item)
+            foreach ($research_review_delete as $item)
             {
                 $item->updated_by = Auth::user()->nidn;
                 $item->save();

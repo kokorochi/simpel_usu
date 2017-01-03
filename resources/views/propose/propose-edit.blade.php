@@ -29,9 +29,7 @@
             @include('form-input.panel-errors')
 
             @include('form-input.propose-scheme')
-
-            @include('form-input.propose-partner')
-
+            
             @include('form-input.propose-member')
 
             @include('form-input.propose-detail')

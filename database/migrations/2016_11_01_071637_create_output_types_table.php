@@ -15,7 +15,7 @@ class CreateOutputTypesTable extends Migration
     {
         Schema::create('output_types', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('output_code', 2);
+            $table->string('output_code', 3)->unique();
             $table->string('output_name');
             $table->string('created_by', 30);
             $table->string('updated_by', 30)->nullable();

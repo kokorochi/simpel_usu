@@ -3,7 +3,7 @@
 $errors->has('period_id')           || old('period_id') ||
 $errors->has('is_own')              || old('is_own') ||
 $errors->has('own-years')           || old('own-years') ||
-$errors->has('own-dedication_type') || old('own-dedication_type') ||
+$errors->has('own-research_type') || old('own-research_type') ||
 $errors->has('own-scheme')          || old('own-scheme') ||
 $errors->has('own-sponsor')         || old('own-sponsor') ||
 $errors->has('own-member')          || old('own-member') ||
@@ -14,7 +14,7 @@ $errors->has('period_id')           || old('period_id')
         $propose->period_id             = old('period_id');
         $propose->is_own                = old('is_own');
         $propose_own->years             = old('own-years');
-        $propose_own->dedication_type   = old('own-dedication_type');
+        $propose_own->research_type   = old('own-research_type');
         $propose_own->scheme            = old('own-scheme');
         $propose_own->sponsor           = old('own-sponsor');
         $propose_own->member            = old('own-member');
@@ -65,12 +65,12 @@ $errors->has('period_id')           || old('period_id')
                                 @endif
                             </div>
 
-                            <label for="own-dedication_type" class="col-sm-4 col-md-3 control-label">Jenis
+                            <label for="own-research_type" class="col-sm-4 col-md-3 control-label">Jenis
                                 Pengabdian</label>
                             <div class="col-sm-7 mb-10">
-                                <select name="own-dedication_type" class="form-control input-sm" {{$disabled}}>
-                                    @foreach($dedication_types as $dedication_type)
-                                        <option value="{{$dedication_type->id}}" {{$propose_own->dedication_type == $dedication_type->id ? 'selected' : null}}>{{$dedication_type->dedication_name}}</option>
+                                <select name="own-research_type" class="form-control input-sm" {{$disabled}}>
+                                    @foreach($research_types as $research_type)
+                                        <option value="{{$research_type->id}}" {{$propose_own->research_type == $research_type->id ? 'selected' : null}}>{{$research_type->research_name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -143,11 +143,11 @@ $errors->has('period_id')           || old('period_id')
                                            value="{{ $period->years }}">
                                 </div>
 
-                                <label for="dedication_name" class="col-xs-12 col-sm-4 col-md-3 control-label">Jenis
+                                <label for="research_name" class="col-xs-12 col-sm-4 col-md-3 control-label">Jenis
                                     Pengabdian</label>
                                 <div class="col-sm-7 mb-10">
-                                    <input name="dedication_name" class="form-control input-sm" type="text" disabled
-                                           value="{{ $period->dedicationType->dedication_name }}">
+                                    <input name="research_name" class="form-control input-sm" type="text" disabled
+                                           value="{{ $period->researchType->research_name }}">
                                 </div>
 
                                 <label for="scheme" class="col-sm-4 col-md-3 control-label">Scheme</label>

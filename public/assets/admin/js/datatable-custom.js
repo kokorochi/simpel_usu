@@ -92,7 +92,7 @@ $(document).ready(function () {
     var tableApproveDedicationAjax = $('#table-approve-dedication-ajax');
     tableApproveDedicationAjax.dataTable({
         autoWidth: true,
-        ajax: baseUrl + '/ajax/dedications/get?period_id=' + $('#scheme-approve-dedication').val(),
+        ajax: baseUrl + '/ajax/researches/get?period_id=' + $('#scheme-approve-dedication').val(),
         preDrawCallback: function () {
             // Initialize the responsive datatables helper once.
             if (!responsiveHelperAjax) {
@@ -111,7 +111,7 @@ $(document).ready(function () {
         tableApproveDedicationAjax.dataTable().fnDestroy();
         tableApproveDedicationAjax.dataTable({
             autoWidth: true,
-            ajax: baseUrl + '/ajax/dedications/get?period_id=' + $('#scheme-approve-dedication').val(),
+            ajax: baseUrl + '/ajax/researches/get?period_id=' + $('#scheme-approve-dedication').val(),
             preDrawCallback: function () {
                 // Initialize the responsive datatables helper once.
                 if (!responsiveHelperAjax) {
@@ -127,7 +127,7 @@ $(document).ready(function () {
     var tableReviewDedicationAjax = $('#table-review-dedication-ajax');
     tableReviewDedicationAjax.dataTable({
         autoWidth: true,
-        ajax: baseUrl + '/ajax/dedications/get?period_id=' + $('#scheme-review-dedication').val() +
+        ajax: baseUrl + '/ajax/researches/get?period_id=' + $('#scheme-review-dedication').val() +
         '&review_by=' + $("input[name='user_login']").val(),
         preDrawCallback: function () {
             // Initialize the responsive datatables helper once.
@@ -147,7 +147,7 @@ $(document).ready(function () {
         tableReviewDedicationAjax.dataTable().fnDestroy();
         tableReviewDedicationAjax.dataTable({
             autoWidth: true,
-            ajax: baseUrl + '/ajax/dedications/get?period_id=' + $('#scheme-review-dedication').val() +
+            ajax: baseUrl + '/ajax/researches/get?period_id=' + $('#scheme-review-dedication').val() +
             '&review_by=' + $("input[name='user_login']").val(),
             preDrawCallback: function () {
                 // Initialize the responsive datatables helper once.

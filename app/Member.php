@@ -26,4 +26,9 @@ class Member extends Model {
     {
         return $this->belongsTo(Lecturer::class, 'nidn', 'employee_card_serial_number');
     }
+
+    public function externalMember()
+    {
+        return $this->hasOne(ExternalMember::class);
+    }
 }

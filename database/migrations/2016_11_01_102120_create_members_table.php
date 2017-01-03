@@ -17,9 +17,10 @@ class CreateMembersTable extends Migration
             $table->increments('id');
             $table->integer('propose_id', false, true);
             $table->smallInteger('item', false, true);
-            $table->string('nidn');
+            $table->string('nidn')->nullable();
             $table->string('areas_of_expertise')->nullable();
             $table->string('status', 10);
+            $table->char('external', 1)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

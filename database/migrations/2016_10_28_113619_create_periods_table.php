@@ -17,7 +17,7 @@ class CreatePeriodsTable extends Migration
             $table->increments('id');
             $table->smallInteger('years', false, true);
             $table->integer('category_type_id', false, true);
-            $table->integer('dedication_type_id', false, true);
+            $table->integer('research_type_id', false, true);
             $table->integer('appraisal_id', false, true);
             $table->string('scheme');
             $table->string('sponsor');

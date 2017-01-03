@@ -18,8 +18,8 @@ var BlankonBlog = function () {
                 var container = document.querySelector('#blog-grid');
                 var msnry = new Masonry( container, {
                     // options
-                    columnWidth: '.col-xs-12',
                     itemSelector: '.col-xs-12',
+                    columnWidth: '.col-xs-12',
                     isAnimated: true
                 });
 

@@ -40,14 +40,14 @@ class Propose extends Model {
         return $this->hasMany(Member::class);
     }
 
-    public function dedicationPartner()
+    public function researchReviewer()
     {
-        return $this->hasMany(Dedication_partner::class);
+        return $this->hasMany(ResearchReviewer::class);
     }
 
-    public function dedicationReviewer()
+    public function research()
     {
-        return $this->hasMany(Dedication_reviewer::class);
+        return $this->hasOne(Research::class);
     }
 
     public function flowStatus()
@@ -63,11 +63,6 @@ class Propose extends Model {
     public function reviewPropose()
     {
         return $this->hasMany(ReviewPropose::class);
-    }
-
-    public function dedication()
-    {
-        return $this->hasOne(Dedication::class);
     }
 
     public function downloadLog()

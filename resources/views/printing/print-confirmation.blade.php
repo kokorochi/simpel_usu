@@ -26,30 +26,30 @@
         <!-- Dedication Title -->
         <tr>
             <td class="print-col-1">1.</td>
-            <td class="print-col-2">Judul Pengabdian Kepada Masyarakat</td>
+            <td class="print-col-2">Judul Penelitian</td>
             <td class="print-col-3">:</td>
             <td class="print-col-4">{{ $propose->title }}</td>
         </tr>
         <!-- End Dedication Title -->
 
         <!-- Dedication Partner -->
-        @foreach($dedication_partners as $dedication_partner)
-            <tr>
-                <td class="print-col-1">
-                    @if($dedication_partner->item === 1)
-                        2.
-                    @endif
-                </td>
-                <td class="print-col-2">Nama Mitra ({{$dedication_partner->item}})</td>
-                <td class="print-col-3">:</td>
-                <td class="print-col-4">{{$dedication_partner->name}}</td>
-            </tr>
-        @endforeach
+        {{--@foreach($dedication_partners as $dedication_partner)--}}
+        {{--<tr>--}}
+        {{--<td class="print-col-1">--}}
+        {{--@if($dedication_partner->item === 1)--}}
+        {{--2.--}}
+        {{--@endif--}}
+        {{--</td>--}}
+        {{--<td class="print-col-2">Nama Mitra ({{$dedication_partner->item}})</td>--}}
+        {{--<td class="print-col-3">:</td>--}}
+        {{--<td class="print-col-4">{{$dedication_partner->name}}</td>--}}
+        {{--</tr>--}}
+        {{--@endforeach--}}
         <!-- End Dedication Partner -->
 
         <!-- Head Detail -->
         <tr>
-            <td class="print-col-1">3.</td>
+            <td class="print-col-1">2.</td>
             <td class="print-col-2">Ketua Tim Pengusul</td>
             <td class="print-col-3"></td>
             <td class="print-col-4"></td>
@@ -112,7 +112,7 @@
 
         <!-- Member Detail -->
         <tr>
-            <td class="print-col-1">4.</td>
+            <td class="print-col-1">3.</td>
             <td class="print-col-2">Anggota Tim Pengusul</td>
             <td class="print-col-3"></td>
             <td class="print-col-4"></td>
@@ -125,16 +125,26 @@
         </tr>
         @php($ctr_alpha = 'b')
         @foreach($members as $member)
-            @php($full_name = $member->lecturer()->first()->full_name)
-            @if($member->lecturer()->first()->front_degree !== '-' &&
-                $member->lecturer()->first()->front_degree !== '' &&
-                $member->lecturer()->first()->front_degree !== null)
-                @php($full_name = $member->lecturer()->first()->front_degree . ' ' . $full_name)
-            @endif
-            @if($member->lecturer()->first()->behind_degree !== '-' &&
-                $member->lecturer()->first()->behind_degree !== '' &&
-                $member->lecturer()->first()->behind_degree !== null)
-                @php($full_name = $full_name . ', ' . $member->lecturer()->first()->behind_degree)
+            @php
+                if($member->external === '1')
+                {
+                    $full_name = $member->external_name;
+                }else
+                {
+                    $full_name = $member->lecturer()->first()->full_name;
+                }
+            @endphp
+            @if($member->external === null)
+                @if($member->lecturer()->first()->front_degree !== '-' &&
+                    $member->lecturer()->first()->front_degree !== '' &&
+                    $member->lecturer()->first()->front_degree !== null)
+                    @php($full_name = $member->lecturer()->first()->front_degree . ' ' . $full_name)
+                @endif
+                @if($member->lecturer()->first()->behind_degree !== '-' &&
+                    $member->lecturer()->first()->behind_degree !== '' &&
+                    $member->lecturer()->first()->behind_degree !== null)
+                    @php($full_name = $full_name . ', ' . $member->lecturer()->first()->behind_degree)
+                @endif
             @endif
             <tr>
                 <td class="print-col-1"></td>
@@ -151,45 +161,9 @@
         </tr>
         <!-- End Member Detail -->
 
-        <!-- Dedication Partner Detail -->
-        @php($ctr_i = 5)
-        @foreach($dedication_partners as $dedication_partner)
-            <tr>
-                <td class="print-col-1">{{$ctr_i++ . '.'}}</td>
-                <td class="print-col-2">{{'Lokasi Kegiatan/Mitra (' . $dedication_partner->item . ')'}}</td>
-                <td class="print-col-3"></td>
-                <td class="print-col-4"></td>
-            </tr>
-            <tr>
-                <td class="print-col-1"></td>
-                <td class="print-col-2">a. Wilayah Mitra (Desa/Kecamatan)</td>
-                <td class="print-col-3">:</td>
-                <td class="print-col-4">{{$dedication_partner->territory}}</td>
-            </tr>
-            <tr>
-                <td class="print-col-1"></td>
-                <td class="print-col-2">b. Kabupaten/Kota</td>
-                <td class="print-col-3">:</td>
-                <td class="print-col-4">{{$dedication_partner->city}}</td>
-            </tr>
-            <tr>
-                <td class="print-col-1"></td>
-                <td class="print-col-2">c. Provinsi</td>
-                <td class="print-col-3">:</td>
-                <td class="print-col-4">{{$dedication_partner->province}}</td>
-            </tr>
-            <tr>
-                <td class="print-col-1"></td>
-                <td class="print-col-2">d. Jarak PT ke lokasi mitra (km)</td>
-                <td class="print-col-3">:</td>
-                <td class="print-col-4">{{$dedication_partner->distance}}</td>
-            </tr>
-        @endforeach
-        <!-- End Dedication Partner Detail -->
-
         <!-- Output Type -->
         <tr>
-            <td class="print-col-1">7.</td>
+            <td class="print-col-1">5.</td>
             <td class="print-col-2">Luaran yang dihasilkan</td>
             <td class="print-col-3">:</td>
             <td class="print-col-4">{{$propose->outputType()->first()->output_name}}</td>
@@ -197,21 +171,21 @@
         <!-- End Output Type -->
 
         <tr>
-            <td class="print-col-1">8.</td>
+            <td class="print-col-1">6.</td>
             <td class="print-col-2">Jangka waktu Pelaksanaan</td>
             <td class="print-col-3">:</td>
             <td class="print-col-4">{{$propose->time_period . ' bulan'}}</td>
         </tr>
 
         <tr>
-            <td class="print-col-1">9.</td>
+            <td class="print-col-1">7.</td>
             <td class="print-col-2">Biaya yang diperlukan</td>
             <td class="print-col-3">:</td>
             <td class="print-col-4">{{'Rp. ' . number_format($propose->total_amount, 0, ',', '.')}}</td>
         </tr>
 
         <tr>
-            <td class="print-col-1">10.</td>
+            <td class="print-col-1">8.</td>
             <td class="print-col-2">Sumber Dana</td>
             <td class="print-col-3">:</td>
             <td class="print-col-4">
@@ -265,7 +239,7 @@
             <td class="print-col-1 text-center">Mengetahui</td>
         </tr>
         <tr>
-            <td class="print-col-1 text-center">Lembaga Pengabdian Kepada Masyarakat</td>
+            <td class="print-col-1 text-center">Lembaga Penelitian</td>
         </tr>
         <tr>
             <td class="print-col-1 text-center">

@@ -120,8 +120,8 @@ Route::get('review-proposes/', 'ReviewProposeController@index');
 Route::get('review-proposes/{id}/review', 'ReviewProposeController@review');
 Route::post('review-proposes/{id}/review', 'ReviewProposeController@reviewUpdate');
 Route::get('review-proposes/{id}/print-review', 'ReviewProposeController@printReview');
-Route::get('review-proposes/dedication-list', 'ReviewProposeController@dedicationList');
-Route::get('review-proposes/{id}/dedication-display', 'ReviewProposeController@dedicationDisplay');
+Route::get('review-proposes/research-list', 'ReviewProposeController@researchList');
+Route::get('review-proposes/{id}/research-display', 'ReviewProposeController@researchDisplay');
 // End Review Proposes Route
 
 // Start Approve Proposes Route
@@ -131,22 +131,22 @@ Route::put('approve-proposes/{id}/approve', 'ApproveProposeController@approveUpd
 // End Approve Proposes Route
 
 // Start Dedication Route
-Route::get('dedications/', 'DedicationController@index');
-Route::get('dedications/{id}/edit', 'DedicationController@edit');
-Route::put('dedications/{id}/edit-progress', 'DedicationController@updateProgress');
-Route::put('dedications/{id}/edit-final', 'DedicationController@updateFinal');
-Route::get('dedications/{id}/download/{type}', 'DedicationController@getFile');
-Route::get('dedications/{id}/output', 'DedicationController@output');
-Route::get('dedications/{id}/output-download/{type}', 'DedicationController@getOutputFile');
-Route::get('dedications/{id}/output-download/{type}/{subtype}', 'DedicationController@getOutputFile');
-Route::put('dedications/{id}/output-service', 'DedicationController@updateOutputService');
-Route::put('dedications/{id}/output-method', 'DedicationController@updateOutputMethod');
-Route::put('dedications/{id}/output-product', 'DedicationController@updateOutputProduct');
-Route::put('dedications/{id}/output-patent', 'DedicationController@updateOutputPatent');
-Route::put('dedications/{id}/output-guidebook', 'DedicationController@updateOutputGuidebook');
-Route::get('dedications/approve-list', 'DedicationController@approveList');
-Route::get('dedications/{id}/approve', 'DedicationController@approveDetail');
-Route::put('dedications/{id}/approve', 'DedicationController@approveUpdate');
+Route::get('researches/', 'ResearchController@index');
+Route::get('researches/{id}/edit', 'ResearchController@edit');
+Route::put('researches/{id}/edit-progress', 'ResearchController@updateProgress');
+Route::put('researches/{id}/edit-final', 'ResearchController@updateFinal');
+Route::get('researches/{id}/download/{type}', 'ResearchController@getFile');
+Route::get('researches/{id}/output', 'ResearchController@output');
+//Route::get('researches/{id}/output-download/{type}', 'DedicationController@getOutputFile');
+//Route::get('researches/{id}/output-download/{type}/{subtype}', 'DedicationController@getOutputFile');
+Route::put('researches/{id}/output-general', 'ResearchController@updateOutputGeneral');
+//Route::put('researches/{id}/output-method', 'DedicationController@updateOutputMethod');
+//Route::put('researches/{id}/output-product', 'DedicationController@updateOutputProduct');
+//Route::put('researches/{id}/output-patent', 'DedicationController@updateOutputPatent');
+//Route::put('researches/{id}/output-guidebook', 'DedicationController@updateOutputGuidebook');
+Route::get('researches/approve-list', 'ResearchController@approveList');
+Route::get('researches/{id}/approve', 'ResearchController@approveDetail');
+Route::put('researches/{id}/approve', 'ResearchController@approveUpdate');
 // End Dedication Route
 
 // AJAX Route
@@ -156,5 +156,5 @@ Route::get('ajax/members/lecturerNIDN', 'AJAXController@getLecturerByNIDN');
 Route::get('ajax/proposes/getbyscheme', 'AJAXController@getProposesByScheme');
 Route::get('ajax/reviewers/get', 'AJAXController@getReviewer');
 Route::get('ajax/reviewers/search', 'AJAXController@searchReviewer');
-Route::get('ajax/dedications/get', 'AJAXController@getDedication');
+Route::get('ajax/researches/get', 'AJAXController@getResearch');
 // End AJAX Route

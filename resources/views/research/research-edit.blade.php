@@ -1,6 +1,5 @@
 @extends('layouts.lay_admin')
 
-<!-- START @PAGE CONTENT -->
 @section('content')
     <section id="page-content">
 
@@ -12,43 +11,49 @@
                 <ol class="breadcrumb">
                     <li>
                         <i class="fa fa-home"></i>
-                        <a href="{{url('/')}}">Home</a>
+                        <a href="{{url('/')}}">Beranda</a>
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li>
                         {{ $pageTitle }}
                         <i class="fa fa-angle-right"></i>
                     </li>
-                    <li class="active">Luaran</li>
+                    <li class="active">Ubah Pengabdian</li>
                 </ol>
             </div><!-- /.breadcrumb-wrapper -->
         </div><!-- /.header-content -->
         <!--/ End page header -->
 
-        <!-- Start body content -->
         <div class="body-content animated fadeIn">
+
             @include('form-input.panel-errors')
-            @if($output_code === 'JS')
-                @include('form-input.dedication-output-service')
-            @elseif($output_code === 'MT')
-                @include('form-input.dedication-output-method')
-            @elseif($output_code === 'PB')
-                @include('form-input.dedication-output-product')
-            @elseif($output_code === 'PT')
-                @include('form-input.dedication-output-patent')
-            @elseif($output_code === 'BP')
-                @include('form-input.dedication-output-guidebook')
-            @endif
-            @if($upd_mode === 'approve')
-                @include('form-input.dedication-approve')
+
+            @include('form-input.propose-scheme')
+
+
+            @include('form-input.propose-member')
+
+            @include('form-input.propose-detail')
+
+            @include('form-input.propose-upload')
+
+            @include('form-input.propose-revision')
+
+            <form class="" action="{{url($deleteUrl, $research->id) . '/edit-progress'}}" method="POST"
+                  enctype="multipart/form-data">
+                @include('form-input.research-progress')
+            </form>
+
+            @if($status_code !== 'LK')
+                <form class="" action="{{url($deleteUrl, $research->id) . '/edit-final'}}" method="POST"
+                      enctype="multipart/form-data">
+                    @include('form-input.research-final')
+                </form>
             @endif
         </div><!-- /.body-content -->
-        <!--/ End body content -->
 
         <!-- Start footer content -->
     @include('layouts._footer-admin')
     <!--/ End footer content -->
-
     </section><!-- /#page-content -->
 @endsection
-<!--/ END PAGE CONTENT -->

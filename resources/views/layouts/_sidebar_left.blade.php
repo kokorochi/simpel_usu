@@ -190,21 +190,21 @@ START @SIDEBAR LEFT
             {{--</li>--}}
             <!-- End navigation - Usulan -->
 
-            <!-- Start navigation - Dedication -->
-            <li {!! Request::is('dedications','dedications/*')? 'class="submenu active"' : 'class="submenu"' !!}>
+            <!-- Start navigation - Research -->
+            <li {!! Request::is('researches','researches/*')? 'class="submenu active"' : 'class="submenu"' !!}>
                 <a href="javascript:void(0);">
                     <span class="icon"><i class="fa fa-black-tie"></i></span>
-                    <span class="text">Pengabdian</span>
+                    <span class="text">Penelitian</span>
                     <span class="arrow"></span>
-                    {!! Request::is('dedications', 'dedications/*') ? '<span class="selected"></span>' : null !!}
+                    {!! Request::is('researches', 'researches/*') ? '<span class="selected"></span>' : null !!}
                 </a>
                 <ul>
-                    <li {!! Request::is('dedications','dedications/')? 'class="active"' : null !!}>
-                        <a href="{{url('dedications/approve-list')}}">Daftar Pengabdian</a>
+                    <li {!! Request::is('researches','researches/')? 'class="active"' : null !!}>
+                        <a href="{{url('researches/approve-list')}}">Daftar Penelitian</a>
                     </li>
                 </ul>
             </li>
-            <!-- End navigation - Dedication -->
+            <!-- End navigation - Research -->
         @endcan
     <!-- End category - Operator -->
 
@@ -234,21 +234,21 @@ START @SIDEBAR LEFT
             </li>
             <!--/ End navigation - Proposes -->
 
-            <!-- Start navigation - Dedication -->
-            <li {!! Request::is('dedications','dedications/*')? 'class="submenu active"' : 'class="submenu"' !!}>
+            <!-- Start navigation - Research -->
+            <li {!! Request::is('researches','researches/*')? 'class="submenu active"' : 'class="submenu"' !!}>
                 <a href="javascript:void(0);">
                     <span class="icon"><i class="fa fa-black-tie"></i></span>
-                    <span class="text">Pengabdian</span>
+                    <span class="text">Penelitian</span>
                     <span class="arrow"></span>
-                    {!! Request::is('dedications', 'dedications/*') ? '<span class="selected"></span>' : null !!}
+                    {!! Request::is('researches', 'researches/*') ? '<span class="selected"></span>' : null !!}
                 </a>
                 <ul>
-                    <li {!! Request::is('dedications','dedications/')? 'class="active"' : null !!}>
-                        <a href="{{url('dedications/')}}">Daftar Pengabdian</a>
+                    <li {!! Request::is('researches','researches/')? 'class="active"' : null !!}>
+                        <a href="{{url('researches/')}}">Daftar Penelitian</a>
                     </li>
                 </ul>
             </li>
-            <!--/ End navigation - Dedication -->
+            <!--/ End navigation - Research -->
         @endcan
     <!-- End category - Lecturer -->
 
@@ -271,8 +271,8 @@ START @SIDEBAR LEFT
                     <li {!! Request::is('review-proposes','review-proposes/')? 'class="active"' : null !!}>
                         <a href="{{url('review-proposes/')}}">Usulan</a>
                     </li>
-                    <li {!! Request::is('review-proposes','review-proposes/dedication-list')? 'class="active"' : null !!}>
-                        <a href="{{url('review-proposes/dedication-list')}}">Pengabdian</a>
+                    <li {!! Request::is('review-proposes','review-proposes/research-list')? 'class="active"' : null !!}>
+                        <a href="{{url('review-proposes/research-list')}}">Penelitian</a>
                     </li>
                 </ul>
             </li>

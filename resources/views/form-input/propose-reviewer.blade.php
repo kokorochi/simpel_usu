@@ -5,16 +5,16 @@
 $errors->has('display.' . $ctr_old) || old('display.' . $ctr_old) ||
 $errors->has('nidn.' . $ctr_old) || old('nidn.' . $ctr_old) )
     @php
-        $dedication_reviewer = new \App\Dedication_reviewer;
-        $dedication_reviewer['display']  = old('display.' . $ctr_old);
-        $dedication_reviewer['nidn']     = old('nidn.' . $ctr_old);
+        $research_reviewer = new \App\ResearchReviewer();
+        $research_reviewer['display']  = old('display.' . $ctr_old);
+        $research_reviewer['nidn']     = old('nidn.' . $ctr_old);
 
-        if($dedication_reviewers->get($ctr_old) === null){
-            $dedication_reviewers->add($dedication_reviewer);
+        if($research_reviewers->get($ctr_old) === null){
+            $research_reviewers->add($research_reviewer);
         }else{
-            if($dedication_reviewers[$ctr_old]->disabled !== 'readonly')
+            if($research_reviewers[$ctr_old]->disabled !== 'readonly')
             {
-                $dedication_reviewers[$ctr_old] = $dedication_reviewer;
+                $research_reviewers[$ctr_old] = $research_reviewer;
             }
         }
         $ctr_old++;
@@ -38,15 +38,15 @@ $errors->has('nidn.' . $ctr_old) || old('nidn.' . $ctr_old) )
             <div class="panel-body no-padding">
                 <div class="form-body form-horizontal form-bordered">
                     <div class="reviewer-wrapper">
-                        @foreach($dedication_reviewers as $key => $dedication_reviewer)
+                        @foreach($research_reviewers as $key => $research_reviewer)
                             <div class="form-group">
                                 <label for="nidn[]" class="col-sm-4 col-md-3 control-label">Reviewer</label>
                                 <div class="col-sm-6 input-icon right">
                                     <input name="display[]" type="text"
                                            class="input-reviewer-auto form-control input-sm mb-15"
-                                           value="{{$dedication_reviewer->display}}" {{$dedication_reviewer->disabled}}/>
+                                           value="{{$research_reviewer->display}}" {{$research_reviewer->disabled}}/>
                                     <input name="nidn[]" type="text" class="input-reviewer-value" hidden="hidden"
-                                           value="{{$dedication_reviewer->nidn}}" {{$dedication_reviewer->disabled}}/>
+                                           value="{{$research_reviewer->nidn}}" {{$research_reviewer->disabled}}/>
                                     @if($errors->has('display.' . $key))
                                         <label class="error" for="display[]" style="display: inline-block;">
                                             {{ $errors->first('display.' . $key) }}

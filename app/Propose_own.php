@@ -9,7 +9,7 @@ class Propose_own extends Model {
     protected $fillable = [
         'id',
         'years',
-        'dedication_type',
+        'research_type',
         'scheme',
         'sponsor',
         'member',

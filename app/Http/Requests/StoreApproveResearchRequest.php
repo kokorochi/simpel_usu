@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Research;
-use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreUpdateProgressRequest extends FormRequest {
+class StoreApproveResearchRequest extends FormRequest
+{
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,18 +24,7 @@ class StoreUpdateProgressRequest extends FormRequest {
     public function rules()
     {
         return [
-            'file_progress_activity' => 'required|mimes:pdf',
-            'file_progress_budgets'  => 'required|mimes:pdf',
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'file_progress_activity.required' => 'Laporan Kemajuan (Kegiatan) harus diisi',
-            'file_progress_budgets.required'  => 'Laporan Kemajuan (Anggaran) harus diisi',
-            'file_progress_activity.mimes'    => 'Laporan Kemajuan (Kegiatan) harus dalam bentuk PDF',
-            'file_progress_budgets.mimes'     => 'Laporan Kemajuan (Anggaran) harus dalam bentuk PDF',
+            'is_approved' => 'required',
         ];
     }
 
@@ -64,15 +52,12 @@ class StoreUpdateProgressRequest extends FormRequest {
     private function checkBeforeSave()
     {
         $ret = [];
-
-        $period = Research::find($this->id)->propose()->first()->period()->first();
-        $today_date = Carbon::now()->toDateString();
-
-        if ($period->first_begda >= $today_date || $period->first_endda <= $today_date)
+        if ($this->is_approved === 'no' &&
+            ($this->revision_text === null || $this->revision_text === '')
+        )
         {
-            array_push($ret, 'Tidak dalam masa update Laporan Kemajuan');
+            array_push($ret, 'Alasan Perbaikan harus diisi');
         }
-
         return $ret;
     }
 }

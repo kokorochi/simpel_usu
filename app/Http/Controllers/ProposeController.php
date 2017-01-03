@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ExternalMember;
 use App\ModelSDM\Lecturer;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -12,13 +13,12 @@ use App\Http\Requests;
 use App\Propose;
 use App\Propose_own;
 use App\Member;
-use App\Dedication_partner;
-use App\Dedication_reviewer;
+use App\ResearchReviewer;
+use App\ResearchType;
 use App\FlowStatus;
 use App\Output_type;
 use App\Period;
 use App\Category_type;
-use App\Dedication_type;
 use App\ModelSDM\Faculty;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -97,11 +97,7 @@ class ProposeController extends BlankonController {
 
         $category_types = Category_type::all();
 
-        $dedication_types = Dedication_type::all();
-
-        $dedication_partners = new Collection;
-        $dedication_partner = new Dedication_partner;
-        $dedication_partners->add(new Dedication_partner);
+        $research_types = ResearchType::all();
 
         $lecturer = $this->getEmployee(Auth::user()->nidn);
 
@@ -121,11 +117,9 @@ class ProposeController extends BlankonController {
             'periods',
             'period',
             'output_types',
-            'dedication_types',
+            'research_types',
             'faculties',
             'disable_upload',
-            'dedication_partners',
-            'dedication_partner',
             'members',
             'member',
             'lecturer'
@@ -135,6 +129,7 @@ class ProposeController extends BlankonController {
     public function store(Requests\StoreProposeRequest $request)
     {
         $lv_waiting = 'waiting';
+        $is_waiting = false;
         $proposes = new Propose();
         $flow_statuses = new FlowStatus();
 
@@ -143,7 +138,7 @@ class ProposeController extends BlankonController {
         {
             $proposes->is_own = '1';
             $proposes_own->years = $request['own-years'];
-            $proposes_own->dedication_type = $request['own-dedication_type'];
+            $proposes_own->research_type = $request['own-research_type'];
             $proposes_own->scheme = $request['own-scheme'];
             $proposes_own->sponsor = $request['own-sponsor'];
             $proposes_own->member = $request['own-member'];
@@ -153,32 +148,35 @@ class ProposeController extends BlankonController {
             $proposes->period_id = $request->period_id;
         }
 
-        $dedication_partners = new Collection();
-        $i = 1;
-        foreach ($request->partner_name as $key => $value)
-        {
-            $dedication_partner = new Dedication_partner();
-            $dedication_partner->item = $i++;
-            $dedication_partner->name = $request->partner_name[$key];
-            $dedication_partner->territory = $request->partner_territory[$key];
-            $dedication_partner->city = $request->partner_city[$key];
-            $dedication_partner->province = $request->partner_province[$key];
-            $dedication_partner->distance = $request->partner_distance[$key];
-            $dedication_partner->file_partner_contract_ori = $request->file('file_partner_contract')[$key]->getClientOriginalName();
-            $dedication_partner->file_partner_contract = md5($request->file('file_partner_contract')[$key]->getClientOriginalName() . Carbon::now()->toDateTimeString()) . $dedication_partner->item . '.pdf';
-            $dedication_partners->add($dedication_partner);
-        }
-
         $members = new Collection();
+        $external_members = new Collection();
         $i = 1;
         foreach ($request->member_nidn as $key => $member_nidn)
         {
-            $member = new Member();
-            $member->item = $i++;
-            $member->nidn = $member_nidn;
-            $member->status = $lv_waiting;
-            $member->areas_of_expertise = $request->member_areas_of_expertise[$key];
-            $members->add($member);
+            if ($request['external' . $key] != '1')
+            {
+                $member = new Member();
+                $member->item = $i++;
+                $member->nidn = $member_nidn;
+                $member->status = $lv_waiting;
+                $member->areas_of_expertise = $request->member_areas_of_expertise[$key];
+                $members->add($member);
+
+                $is_waiting = true;
+            } else
+            {
+                $member = new Member();
+                $member->item = $i++;
+                $member->status = 'accepted';
+                $member->areas_of_expertise = $request->member_areas_of_expertise[$key];
+                $member->external = '1';
+                $members->add($member);
+
+                $external_member = new ExternalMember();
+                $external_member->name = $request->external_name[$key];
+                $external_member->affiliation = $request->external_affiliation[$key];
+                $external_members->add($external_member);
+            }
         }
 
         $proposes->faculty_code = $request->faculty_code;
@@ -191,29 +189,39 @@ class ProposeController extends BlankonController {
         $proposes->student_involved = $request->student_involved;
         $proposes->areas_of_expertise = $request->areas_of_expertise;
         $proposes->address = $request->address;
-//        $proposes->file_partner_contract = md5($request->file('file_partner_contract')->getClientOriginalName() . Carbon::now()->toDateTimeString()) . '.pdf';
         $proposes->created_by = Auth::user()->nidn;
 
-        $flow_statuses->item = '1';
-        $flow_statuses->status_code = 'VA'; //Menunggu Verifikasi Anggota
-        $flow_statuses->created_by = $proposes->created_by;
+        if ($is_waiting)
+        {
+            $flow_statuses->item = '1';
+            $flow_statuses->status_code = 'VA'; //Menunggu Verifikasi Anggota
+            $flow_statuses->created_by = $proposes->created_by;
+        } else
+        {
+            $flow_statuses->item = '1';
+            $flow_statuses->status_code = 'UU'; //Menunggu Unggah Usulan
+            $flow_statuses->created_by = $proposes->created_by;
+        }
 
-        DB::transaction(function () use ($proposes, $proposes_own, $dedication_partners, $members, $flow_statuses, $request)
+        DB::transaction(function () use ($proposes, $proposes_own, $members, $external_members, $flow_statuses, $request)
         {
             $proposes->save();
             if ($proposes->is_own === '1')
             {
                 $proposes->proposesOwn()->save($proposes_own);
             }
-            $proposes->dedicationPartner()->saveMany($dedication_partners);
             $proposes->member()->saveMany($members);
-            $proposes->flowStatus()->save($flow_statuses);
-
-            $path = Storage::url('upload/' . md5(Auth::user()->nidn) . '/contract/');
-            foreach ($dedication_partners as $key => $dedication_partner)
+            $i = 0;
+            foreach ($members as $member)
             {
-                $request->file('file_partner_contract')[$key]->storeAs($path, $dedication_partner->file_partner_contract);
+                if ($member->external === '1')
+                {
+                    $external_member = $external_members[$i];
+                    $member->externalMember()->save($external_member);
+                    $i++;
+                }
             }
+            $proposes->flowStatus()->save($flow_statuses);
         });
 
         return redirect()->intended('/proposes');
@@ -234,12 +242,19 @@ class ProposeController extends BlankonController {
         $propose_own = $propose->proposesOwn()->first();
         $periods = $propose->period()->get();
         $period = $propose->period()->first();
-        $dedication_partners = $propose->dedicationPartner()->get();
-        $dedication_partner = $propose->dedicationPartner()->first();
         $members = $propose->member()->get();
         foreach ($members as $member)
         {
-            $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+            if ($member->external === '1')
+            {
+                $external_member = $member->externalMember()->first();
+                $member->external_name = $external_member->name;
+                $member->external_affiliation = $external_member->affiliation;
+            } else
+            {
+                $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+
+            }
             $member['member_nidn'] = $member->nidn;
             $member['member_areas_of_expertise'] = $member->areas_of_expertise;
         }
@@ -247,7 +262,7 @@ class ProposeController extends BlankonController {
         $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
         $faculties = Faculty::where('is_faculty', '1')->get();
         $output_types = Output_type::all();
-        $dedication_types = Dedication_type::all();
+        $research_types = ResearchType::all();
 
         if ($propose_own === null)
         {
@@ -271,10 +286,8 @@ class ProposeController extends BlankonController {
             'periods',
             'period',
             'output_types',
-            'dedication_types',
+            'research_types',
             'faculties',
-            'dedication_partners',
-            'dedication_partner',
             'members',
             'member',
             'lecturer'
@@ -343,18 +356,24 @@ class ProposeController extends BlankonController {
         $propose_own = $propose->proposesOwn()->first();
         $periods = $propose->period()->get();
         $period = $propose->period()->first();
-        $dedication_partners = $propose->dedicationPartner()->get();
-        $dedication_partner = $propose->dedicationPartner()->first();
         $members = $propose->member()->get();
         foreach ($members as $member)
         {
-            $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+            if ($member->external === '1')
+            {
+                $external_member = $member->externalMember->first();
+                $member->external_name = $external_member->name;
+                $member->external_affiliation = $external_member->affiliation;
+            } else
+            {
+                $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+            }
         }
         $member = $propose->member()->first();
         $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
         $faculties = Faculty::where('is_faculty', '1')->get();
         $output_types = Output_type::all();
-        $dedication_types = Dedication_type::all();
+        $research_types = ResearchType::all();
 
         if ($propose_own === null)
         {
@@ -387,11 +406,9 @@ class ProposeController extends BlankonController {
             'periods',
             'period',
             'output_types',
-            'dedication_types',
+            'research_types',
             'faculties',
             'disable_upload',
-            'dedication_partners',
-            'dedication_partner',
             'members',
             'member',
             'lecturer',
@@ -405,13 +422,12 @@ class ProposeController extends BlankonController {
         if ($request->submit_button === 'print')
         {
             $propose = Propose::find($id);
-            $dedication_partners = $propose->dedicationPartner()->get();
             $lecturer = Lecturer::where('employee_card_serial_number', Auth::user()->nidn)->first();
-            $lppm_head = Lecturer::where('employee_card_serial_number', '0001096202')->first();
+            $lppm_head = Lecturer::where('employee_card_serial_number', '0001116503')->first();
 
-            if($request->sign_2 === 'secretary')
+            if ($request->sign_2 === 'secretary')
             {
-                $lppm_head = Lecturer::where('employee_card_serial_number', '0009016502')->first();
+                $lppm_head = Lecturer::where('employee_card_serial_number', '0031086102')->first();
             }
 
             $lppm_head->full_name = $lppm_head->front_degree . ' ' . $lppm_head->full_name . ', ' . $lppm_head->behind_degree;
@@ -529,6 +545,15 @@ class ProposeController extends BlankonController {
             }
 
             $members = $propose->member()->get();
+            foreach ($members as $member)
+            {
+                if ($member->external === '1')
+                {
+                    $external_member = $member->externalMember()->first();
+                    $member->external_name = $external_member->name;
+                    $member->external_affiliation = $external_member->affiliation;
+                }
+            }
             $month = date('M', strtotime(Carbon::now()->toDateString()));
             switch ($month)
             {
@@ -577,7 +602,6 @@ class ProposeController extends BlankonController {
 
             return view('printing.print-confirmation', compact(
                 'propose',
-                'dedication_partners',
                 'lecturer',
                 'members',
                 'today_date',
@@ -643,9 +667,8 @@ class ProposeController extends BlankonController {
     public function printConfirmation($id)
     {
         $propose = Propose::find($id);
-        $dedication_partners = $propose->dedicationPartner()->get();
         $lecturer = Lecturer::where('employee_card_serial_number', Auth::user()->nidn)->first();
-        $lppm_head = Lecturer::where('employee_card_serial_number', '0001096202')->first();
+        $lppm_head = Lecturer::where('employee_card_serial_number', '0001116503')->first();
         $lppm_head->full_name = $lppm_head->front_degree . ' ' . $lppm_head->full_name . ', ' . $lppm_head->behind_degree;
 
         switch ($propose->faculty_code)
@@ -751,7 +774,6 @@ class ProposeController extends BlankonController {
 
         return view('printing.print-confirmation', compact(
             'propose',
-            'dedication_partners',
             'lecturer',
             'members',
             'today_date',
@@ -779,16 +801,7 @@ class ProposeController extends BlankonController {
 
     public function getFile($id, $type)
     {
-        if ($type == 1)
-        {
-            $dedication_partner = Dedication_partner::find($id);
-            $nidn = $dedication_partner->propose()->first()->created_by;
-            $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/contract/' . $dedication_partner->file_partner_contract);
-
-            $this->storeDownloadLog($dedication_partner->propose()->first()->id, 'contract', $dedication_partner->file_partner_contract_ori, $dedication_partner->file_partner_contract, $nidn);
-
-            return response()->download($path, $dedication_partner->file_partner_contract_ori, ['Content-Type' => 'application/pdf']);
-        } elseif ($type == 2)
+        if ($type == 2)
         {
             $propose = Propose::find($id);
             $nidn = $propose->created_by;
@@ -829,18 +842,24 @@ class ProposeController extends BlankonController {
         $propose_own = $propose->proposesOwn()->first();
         $periods = $propose->period()->get();
         $period = $propose->period()->first();
-        $dedication_partners = $propose->dedicationPartner()->get();
-        $dedication_partner = $propose->dedicationPartner()->first();
         $members = $propose->member()->get();
         foreach ($members as $member)
         {
-            $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+            if ($member->external === '1')
+            {
+                $external_member = $member->externalMember()->first();
+                $member->external_name = $external_member->name;
+                $member->external_affiliation = $external_member->affiliation;
+            } else
+            {
+                $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+            }
         }
         $member = $propose->member()->first();
         $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
         $faculties = Faculty::where('is_faculty', '1')->get();
         $output_types = Output_type::all();
-        $dedication_types = Dedication_type::all();
+        $research_types = ResearchType::all();
 
         if ($propose_own === null)
         {
@@ -869,11 +888,9 @@ class ProposeController extends BlankonController {
             'periods',
             'period',
             'output_types',
-            'dedication_types',
+            'research_types',
             'faculties',
             'disable_upload',
-            'dedication_partners',
-            'dedication_partner',
             'members',
             'member',
             'lecturer',
@@ -912,7 +929,7 @@ class ProposeController extends BlankonController {
                 'created_by'  => Auth::user()->nidn,
             ]);
 
-            $propose->dedication()->create([
+            $propose->research()->create([
                 'created_by' => Auth::user()->nidn,
             ]);
         });

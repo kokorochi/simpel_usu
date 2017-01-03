@@ -3,7 +3,7 @@
 $errors->has('sumErrors')
 )
     @php
-        if(old('revision_text')) $dedication_output_guidebook->revision_text = old('revision_text');
+        if(old('revision_text')) $research_output_revision->revision_text = old('revision_text');
     @endphp
 @endif
 {{--Get Old Value And Place It To VARIABLE--}}
@@ -22,7 +22,7 @@ $errors->has('sumErrors')
                 <div class="clearfix"></div>
             </div>
             <div class="panel-body no-padding">
-                <form action="{{url($deleteUrl, $dedication->id) . '/approve'}}" method="post"
+                <form action="{{url($deleteUrl, $research->id) . '/approve'}}" method="post"
                       class="form-body form-horizontal form-bordered">
                     <div class="form-group">
                         <label for="title" class="col-sm-4 col-md-3 control-label">Disetujui</label>
@@ -38,18 +38,7 @@ $errors->has('sumErrors')
                         </div>
                     </div>
                     <div id="revision-text-wrapper">
-                        <div class="form-group">
-                            <label for="title" class="col-sm-4 col-md-3 control-label">Alasan Perbaikan</label>
-                            <div class="col-sm-7">
-                            <textarea name="revision_text" class="form-control input-sm"
-                                      rows="3">{{$dedication_output_revision->revision_text}}</textarea>
-                                @if($errors->has('revision_text'))
-                                    <label class="error" for="revision_text" style="display: inline-block;">
-                                        {{ $errors->first('revision_text') }}
-                                    </label>
-                                @endif
-                            </div>
-                        </div>
+                        @include('form-input.research-approve-revisiontext')
                     </div>
 
                     {{ csrf_field() }}
@@ -58,7 +47,7 @@ $errors->has('sumErrors')
                     <div class="clearfix"></div>
                     <div class="form-footer">
                         <div class="col-sm-offset-4 col-md-offset-3">
-                            <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
+                            <a href="{{url($deleteUrl)}}/approve-list" class="btn btn-teal btn-slideright">Kembali</a>
                             <button type="submit" class="btn btn-success btn-slideright">Simpan</button>
                         </div><!-- /.col-sm-offset-3 -->
                     </div><!-- /.form-footer -->

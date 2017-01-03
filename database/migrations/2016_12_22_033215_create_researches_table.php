@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDedicationsTable extends Migration
+class CreateResearchesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateDedicationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('dedications', function (Blueprint $table) {
+        Schema::create('researches', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('propose_id', false, true);
             $table->string('file_progress_activity')->nullable();
@@ -38,6 +38,6 @@ class CreateDedicationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dedications');
+        Schema::dropIfExists('researches');
     }
 }

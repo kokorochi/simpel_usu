@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Output_type extends Model
 {
-    protected $fillable = ['output_name'];
+    protected $fillable = ['output_code','output_name'];
 }

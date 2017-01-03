@@ -43,8 +43,8 @@ class StoreProposeRequest extends FormRequest {
             //End Check Dedication Partner
 
             //Check Member
-            'member_display.*'   => 'required',
-            'member_nidn.*'      => 'required',
+//            'member_display.*'   => 'required',
+//            'member_nidn.*'      => 'required',
             //End Check Member
 
             //Check Detail
@@ -68,11 +68,11 @@ class StoreProposeRequest extends FormRequest {
     public function messages()
     {
         return [
-            'partner_name.*.required'      => 'Nama partner tidak boleh kosong',
-            'partner_territory.*.required' => 'Wilayah Mitra (Desa/Kecamatan) tidak boleh kosong',
-            'partner_city.*.required'      => 'Kabupaten/Kota tidak boleh kosong',
-            'partner_province.*.required'  => 'Provinsi tidak boleh kosong',
-            'partner_distance.*.required'  => 'Jarak PT ke lokasi mitra (KM) tidak boleh kosong',
+//            'partner_name.*.required'      => 'Nama partner tidak boleh kosong',
+//            'partner_territory.*.required' => 'Wilayah Mitra (Desa/Kecamatan) tidak boleh kosong',
+//            'partner_city.*.required'      => 'Kabupaten/Kota tidak boleh kosong',
+//            'partner_province.*.required'  => 'Provinsi tidak boleh kosong',
+//            'partner_distance.*.required'  => 'Jarak PT ke lokasi mitra (KM) tidak boleh kosong',
 
             'member_display.*.required' => 'Nama Anggota tidak boleh kosong',
             'member_nidn.*.required'    => 'NIDN Anggota tidak boleh kosong',
@@ -157,21 +157,36 @@ class StoreProposeRequest extends FormRequest {
         }
 
         //Check file partner contract
-        foreach ($this->input('partner_name') as $key => $item)
-        {
-            if($this->file('file_partner_contract.' . $key) === null)
-            {
-                array_push($ret, 'Surat Kesediaan Kerjasama harus diunggah');
-                break 1;
-            }
-        }
+//        foreach ($this->input('partner_name') as $key => $item)
+//        {
+//            if($this->file('file_partner_contract.' . $key) === null)
+//            {
+//                array_push($ret, 'Surat Kesediaan Kerjasama harus diunggah');
+//                break 1;
+//            }
+//        }
 
         //Check Member NIDN with SIMSDM Lecturer Table
         foreach ($this->input('member_nidn') as $key => $member_nidn)
         {
-            if (! Lecturer::where('employee_card_serial_number', $member_nidn)->exists())
+            if ($this->input('external' . $key) === '1')
             {
-                array_push($ret, 'Anggota yang dipilih tidak valid : ' . $this->input('member_display.' . $key));
+                if($this->input('external_name')[$key] === '' ||
+                   $this->input('external_affiliation')[$key] === '')
+                {
+                    array_push($ret, 'Data dosen dari luar kurang lengkap (Nama dan Afiliasi harus diisi)');
+                }
+            } else
+            {
+                if($this->input('member_nidn')[$key] === '' ||
+                   $this->input('member_display')[$key] === '')
+                {
+                    array_push($ret, 'Data dosen USU harus diisi dan dipilih via autocomplete');
+                }
+                if (! Lecturer::where('employee_card_serial_number', $member_nidn)->exists())
+                {
+                    array_push($ret, 'Anggota yang dipilih tidak valid : ' . $this->input('member_display.' . $key));
+                }
             }
         }
 
@@ -188,16 +203,24 @@ class StoreProposeRequest extends FormRequest {
         }
 
         //Check Member Duplicate
-        $member_collection = $this->input('member_nidn');
+        $member_collection = [];
+        foreach ($this->input('member_nidn') as $key => $item)
+        {
+            if($item != '' && $this->input('external' . $key) != '1')
+            {
+                array_push($member_collection, $item);
+            }
+        }
         array_push($member_collection, Auth::user()->nidn);
-        $member_collection = array_unique($member_collection);
-        if (count($member_collection) !== ( count($this->input('member_nidn')) + 1 ))
+        $member_unique_collection = array_unique($member_collection);
+        if (count($member_unique_collection) !== count($member_collection))
         {
             array_push($ret, 'Anggota yang dipilih tidak boleh duplikasi');
         }
-        
+
         //Check Head Dedication Creation times
         $i_as_member = 0;
+        $i_as_head = 0;
         $year = date('Y', strtotime(Carbon::now()->toDateString()));
         $periods = Period::where('years', $year)->get();
         foreach ($periods as $period)
@@ -206,24 +229,29 @@ class StoreProposeRequest extends FormRequest {
             foreach ($propose as $item)
             {
                 $flow_status = $item->flowStatus()->where('status_code', '<>', 'UT')->first();
-                if($flow_status !== null)
+                if ($flow_status !== null)
                 {
                     array_push($ret, '1 Dosen hanya bisa menjadi ( ketua penlitian sebanyak 1 kali dan menjadi anggota sebanyak 2 kali ) atau ( anggota sebanyak 3 kali ) dalam 1 tahun');
+                    $i_as_head = 1;
                     break 2;
                 }
+            }
 
-                $member = $item->member()->where('nidn', Auth::user()->nidn)->where('status', 'accepted')->first();
-                if($member !== null)
+            $i_as_member += $i_as_head;
+            $proposes = $period->propose()->where('created_by', '<>', Auth::user()->nidn)->where('is_own', null)->get();
+            foreach ($proposes as $propose)
+            {
+                $member = $propose->member()->where('nidn', Auth::user()->nidn)->where('status', 'accepted')->first();
+                if ($member !== null)
                 {
                     $i_as_member++;
-                    if($i_as_member >= 3)
+                    if ($i_as_member >= 3)
                     {
                         array_push($ret, '1 Dosen hanya bisa menjadi ( ketua penlitian sebanyak 1 kali dan menjadi anggota sebanyak 2 kali ) atau ( anggota sebanyak 3 kali ) dalam 1 tahun');
                         break 2;
                     }
                 }
             }
-
         }
 
         return $ret;

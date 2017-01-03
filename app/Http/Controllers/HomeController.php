@@ -21,19 +21,10 @@ class HomeController extends BlankonController
         array_push($this->css['pages'], 'global/plugins/bower_components/dropzone/downloads/css/dropzone.css');
         array_push($this->css['pages'], 'global/plugins/bower_components/jquery.gritter/css/jquery.gritter.css');
 
-//        array_push($this->js['plugins'], 'global/plugins/bower_components/bootstrap-session-timeout/dist/bootstrap-session-timeout.min.js');
-//        array_push($this->js['plugins'], 'global/plugins/bower_components/flot/jquery.flot.js');
-//        array_push($this->js['plugins'], 'global/plugins/bower_components/flot/jquery.flot.spline.min.js');
-//        array_push($this->js['plugins'], 'global/plugins/bower_components/flot/jquery.flot.categories.js');
-//        array_push($this->js['plugins'], 'global/plugins/bower_components/flot/jquery.flot.tooltip.min.js');
-//        array_push($this->js['plugins'], 'global/plugins/bower_components/flot/jquery.flot.resize.js');
-//        array_push($this->js['plugins'], 'global/plugins/bower_components/flot/jquery.flot.pie.js');
-//        array_push($this->js['plugins'], 'global/plugins/bower_components/dropzone/downloads/dropzone.min.js');
-//        array_push($this->js['plugins'], 'global/plugins/bower_components/jquery.gritter/js/jquery.gritter.min.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/masonry/dist/masonry.pkgd.min.js');
 
-//        array_push($this->js['scripts'], 'global/plugins/bower_components/masonry/dist/masonry.pkgd.min.js');
         array_push($this->js['scripts'], 'admin/js/pages/blankon.blog.js');
+        array_push($this->js['scripts'], 'admin/js/jquery.infinitescroll.js');
         array_push($this->js['scripts'], 'admin/js/customize.js');
 
         View::share('css', $this->css);
@@ -43,10 +34,17 @@ class HomeController extends BlankonController
 
     public function index()
     {
-        $announces = Announce::orderBy('updated_at', 'DESC')->get();
+        $announces = Announce::orderBy('id', 'DESC')->paginate(4);
         foreach ($announces as $announce) {
+            $title_overlength = false;
+            $content_overlength = false;
+            if(strlen($announce->title) > 30) $title_overlength = true;
+            if(strlen($announce->content) > 200) $content_overlength = true;
+            $announce->title = substr($announce->title, 0, 30);
+            if($title_overlength) $announce->title = $announce->title . '...';
             $announce->content = strip_tags($announce->content);
             $announce->content = substr($announce->content, 0, 200);
+            if($content_overlength) $announce->content = $announce->content . '...';
         }
 
         foreach ($announces as $announce)

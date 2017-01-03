@@ -4,20 +4,20 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DedicationOutputRevision extends Model
+class ResearchOutputRevision extends Model
 {
     protected $fillable = [
-        'dedication_id',
+        'research_id',
         'item',
         'revision_text',
         'created_by',
         'updated_by',
     ];
 
-    protected $touches = ['dedication'];
+    protected $touches = ['research'];
 
-    public function dedication()
+    public function research()
     {
-        return $this->belongsTo(Dedication::class);
+        return $this->belongsTo(Research::class);
     }
 }

@@ -73,11 +73,11 @@
                                 </div><!-- /.form-group -->
 
                                 <div class="form-group">
-                                    <label for="dedication_type" class="col-sm-3 control-label">Jenis Pengabdian</label>
+                                    <label for="research_type" class="col-sm-3 control-label">Jenis Peneliitan</label>
                                     <div class="col-sm-7">
-                                        <select name="dedication_type" class="form-control input-sm">
-                                            @foreach($dedication_types as $dedication_type)
-                                                <option value="{{$dedication_type->id}}" {{$period->dedication_type == $dedication_type->id ? 'selected' : null}}>{{$dedication_type->dedication_name}}</option>
+                                        <select name="research_type" class="form-control input-sm">
+                                            @foreach($research_types as $research_type)
+                                                <option value="{{$research_type->id}}" {{$period->research_type == $research_type->id ? 'selected' : null}}>{{$research_type->research_name}}</option>
                                             @endforeach
                                         </select>
                                     </div>

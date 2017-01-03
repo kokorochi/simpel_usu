@@ -30,8 +30,6 @@
 
             @include('form-input.propose-scheme')
 
-            @include('form-input.propose-partner')
-
             @include('form-input.propose-member')
 
             @include('form-input.propose-detail')
@@ -47,7 +45,7 @@
                 <div class="form-footer">
                     <div class="col-sm-offset-4 col-md-offset-3">
                         <a href="{{url($deleteUrl) . '/assign'}}" class="btn btn-teal btn-slideright">Kembali</a>
-                        <button type="submit" class="btn btn-success btn-slideright">Submit</button>
+                        <button type="submit" class="btn btn-success btn-slideright">Simpan</button>
                     </div><!-- /.col-sm-offset-3 -->
                 </div><ss!-- /.form-footer -->
             </form>
