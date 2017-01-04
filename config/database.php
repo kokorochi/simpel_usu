@@ -68,11 +68,11 @@ return [
 
         'simsdm' => [
             'driver' => 'mysql',
-            'host' => env('DB_HOST', 'localhost'),
-            'port' => env('DB_PORT', '3306'),
+            'host' => env('DB_HOST_SDM', 'localhost'),
+            'port' => env('DB_PORT_SDM', '3306'),
             'database' => env('DB_DATABASE_SDM', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'username' => env('DB_USERNAME_SDM', 'forge'),
+            'password' => env('DB_PASSWORD_SDM', ''),
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
