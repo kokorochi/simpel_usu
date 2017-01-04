@@ -18,7 +18,7 @@
                         {{ $pageTitle }}
                         <i class="fa fa-angle-right"></i>
                     </li>
-                    <li class="active">Ubah Pengabdian</li>
+                    <li class="active">Ubah Penelitian</li>
                 </ol>
             </div><!-- /.breadcrumb-wrapper -->
         </div><!-- /.header-content -->

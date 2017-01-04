@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>LPM USU | Maintenance</title>
+        <title>LP USU | Maintenance</title>
 
         <link href="{{Request::root()}}/assets/global/plugins/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="{{Request::root()}}/assets/admin/css/reset.css" rel="stylesheet">

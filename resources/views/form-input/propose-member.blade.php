@@ -36,7 +36,7 @@ $errors->has('external_affiliation.' . $ctr_old) || old('external_affiliation.' 
         <div class="panel">
             <div class="panel-heading">
                 <div class="pull-left">
-                    <h3 class="panel-title">Anggota Pengabdian</h3>
+                    <h3 class="panel-title">Anggota Penelitian</h3>
                 </div>
                 <div class="pull-right">
                     <a class="btn btn-sm" data-action="collapse" data-container="body" data-toggle="tooltip"

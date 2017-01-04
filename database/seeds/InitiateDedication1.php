@@ -192,7 +192,7 @@ class InitiateDedication1 extends Seeder
         ]);
         StatusCode::create([
             'code'        => 'PS',
-            'description' => 'Pengabdian Selesai',
+            'description' => 'Penelitian Selesai',
             'created_by'  => 'admin',
         ]);
 //      End Status Code

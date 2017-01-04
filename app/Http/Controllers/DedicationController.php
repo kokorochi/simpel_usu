@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\DB;
 use View;
 
 class DedicationController extends BlankonController {
-    protected $pageTitle = 'Pengabdian';
+    protected $pageTitle = 'Penelitian';
     protected $deleteQuestion = '';
     protected $deleteUrl = 'dedications';
 
@@ -829,7 +829,7 @@ class DedicationController extends BlankonController {
             {
                 $dedication->propose()->first()->flowStatus()->create([
                     'item'        => $flow_status->item + 1,
-                    'status_code' => 'PS', // Pengabdian Selesai,
+                    'status_code' => 'PS', // Penelitian Selesai,
                     'created_by'  => Auth::user()->nidn
                 ]);
             }

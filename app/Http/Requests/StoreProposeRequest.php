@@ -78,7 +78,7 @@ class StoreProposeRequest extends FormRequest {
             'member_nidn.*.required'    => 'NIDN Anggota tidak boleh kosong',
 
             'faculty_code.required'       => 'Fakultas tidak boleh kosong',
-            'title.required'              => 'Judul Pengabdian tidak boleh kosong',
+            'title.required'              => 'Judul Penelitian tidak boleh kosong',
             'output_type.required'        => 'Luaran tidak boleh kosong',
             'total_amount.required'       => 'Jumlah Dana tidak boleh kosong',
             'time_period.required'        => 'Jangka Waktu tidak boleh kosong',

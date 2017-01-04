@@ -30,7 +30,7 @@ $errors->has('partner_distance.' . $ctr_old) || old('partner_distance.' . $ctr_o
         <div class="panel">
             <div class="panel-heading">
                 <div class="pull-left">
-                    <h3 class="panel-title">Mitra Pengabdian</h3>
+                    <h3 class="panel-title">Mitra Penelitian</h3>
                 </div>
                 <div class="pull-right">
                     <a class="btn btn-sm" data-action="collapse" data-container="body" data-toggle="tooltip"

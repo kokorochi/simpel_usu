@@ -625,7 +625,7 @@ class ResearchController extends BlankonController {
             {
                 $research->propose()->first()->flowStatus()->create([
                     'item'        => $flow_status->item + 1,
-                    'status_code' => 'PS', // Pengabdian Selesai,
+                    'status_code' => 'PS', // Penelitian Selesai,
                     'created_by'  => Auth::user()->nidn
                 ]);
             }

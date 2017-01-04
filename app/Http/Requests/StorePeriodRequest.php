@@ -84,7 +84,7 @@ class StorePeriodRequest extends FormRequest {
         }
         if (! $this->checkResearchType())
         {
-            return 'Pilihan jenis pengabdian tidak ditemukan';
+            return 'Pilihan jenis penelitian tidak ditemukan';
         }
         if (! $this->checkAppraisalType())
         {

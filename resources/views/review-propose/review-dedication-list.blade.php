@@ -18,7 +18,7 @@
                         {{ $pageTitle }}
                         <i class="fa fa-angle-right"></i>
                     </li>
-                    <li class="active">List Pengabdian</li>
+                    <li class="active">List Penelitian</li>
                 </ol>
             </div><!-- /.breadcrumb-wrapper -->
         </div><!-- /.header-content -->
@@ -61,7 +61,7 @@
                     <div class="panel rounded shadow">
                         <div class="panel-heading">
                             <div class="pull-left">
-                                <h3 class="panel-title">List Pengabdian Berdasarkan Scheme</h3>
+                                <h3 class="panel-title">List Penelitian Berdasarkan Scheme</h3>
                             </div>
                             <div class="pull-right">
                                 <button class="btn btn-sm" data-action="collapse" data-container="body"

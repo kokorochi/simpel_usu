@@ -31,7 +31,7 @@ class BlankonController extends Controller {
     // sidebar left class	
     public $sidebarClass = "sidebar-circle";
 
-    public $mainTitle = 'LPM USU - Pengabdian Masyarakat';
+    public $mainTitle = 'LP USU - Lembaga Penelitian';
 
     public $v_auths = [];
 
