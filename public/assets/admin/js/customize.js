@@ -169,28 +169,4 @@ $(document).ready(function () {
     $("form#submit-form").submit(function (e) {
         $(this).find('button#submit').attr('disabled', 'disabled');
     });
-
-    $('ul.pagination:visible:first').hide();
-    // $(".announce-home").masonry({
-    //     columnWidth: '.col-xs-12',
-    //     itemSelector: '.col-xs-12',
-    //     isAnimated: true
-    // });
-    $(".announce-home").infinitescroll({
-        navSelector: 'ul.pagination',    // selector for the paged navigation
-        nextSelector: 'ul.pagination li:last-child a',  // selector for the NEXT link (to page 2)
-        itemSelector: '.announce-home div.announce-item',     // selector for all items you'll retrieve
-        loading: {
-            selector: '#announce-load',
-            finishedMsg: 'Tidak ada pengumuman lagi',
-            msgText: "<em>Memuat pengumuman . . .</em>",
-        }
-    },
-        // call masonry as a callback
-        function (newElements) {
-            var $newElems = $(newElements);
-            $(".announce-home").masonry('appended', $newElems);
-            BlankonBlog.masonryGrid();
-        }
-    );
 });

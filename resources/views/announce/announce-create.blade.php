@@ -89,7 +89,7 @@
                                         <div class="inner-all">
                                             <div class="form-horizontal">
                                                 <div class="form-group">
-                                                    <textarea name="description" id="summernote-textarea" class="form-control" rows="10" placeholder="Konten pengumuman..."></textarea>
+                                                    <textarea name="description" id="summernote-textarea" class="form-control" rows="10" placeholder="Konten pengumuman...">{{old('description')}}</textarea>
                                                 </div>
                                             </div>
                                         </div>
