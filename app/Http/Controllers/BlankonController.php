@@ -145,7 +145,7 @@ class BlankonController extends Controller {
         {
             $ret->photo = 'photo.jpg';
         }
-        $ret->photo = 'http://simsdm.usu.ac.id/photos/' . $ret->photo;
+        $ret->photo = 'https://simsdm.usu.ac.id/photos/' . $ret->photo;
 
         return $ret;
     }
