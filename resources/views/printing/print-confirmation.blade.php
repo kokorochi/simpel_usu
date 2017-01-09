@@ -32,21 +32,6 @@
         </tr>
         <!-- End Dedication Title -->
 
-        <!-- Dedication Partner -->
-        {{--@foreach($dedication_partners as $dedication_partner)--}}
-        {{--<tr>--}}
-        {{--<td class="print-col-1">--}}
-        {{--@if($dedication_partner->item === 1)--}}
-        {{--2.--}}
-        {{--@endif--}}
-        {{--</td>--}}
-        {{--<td class="print-col-2">Nama Mitra ({{$dedication_partner->item}})</td>--}}
-        {{--<td class="print-col-3">:</td>--}}
-        {{--<td class="print-col-4">{{$dedication_partner->name}}</td>--}}
-        {{--</tr>--}}
-        {{--@endforeach--}}
-        <!-- End Dedication Partner -->
-
         <!-- Head Detail -->
         <tr>
             <td class="print-col-1">2.</td>
@@ -162,12 +147,14 @@
         <!-- End Member Detail -->
 
         <!-- Output Type -->
-        <tr>
-            <td class="print-col-1">5.</td>
-            <td class="print-col-2">Luaran yang dihasilkan</td>
-            <td class="print-col-3">:</td>
-            <td class="print-col-4">{{$propose->outputType()->first()->output_name}}</td>
-        </tr>
+        @foreach($propose_output_types as $key => $propose_output_type)
+            <tr>
+                <td class="print-col-1">{{$key === 0 ? "5." : ""}}</td>
+                <td class="print-col-2">{{$key === 0 ? "Luaran yang dihasilkan" : ""}}</td>
+                <td class="print-col-3">{{$key === 0 ? ":" : ""}}</td>
+                <td class="print-col-4">{{"- " . $propose_output_type->outputType()->first()->output_name}}</td>
+            </tr>
+        @endforeach
         <!-- End Output Type -->
 
         <tr>

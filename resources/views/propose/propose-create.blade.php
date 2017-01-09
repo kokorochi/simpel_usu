@@ -31,13 +31,11 @@
             <form class="" action="{{url('proposes/create')}}" method="POST" enctype="multipart/form-data">
                 @include('form-input.propose-scheme')
 
-                {{--@include('form-input.propose-partner')--}}
-
                 @include('form-input.propose-member')
 
-                @include('form-input.propose-detail')
+                @include('form-input.propose-detail-output')
 
-                {{--@include('form-input.propose-upload')--}}
+                @include('form-input.propose-detail')
 
                 <div class="row">
                     <div class="col-md-12">

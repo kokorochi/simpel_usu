@@ -118,7 +118,7 @@ class StoreProposeRequest extends FormRequest {
         $ret = [];
 
         //Check Own Scheme If Checked
-        if ($this->input('is_own') === 'x')
+        if ($this->input('is_own') === '1')
         {
             if (
                 $this->input('own-years') === "" ||
@@ -166,20 +166,40 @@ class StoreProposeRequest extends FormRequest {
 //            }
 //        }
 
+        //Check output type
+        $valid_output = false;
+        foreach ($this->input('output_type') as $key => $item)
+        {
+            if ($item !== '')
+            {
+                $valid_output = true;
+                if (! Output_type::where('id', $item)->exists())
+                {
+                    array_push($ret, 'Luaran yang dipilih tidak valid');
+                }
+            }
+        }
+        if (! $valid_output)
+        {
+            array_push($ret, 'Minimal 1 luaran yang dihasilkan harus diisi');
+        }
+
         //Check Member NIDN with SIMSDM Lecturer Table
         foreach ($this->input('member_nidn') as $key => $member_nidn)
         {
             if ($this->input('external' . $key) === '1')
             {
-                if($this->input('external_name')[$key] === '' ||
-                   $this->input('external_affiliation')[$key] === '')
+                if ($this->input('external_name')[$key] === '' ||
+                    $this->input('external_affiliation')[$key] === ''
+                )
                 {
                     array_push($ret, 'Data dosen dari luar kurang lengkap (Nama dan Afiliasi harus diisi)');
                 }
             } else
             {
-                if($this->input('member_nidn')[$key] === '' ||
-                   $this->input('member_display')[$key] === '')
+                if ($this->input('member_nidn')[$key] === '' ||
+                    $this->input('member_display')[$key] === ''
+                )
                 {
                     array_push($ret, 'Data dosen USU harus diisi dan dipilih via autocomplete');
                 }
@@ -196,17 +216,11 @@ class StoreProposeRequest extends FormRequest {
             array_push($ret, 'Fakultas yang dipilih tidak valid');
         }
 
-        //Check Output Type
-        if (! Output_type::where('id', $this->input('output_type'))->exists())
-        {
-            array_push($ret, 'Luaran yang dipilih tidak valid');
-        }
-
         //Check Member Duplicate
         $member_collection = [];
         foreach ($this->input('member_nidn') as $key => $item)
         {
-            if($item != '' && $this->input('external' . $key) != '1')
+            if ($item != '' && $this->input('external' . $key) != '1')
             {
                 array_push($member_collection, $item);
             }
@@ -219,36 +233,39 @@ class StoreProposeRequest extends FormRequest {
         }
 
         //Check Head Dedication Creation times
-        $i_as_member = 0;
-        $i_as_head = 0;
-        $year = date('Y', strtotime(Carbon::now()->toDateString()));
-        $periods = Period::where('years', $year)->get();
-        foreach ($periods as $period)
+        if ($this->input('is_own') !== '1')
         {
-            $propose = $period->propose()->where('created_by', Auth::user()->nidn)->where('is_own', null)->get();
-            foreach ($propose as $item)
+            $i_as_member = 0;
+            $i_as_head = 0;
+            $year = date('Y', strtotime(Carbon::now()->toDateString()));
+            $periods = Period::where('years', $year)->get();
+            foreach ($periods as $period)
             {
-                $flow_status = $item->flowStatus()->where('status_code', '<>', 'UT')->first();
-                if ($flow_status !== null)
+                $propose = $period->propose()->where('created_by', Auth::user()->nidn)->where('is_own', null)->get();
+                foreach ($propose as $item)
                 {
-                    array_push($ret, '1 Dosen hanya bisa menjadi ( ketua penlitian sebanyak 1 kali dan menjadi anggota sebanyak 2 kali ) atau ( anggota sebanyak 3 kali ) dalam 1 tahun');
-                    $i_as_head = 1;
-                    break 2;
-                }
-            }
-
-            $i_as_member += $i_as_head;
-            $proposes = $period->propose()->where('created_by', '<>', Auth::user()->nidn)->where('is_own', null)->get();
-            foreach ($proposes as $propose)
-            {
-                $member = $propose->member()->where('nidn', Auth::user()->nidn)->where('status', 'accepted')->first();
-                if ($member !== null)
-                {
-                    $i_as_member++;
-                    if ($i_as_member >= 3)
+                    $flow_status = $item->flowStatus()->where('status_code', '<>', 'UT')->first();
+                    if ($flow_status !== null)
                     {
                         array_push($ret, '1 Dosen hanya bisa menjadi ( ketua penlitian sebanyak 1 kali dan menjadi anggota sebanyak 2 kali ) atau ( anggota sebanyak 3 kali ) dalam 1 tahun');
+                        $i_as_head = 1;
                         break 2;
+                    }
+                }
+
+                $i_as_member += $i_as_head;
+                $proposes = $period->propose()->where('created_by', '<>', Auth::user()->nidn)->where('is_own', null)->get();
+                foreach ($proposes as $propose)
+                {
+                    $member = $propose->member()->where('nidn', Auth::user()->nidn)->where('status', 'accepted')->first();
+                    if ($member !== null)
+                    {
+                        $i_as_member++;
+                        if ($i_as_member >= 3)
+                        {
+                            array_push($ret, '1 Dosen hanya bisa menjadi ( ketua penlitian sebanyak 1 kali dan menjadi anggota sebanyak 2 kali ) atau ( anggota sebanyak 3 kali ) dalam 1 tahun');
+                            break 2;
+                        }
                     }
                 }
             }

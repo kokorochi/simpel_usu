@@ -12,7 +12,7 @@
                 <ol class="breadcrumb">
                     <li>
                         <i class="fa fa-home"></i>
-                        <a href="{{url('dashboard/index')}}">Beranda</a>
+                        <a href="{{url('/')}}">Beranda</a>
                     </li>
                 </ol>
             </div><!-- /.breadcrumb-wrapper -->
@@ -36,7 +36,7 @@
                                                 href="{{ url('announces/' . $announce->id) }}">{{$announce->title}}</a>
                                     </h4>
                                     <ul class="blog-meta">
-                                        <li>By: {!!$announce->created_by_name!!}</li>
+                                        <li>Oleh: {{$announce->created_by_name}}</li>
                                         <li>{{ date("d M Y", strtotime($announce->created_at)) }}</li>
                                     </ul>
                                     <div class="blog-summary">
