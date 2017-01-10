@@ -632,7 +632,7 @@ class ProposeController extends BlankonController {
                 'lecturer',
                 'members',
                 'today_date',
-                'propoose_output_types',
+                'propose_output_types',
                 'lppm_head',
                 'dean',
                 'sign_1',
