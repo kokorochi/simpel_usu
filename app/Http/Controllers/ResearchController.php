@@ -190,7 +190,8 @@ class ResearchController extends BlankonController {
             'status_code',
             'disable_final_amount',
             'disabled',
-            'upd_mode'
+            'upd_mode',
+            'flow_status'
         ));
     }
 
@@ -340,6 +341,7 @@ class ResearchController extends BlankonController {
         if ($research_output_revision === null) $research_output_revision = new ResearchOutputRevision();
 
         $disabled = '';
+        if ($status_code === 'PS') $disabled = 'disabled';
         $upd_mode = 'output';
 
         return view('research.research-output', compact(

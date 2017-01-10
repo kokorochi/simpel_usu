@@ -46,7 +46,7 @@
                         @foreach($research_output_generals as $key => $research_output_general)
                             <div class="form-group">
                                 @if($research_output_general->file_name_ori !== null)
-                                    @if($upd_mode !== 'approve')
+                                    @if($upd_mode !== 'approve' && $status_code !== 'PS')
                                         <div class="clearfix"></div>
                                         <label class="control-label col-sm-4 col-md-3">Hapus Luaran</label>
                                         <div class="col-sm-6 mb-10">
@@ -88,7 +88,7 @@
                                     @endif
                                 </div>
 
-                                @if($upd_mode !== 'approve')
+                                @if($upd_mode !== 'approve' && $status_code !== 'PS')
                                     <div class="clearfix"></div>
                                     <label class="control-label col-sm-4 col-md-3">Unggah Luaran</label>
                                     <div class="col-sm-6">
@@ -126,7 +126,7 @@
                         @endforeach
                     </div>
 
-                    @if($upd_mode !== 'approve')
+                    @if($upd_mode !== 'approve' && $status_code !== 'PS')
                         {{ csrf_field() }}
                         <input type="hidden" name="_method" value="PUT">
 

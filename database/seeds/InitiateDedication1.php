@@ -6,8 +6,7 @@ use App\StatusCode;
 use App\Conclusion;
 
 
-class InitiateDedication1 extends Seeder
-{
+class InitiateDedication1 extends Seeder {
     /**
      * Run the database seeds.
      *
@@ -200,15 +199,15 @@ class InitiateDedication1 extends Seeder
 //      Conclusion
         Conclusion::create([
             'conclusion_desc' => 'Dapat dilanjutkan tanpa perbaikan',
-            'created_by' => 'admin',
+            'created_by'      => 'admin',
         ]);
         Conclusion::create([
             'conclusion_desc' => 'Perlu perbaikan',
-            'created_by' => 'admin',
+            'created_by'      => 'admin',
         ]);
         Conclusion::create([
             'conclusion_desc' => 'Tidak layak dilanjutkan',
-            'created_by' => 'admin',
+            'created_by'      => 'admin',
         ]);
 //      End Conclusion
     }
