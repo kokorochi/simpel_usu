@@ -83,6 +83,36 @@ class StoreOutputGeneralRequest extends FormRequest {
             }
         }
 
+        if ($this->file(['file_name']) !== null)
+        {
+            foreach ($this->file('file_name') as $key => $item)
+            {
+                if ($this->input('delete_output')[$key] === null)
+                {
+                    if ($this->input('output_description')[$key] === '' || $this->input('output_description')[$key] === null)
+                    {
+                        array_push($ret, 'Deskripsi luaran harus diisi');
+                        break;
+                    }
+                }
+            }
+        }
+
+        foreach ($this->input('output_description') as $key => $item)
+        {
+            if ($this->input('delete_output')[$key] === null)
+            {
+                if ($item !== '')
+                {
+                    if ($this->file(['file_name'])[$key] === null)
+                    {
+                        array_push($ret, 'File luaran harus diisi jika deskripsi luaran sudah diisi');
+                        break;
+                    }
+                }
+            }
+        }
+
         return $ret;
     }
 }

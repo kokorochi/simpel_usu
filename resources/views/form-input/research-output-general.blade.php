@@ -2,21 +2,28 @@
 @php($ctr = 0)
 
 @php
-    while($errors->has('file_name.' . $ctr) || old('file_name.' . $ctr))
+    while($errors->has('file_name.' . $ctr) || old('file_name.' . $ctr) ||
+          $errors->has('output_description.' . $ctr) || old('output_description.' . $ctr) )
     {
         $research_output_general = $research_output_generals->get($ctr);
         if($research_output_general === null)
         {
             $research_output_general->file_name = old('file_name.' . $ctr);
+            $research_output_general->output_description = old('output_description.' . $ctr);
             $research_output_generals->add($research_output_general);
         }else
         {
             $research_output_generals[$ctr]->file_name = old('file_name.' . $ctr);
+            $research_output_generals[$ctr]->output_description = old('output_description.' . $ctr);
         }
 
         $ctr++;
     }
 @endphp
+
+@if($status_code === 'RL')
+    @include('form-input.research-approve-revisiontext')
+@endif
 
 <div class="row">
     <div class="col-md-12">
@@ -35,11 +42,6 @@
                 <form action="{{url($deleteUrl, $research->id) . '/output-general'}}" method="post"
                       enctype="multipart/form-data"
                       class="form-body form-horizontal form-bordered">
-
-                    @if($status_code === 'RL')
-                        @include('form-input.research-approve-revisiontext')
-                    @endif
-
                     <div class="research-general-wrapper">
                         @foreach($research_output_generals as $key => $research_output_general)
                             <div class="form-group">
@@ -71,6 +73,20 @@
                                         </div>
                                     </div>
                                 @endif
+
+                                <div class="clearfix"></div>
+                                <label for="output_description[]" class="control-label col-sm-4 col-md-3">Deskripsi
+                                    Luaran</label>
+                                <div class="col-sm-6 mb-10">
+                                    <input name="output_description[]" class="form-control input-sm" type="text"
+                                           value="{{ $research_output_general->output_description }}" {{$disabled}}>
+                                    @if($errors->has('output_description.' . $key))
+                                        <label class="error" for="output_description[]"
+                                               style="display: inline-block;">
+                                            {{ $errors->first('output_description.' . $key) }}
+                                        </label>
+                                    @endif
+                                </div>
 
                                 @if($upd_mode !== 'approve')
                                     <div class="clearfix"></div>

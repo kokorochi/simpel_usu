@@ -36,7 +36,6 @@ class AnnouncesController extends BlankonController {
         array_push($this->js['plugins'], 'global/plugins/bower_components/jasny-bootstrap-fileinput/js/jasny-bootstrap.fileinput.min.js');
 
         array_push($this->js['scripts'], 'admin/js/pages/blankon.form.wysiwyg.js');
-        array_push($this->js['scripts'], 'admin/js/pages/blankon.form.advanced.js');
         array_push($this->js['scripts'], 'admin/js/customize.js');
 
         View::share('css', $this->css);
@@ -56,7 +55,7 @@ class AnnouncesController extends BlankonController {
         {
             $announce->no = $i;
             $announce->title = substr($announce->title, 0, 40);
-            $announce->content = substr($announce->content, 0, 100);
+            $announce->content = substr(strip_tags($announce->content), 0, 100);
             $i = $i + 1;
         }
 
@@ -65,12 +64,32 @@ class AnnouncesController extends BlankonController {
 
     public function create()
     {
-        return view('announce/announce-create', compact('announce'));
+        $announce = new Announce();
+        $form_action = url('announces/create');
+        $upd_mode = 'create';
+        return view('announce/announce-detail', compact(
+            'announce',
+            'form_action',
+            'upd_mode'
+        ));
     }
 
     public function edit($id)
     {
         $announce = Announce::find($id);
+        if($announce === null)
+        {
+            $this->setCSS404();
+
+            return abort('404');
+        }
+        $form_action = url('announces/' . $announce->id . '/edit');
+        $upd_mode = 'edit';
+        return view('announce/announce-detail', compact(
+            'announce',
+            'form_action',
+            'upd_mode'
+        ));
 
         return view('announce/announce-edit', compact('announce'));
     }
@@ -154,7 +173,7 @@ class AnnouncesController extends BlankonController {
     private function setAnnounceFields(Requests\StoreAnnounceRequest $request, $store)
     {
         $store->title = $request->title;
-        $store->content = $request->description;
+        $store->content = $request->content;
     }
 
     private function setCSS404()

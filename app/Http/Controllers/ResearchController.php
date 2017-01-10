@@ -126,6 +126,7 @@ class ResearchController extends BlankonController {
             $flow_status->status_code = 'LK';
         }
 
+        $propose_output_types = $propose->proposeOutputType()->get();
         $propose_own = $propose->proposesOwn()->first();
         $periods = $propose->period()->get();
         $period = $propose->period()->first();
@@ -170,12 +171,13 @@ class ResearchController extends BlankonController {
         }
 
         $disable_final_amount = 'readonly';
-        $upd_mode = '';
+        $upd_mode = 'edit';
 
         return view('research.research-edit', compact(
             'research',
             'propose',
             'propose_own',
+            'propose_output_types',
             'periods',
             'period',
             'output_types',
@@ -319,7 +321,7 @@ class ResearchController extends BlankonController {
             return abort('404');
         }
         $propose = $research->propose()->first();
-        $output_code = $propose->outputType()->first()->output_code;
+        $propose_output_types = $propose->proposeOutputType()->get();
 
         $status_code = $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code;
 
@@ -337,16 +339,18 @@ class ResearchController extends BlankonController {
         $research_output_revision = $research->researchOutputRevision()->orderBy('item', 'desc')->first();
         if ($research_output_revision === null) $research_output_revision = new ResearchOutputRevision();
 
+        $disabled = '';
         $upd_mode = 'output';
 
         return view('research.research-output', compact(
             'research',
             'propose',
-            'output_code',
+            'propose_output_types',
             'status_code',
             'research_output_generals',
             'research_output_revision',
-            'upd_mode'
+            'upd_mode',
+            'disabled'
         ));
     }
 
@@ -394,6 +398,7 @@ class ResearchController extends BlankonController {
                         $research_output_general = new ResearchOutputGeneral();
                     }
                     $research_output_general->item = $key + 1;
+                    $research_output_general->output_description = $request->output_description[$key];
                     $research_output_general->file_name_ori = $request->file('file_name')[$key]->getClientOriginalName();
                     $research_output_general->file_name = md5($request->file('file_name')[$key]->getClientOriginalName() . Carbon::now()->toDateTimeString()) . $research->id . '.' . $request->file('file_name')[$key]->extension();
                     $research->researchOutputGeneral()->save($research_output_general);
@@ -549,7 +554,7 @@ class ResearchController extends BlankonController {
             return abort('404');
         }
         $propose = $research->propose()->first();
-        $output_code = $propose->outputType()->first()->output_code;
+        $propose_output_types = $propose->proposeOutputType()->get();
 
         $status_code = $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code;
 
@@ -570,7 +575,7 @@ class ResearchController extends BlankonController {
         return view('research.research-output', compact(
             'research',
             'propose',
-            'output_code',
+            'propose_output_types',
             'research_output_generals',
             'research_output_revision',
             'upd_mode',
