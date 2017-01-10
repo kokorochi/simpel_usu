@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\ResearchType;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use View;
-use App\Category_type;
 use Illuminate\Support\Facades\Auth;
 
-class CategoryTypeController extends BlankonController {
-    private $pageTitle = 'Jenis Sumber Dana';
-    protected $deleteQuestion = 'Apakah anda yakin untuk menghapus Jenis Sumber Dana ini?';
-    protected $deleteUrl = 'category-types';
+class ResearchTypeController extends BlankonController
+{
+    private $pageTitle = 'Jenis Penelitian';
+    protected $deleteQuestion = 'Apakah anda yakin untuk menghapus Jenis Penelitian ini?';
+    protected $deleteUrl = 'research-types';
 
     public function __construct()
     {
@@ -34,33 +35,33 @@ class CategoryTypeController extends BlankonController {
 
     public function index()
     {
-        $category_types = Category_type::paginate(10);
+        $research_types = ResearchType::paginate(10);
 
-        return view('category-type.category-type-list', compact('category_types'));
+        return view('research-type.research-type-list', compact('research_types'));
     }
 
     public function create()
     {
-        $category_type = new Category_type();
+        $research_type = new ResearchType();
         $upd_mode = 'create';
 
-        return view('category-type.category-type-detail', compact('category_type', 'upd_mode'));
+        return view('research-type.research-type-detail', compact('research_type', 'upd_mode'));
     }
 
-    public function store(Requests\StoreCategoryTypeRequest $request)
+    public function store(Requests\StoreResearchTypeRequest $request)
     {
-        $category_type = new Category_type();
-        $category_type->category_name = $request->category_name;
-        $category_type->created_by = Auth::user()->nidn;
-        $category_type->save();
+        $research_types = new ResearchType();
+        $research_types->research_name = $request->research_name;
+        $research_types->created_by = Auth::user()->nidn;
+        $research_types->save();
 
         return redirect()->intended($this->deleteUrl);
     }
 
     public function edit($id)
     {
-        $category_type = Category_type::find($id);
-        if ($category_type === null)
+        $research_type = ResearchType::find($id);
+        if ($research_type === null)
         {
             $this->setCSS404();
 
@@ -68,36 +69,36 @@ class CategoryTypeController extends BlankonController {
         }
         $upd_mode = 'edit';
 
-        return view('category-type.category-type-detail', compact('category_type', 'upd_mode'));
+        return view('research-type.research-type-detail', compact('research_type', 'upd_mode'));
     }
 
-    public function update(Requests\StoreCategoryTypeRequest $request, $id)
+    public function update(Requests\StoreResearchTypeRequest $request, $id)
     {
-        $category_type = Category_type::find($id);
-        if ($category_type === null)
+        $research_type = ResearchType::find($id);
+        if ($research_type === null)
         {
             $this->setCSS404();
 
             return abort('404');
         }
 
-        $category_type->category_name = $request->category_name;
-        $category_type->updated_by = Auth::user()->nidn;
-        $category_type->save();
+        $research_type->research_name = $request->research_name;
+        $research_type->updated_by = Auth::user()->nidn;
+        $research_type->save();
 
         return redirect()->intended($this->deleteUrl);
     }
 
     public function destroy($id)
     {
-        $category_type = Category_type::find($id);
-        if ($category_type === null)
+        $research_type = ResearchType::find($id);
+        if ($research_type === null)
         {
             $this->setCSS404();
 
             return abort('404');
         }
-        $category_type->delete();
+        $research_type->delete();
 
         return redirect()->intended($this->deleteUrl);
     }

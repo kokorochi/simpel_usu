@@ -67,6 +67,18 @@ Route::put('category-types/{id}/edit', 'CategoryTypeController@update');
 Route::delete('category-types/{id}', 'CategoryTypeController@destroy');
 // End Category Types Route
 
+// Research Types Route
+Route::get('research-types/', 'ResearchTypeController@index');
+
+Route::get('research-types/create', 'ResearchTypeController@create');
+Route::post('research-types/create', 'ResearchTypeController@store');
+
+Route::get('research-types/{id}/edit', 'ResearchTypeController@edit');
+Route::put('research-types/{id}/edit', 'ResearchTypeController@update');
+
+Route::delete('research-types/{id}', 'ResearchTypeController@destroy');
+// End Research Types Route
+
 // Periods Route
 Route::get('periods/', 'PeriodController@index');
 

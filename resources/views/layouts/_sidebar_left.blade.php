@@ -25,8 +25,8 @@ START @SIDEBAR LEFT
                 </div>
             </div>
         </div><!-- /.sidebar-content -->
-@endif
-<!--/ End left navigation -  profile shortcut -->
+    @endif
+    <!--/ End left navigation -  profile shortcut -->
 
     <!-- Start left navigation - menu -->
     <ul class="sidebar-menu">
@@ -117,6 +117,25 @@ START @SIDEBAR LEFT
             </li>
             <!--/ End navigation - Funding Sources -->
 
+            <!-- Start navigation - Research Types -->
+            <li {!! Request::is('research-types','research-types/*')? 'class="submenu active"' : 'class="submenu"' !!}>
+                <a href="javascript:void(0);">
+                    <span class="icon"><i class="fa fa-file-archive-o"></i></span>
+                    <span class="text">Jenis Penelitian</span>
+                    <span class="arrow"></span>
+                    {!! Request::is('research-types', 'research-types/*') ? '<span class="selected"></span>' : null !!}
+                </a>
+                <ul>
+                    <li {!! Request::is('research-types','research-types/create')? 'class="active"' : null !!}>
+                        <a href="{{url('research-types/create')}}">Tambah</a>
+                    </li>
+                    <li {!! Request::is('research-types','research-types/list')? 'class="active"' : null !!}>
+                        <a href="{{url('research-types/')}}">Daftar</a>
+                    </li>
+                </ul>
+            </li>
+            <!--/ End navigation - Research Types -->
+
             <!-- Start navigation - Period -->
             <li {!! Request::is('periods','periods/*')? 'class="submenu active"' : 'class="submenu"' !!}>
                 <a href="javascript:void(0);">
@@ -176,19 +195,19 @@ START @SIDEBAR LEFT
 
             <!-- Start navigation - Usulan -->
             {{--<li {!! Request::is('proposes','proposes/*')? 'class="submenu active"' : 'class="submenu"' !!}>--}}
-                {{--<a href="javascript:void(0);">--}}
-                    {{--<span class="icon"><i class="fa fa-file-powerpoint-o"></i></span>--}}
-                    {{--<span class="text">Usulan</span>--}}
-                    {{--<span class="arrow"></span>--}}
-                    {{--{!! Request::is('proposes', 'proposes/*') ? '<span class="selected"></span>' : null !!}--}}
-                {{--</a>--}}
-                {{--<ul>--}}
-                    {{--<li {!! Request::is('proposes','proposes/')? 'class="active"' : null !!}>--}}
-                        {{--<a href="{{url('proposes/')}}">List</a>--}}
-                    {{--</li>--}}
-                {{--</ul>--}}
+            {{--<a href="javascript:void(0);">--}}
+            {{--<span class="icon"><i class="fa fa-file-powerpoint-o"></i></span>--}}
+            {{--<span class="text">Usulan</span>--}}
+            {{--<span class="arrow"></span>--}}
+            {{--{!! Request::is('proposes', 'proposes/*') ? '<span class="selected"></span>' : null !!}--}}
+            {{--</a>--}}
+            {{--<ul>--}}
+            {{--<li {!! Request::is('proposes','proposes/')? 'class="active"' : null !!}>--}}
+            {{--<a href="{{url('proposes/')}}">List</a>--}}
             {{--</li>--}}
-            <!-- End navigation - Usulan -->
+            {{--</ul>--}}
+            {{--</li>--}}
+        <!-- End navigation - Usulan -->
 
             <!-- Start navigation - Research -->
             <li {!! Request::is('researches','researches/*')? 'class="submenu active"' : 'class="submenu"' !!}>
@@ -252,7 +271,7 @@ START @SIDEBAR LEFT
         @endcan
     <!-- End category - Lecturer -->
 
-    <!-- Start category - Reviewer -->
+        <!-- Start category - Reviewer -->
         @can('reviewer-menu')
             <li class="sidebar-category">
                 <span>Reviewer</span>
