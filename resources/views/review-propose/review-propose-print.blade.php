@@ -21,7 +21,7 @@
 <body class="page-session page-sound page-header-fixed page-sidebar-fixed">
 <div id="print-review-wrapper">
     <div class="double-border">
-        <h5 class="text-center">USULAN PROGRAM PENELITIAN KEPADA MASYARAKAT MONO TAHUN DAN MULTI TAHUN</h5>
+        <h5 class="text-center">USULAN {{strtoupper($review_propose->propose()->first()->period()->first()->scheme)}}</h5>
     </div>
     <table class="print-header">
         <tbody>
