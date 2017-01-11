@@ -42,7 +42,6 @@ class BlankonController extends Controller {
      */
     public function __construct()
     {
-
         $this->setApp();
 
         $this->middleware(function ($request, $next)
