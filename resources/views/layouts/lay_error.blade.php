@@ -1,7 +1,6 @@
 @php
     $assetUrl = URL::to("/");
     $assetUrl .= '/assets/';
-
     if(empty($css['themes']))
     {
         $css['themes'] = [
@@ -32,7 +31,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Halaman Tidak Ditemukan | LP USU - Lembaga Penelitian</title>
-    {{--<link href="{{$assetUrl}}/images/shortcut icon.png" rel="shortcut icon">--}}
     <!--/ END META SECTION -->
 
 

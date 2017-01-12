@@ -27,7 +27,7 @@ $errors->has('external_affiliation.' . $ctr_old) || old('external_affiliation.' 
 @endwhile
 
 @if($errors->has('areas_of_expertise') || old('areas_of_expertise'))
-    @php($propose->areas_of_expertise = old('areas_of_expertise'));
+    @php($propose->areas_of_expertise = old('areas_of_expertise'))
 @endif
 {{--Get Old Value And Place It To VARIABLE--}}
 

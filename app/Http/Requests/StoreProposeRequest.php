@@ -154,17 +154,16 @@ class StoreProposeRequest extends FormRequest {
             {
                 array_push($ret, 'Informasi rekening bank harus diisi');
             }
-        }
 
-        //Check file partner contract
-//        foreach ($this->input('partner_name') as $key => $item)
-//        {
-//            if($this->file('file_partner_contract.' . $key) === null)
-//            {
-//                array_push($ret, 'Surat Kesediaan Kerjasama harus diunggah');
-//                break 1;
-//            }
-//        }
+            $period = Period::find($this->input('period_id'));
+            if ($period !== null)
+            {
+                if (! (count($this->input('member_nidn')) >= $period->min_member && count($this->input('member_nidn')) <= $period->max_member))
+                {
+                    array_push($ret, 'Jumlah anggota tidak sesuai dengan data anggota yang diisi');
+                }
+            }
+        }
 
         //Check output type
         $valid_output = false;
