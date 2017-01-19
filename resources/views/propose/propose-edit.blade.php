@@ -36,7 +36,7 @@
 
             @include('form-input.propose-detail')
 
-            <form class="" action="{{url('proposes', $propose->id) . '/edit'}}" method="POST"
+            <form class="submit-form" action="{{url('proposes', $propose->id) . '/edit'}}" method="POST"
                   enctype="multipart/form-data">
 
                 @include('form-input.propose-upload')
@@ -57,12 +57,12 @@
                             <div class="form-footer">
                                 <div class="col-sm-offset-4 col-md-offset-3">
                                     <button name="submit_button" type="submit" value="print"
-                                       class="btn btn-primary btn-stroke btn-dashed btn-slideright">
+                                       class="btn btn-primary btn-stroke btn-dashed btn-slideright submit">
                                         <i class="fa fa-print"></i> Print
                                     </button>
                                     <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
                                     @if($disable_upload === false)
-                                        <button name="submit_button" type="submit" class="btn btn-success btn-slideright" value="edit">Ubah</button>
+                                        <button name="submit_button" type="submit" class="btn btn-success btn-slideright submit" value="edit">Ubah</button>
                                     @endif
                                 </div><!-- /.col-sm-offset-3 -->
                             </div><!-- /.form-footer -->

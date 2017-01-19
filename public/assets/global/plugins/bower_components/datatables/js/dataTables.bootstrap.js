@@ -10,6 +10,9 @@ $.extend( true, $.fn.dataTable.defaults, {
         "sSearch": "Cari",
         "sZeroRecords": "No matching records found",
         "sInfoEmpty": "Tidak ada data",
+        "sLoadingRecords": "Mencari data . . .",
+        "sProcessing": "Sedang mencari data . . .",
+        "sEmptyTable": "Tidak ada data",
         "oPaginate": {
             "sPrevious": "Sebelumnya",
             "sNext": "Selanjutnya",

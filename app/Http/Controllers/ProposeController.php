@@ -23,6 +23,7 @@ use App\Category_type;
 use App\ModelSDM\Faculty;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Validator;
 use View;
 
 class ProposeController extends BlankonController {
@@ -81,6 +82,7 @@ class ProposeController extends BlankonController {
 
     public function create()
     {
+        $upd_mode = 'create';
         $this->lv_disable = null;
         $propose = new Propose();
         $propose_own = new Propose_own();
@@ -112,6 +114,7 @@ class ProposeController extends BlankonController {
         $faculties = Faculty::where('is_faculty', '1')->where('faculty_code', '<>', 'SPS')->get();
 
         $disable_upload = false;
+        $form_action = url('proposes/create');
 
         view::share('disabled', $this->lv_disable);
 
@@ -124,6 +127,8 @@ class ProposeController extends BlankonController {
             'research_types',
             'faculties',
             'disable_upload',
+            'upd_mode',
+            'form_action',
             'propose_output_types',
             'members',
             'member',
@@ -133,7 +138,13 @@ class ProposeController extends BlankonController {
 
     public function store(Requests\StoreProposeRequest $request)
     {
-        $lv_waiting = 'waiting';
+        if ($request->submit_button === 'save')
+        {
+            $lv_waiting = 'waiting';
+        } else
+        {
+            $lv_waiting = 'no action';
+        }
         $is_waiting = false;
         $proposes = new Propose();
         $flow_statuses = new FlowStatus();
@@ -142,11 +153,17 @@ class ProposeController extends BlankonController {
         if ($request->is_own === '1')
         {
             $proposes->is_own = '1';
-            $proposes_own->years = $request['own-years'];
+            if ($request['own-years'] !== '')
+            {
+                $proposes_own->years = $request['own-years'];
+            }
             $proposes_own->research_type = $request['own-research_type'];
             $proposes_own->scheme = $request['own-scheme'];
             $proposes_own->sponsor = $request['own-sponsor'];
-            $proposes_own->member = $request['own-member'];
+            if ($request['own-member'] !== '')
+            {
+                $proposes_own->member = $request['own-member'];
+            }
             $proposes_own->annotation = $request['own-annotation'];
         } else
         {
@@ -172,7 +189,13 @@ class ProposeController extends BlankonController {
             {
                 $member = new Member();
                 $member->item = $i++;
-                $member->status = 'accepted';
+                if ($request->submit_button === 'save')
+                {
+                    $member->status = 'accepted';
+                } else
+                {
+                    $member->status = 'no action';
+                }
                 $member->areas_of_expertise = $request->member_areas_of_expertise[$key];
                 $member->external = '1';
                 $members->add($member);
@@ -199,11 +222,20 @@ class ProposeController extends BlankonController {
 
         $proposes->faculty_code = $request->faculty_code;
         $proposes->title = $request->title;
-        $proposes->total_amount = str_replace(',', '', $request->total_amount);
-        $proposes->time_period = $request->time_period;
+        if ($request->total_amount !== '')
+        {
+            $proposes->total_amount = str_replace(',', '', $request->total_amount);
+        }
+        if ($request->time_period !== '')
+        {
+            $proposes->time_period = $request->time_period;
+        }
         $proposes->bank_account_name = $request->bank_account_name;
         $proposes->bank_account_no = $request->bank_account_no;
-        $proposes->student_involved = $request->student_involved;
+        if ($request->student_involved !== '')
+        {
+            $proposes->student_involved = $request->student_involved;
+        }
         $proposes->areas_of_expertise = $request->areas_of_expertise;
         $proposes->address = $request->address;
         $proposes->created_by = Auth::user()->nidn;
@@ -217,6 +249,13 @@ class ProposeController extends BlankonController {
         {
             $flow_statuses->item = '1';
             $flow_statuses->status_code = 'UU'; //Menunggu Unggah Usulan
+            $flow_statuses->created_by = $proposes->created_by;
+        }
+
+        if ($request->submit_button !== 'save')
+        {
+            $flow_statuses->item = '1';
+            $flow_statuses->status_code = 'SS'; //Simpan Sementara
             $flow_statuses->created_by = $proposes->created_by;
         }
 
@@ -243,6 +282,19 @@ class ProposeController extends BlankonController {
         });
 
         return redirect()->intended('/proposes');
+    }
+
+    public function updateTemporary(Requests\StoreProposeRequest $request, $id)
+    {
+        $proposes = Propose::find($id);
+        if ($proposes === null)
+        {
+            $this->setCSS404();
+
+            return abort('404');
+        }
+
+
     }
 
     public function verification($id)
@@ -361,6 +413,7 @@ class ProposeController extends BlankonController {
 
     public function edit($id)
     {
+        $upd_mode = 'edit';
         $this->lv_disable = 'disabled';
         $propose = Propose::find($id);
 
@@ -376,22 +429,28 @@ class ProposeController extends BlankonController {
         $period = $propose->period()->first();
         $propose_output_types = $propose->proposeOutputType()->get();
         $members = $propose->member()->get();
+        $flow_status = $propose->flowStatus()->first();
         foreach ($members as $member)
         {
             if ($member->external === '1')
             {
-                $external_member = $member->externalMember->first();
+                $external_member = $member->externalMember()->first();
                 $member->external_name = $external_member->name;
                 $member->external_affiliation = $external_member->affiliation;
             } else
             {
-                $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+                if ($member->nidn !== null && $member->nidn !== '')
+                {
+                    $member->member_display = $member->nidn . ' : ' . Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+                    $member->member_nidn = $member->nidn;
+                }
             }
         }
         $member = $propose->member()->first();
         $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
         $faculties = Faculty::where('is_faculty', '1')->get();
         $output_types = Output_type::all();
+        $output_types->add(new Output_type());
         $research_types = ResearchType::all();
 
         if ($propose_own === null)
@@ -417,37 +476,89 @@ class ProposeController extends BlankonController {
 
         $disable_final_amount = 'readonly';
 
-        view::share('disabled', $this->lv_disable);
+        if ($flow_status->status_code === 'SS')
+        {
+            // Initialize data for temporary saved proposes
+            $periods = Period::where('propose_begda', '<=', Carbon::now()->toDateString())->where('propose_endda', '>=', Carbon::now()->toDateString())->get();
+            if ($periods->isEmpty())
+            {
+                $period = new Period();
+            } else
+            {
+                $period = $periods[0];
+            }
+            $propose->is_own = null;
+            $form_action = url('proposes', $propose->id) . '/edit';
+            $this->lv_disable = null;
+            if ($propose_output_types->isEmpty())
+            {
+                $propose_output_types = new Collection();
+                $propose_output_types->add(new ProposeOutputType());
+                $propose_output_types->add(new ProposeOutputType());
+                $propose_output_types->add(new ProposeOutputType());
+            }
+            for ($i = count($propose_output_types); $i < 3; $i++)
+            {
+                $propose_output_types->add(new ProposeOutputType());
+            }
 
-        return view('propose.propose-edit', compact(
-            'propose',
-            'propose_own',
-            'periods',
-            'period',
-            'output_types',
-            'research_types',
-            'faculties',
-            'disable_upload',
-            'propose_output_types',
-            'members',
-            'member',
-            'lecturer',
-            'status_code',
-            'disable_final_amount'
-        ));
+            if ($members->isEmpty())
+            {
+                $members = new Collection;
+                $member = new Member;
+                $members->add(new Member);
+            }
+
+            view::share('disabled', $this->lv_disable);
+
+            return view('propose.propose-create', compact(
+                'propose',
+                'propose_own',
+                'periods',
+                'period',
+                'output_types',
+                'research_types',
+                'faculties',
+                'disable_upload',
+                'form_action',
+                'upd_mode',
+                'propose_output_types',
+                'members',
+                'member',
+                'lecturer'
+            ));
+        } else
+        {
+            return view('propose.propose-edit', compact(
+                'propose',
+                'propose_own',
+                'periods',
+                'period',
+                'output_types',
+                'research_types',
+                'faculties',
+                'disable_upload',
+                'propose_output_types',
+                'members',
+                'member',
+                'lecturer',
+                'status_code',
+                'disable_final_amount'
+            ));
+        }
     }
 
-    public function update(Request $request, $id)
+    public function update(Requests\StoreProposeRequest $request, $id)
     {
+        $propose = Propose::find($id);
+        if ($propose === null)
+        {
+            $this->setCSS404();
+
+            return abort('404');
+        }
         if ($request->submit_button === 'print')
         {
-            $propose = Propose::find($id);
-            if($propose === null)
-            {
-                $this->setCSS404();
-
-                return abort('404');
-            }
             $propose_output_types = $propose->proposeOutputType()->get();
             $lecturer = Lecturer::where('employee_card_serial_number', Auth::user()->nidn)->first();
             $lppm_head = Lecturer::where('employee_card_serial_number', '0001116503')->first();
@@ -640,55 +751,209 @@ class ProposeController extends BlankonController {
             ));
         } else
         {
-            $this->validate(
-                $request,
-                [
-                    'file_propose' => 'required|mimes:pdf'
-                ],
-                [
-                    'file_propose.required' => 'Usulan harus diunggah',
-                    'file_propose.mimes'    => 'Usulan harus dalam bentuk PDF'
-                ]);
-
-            $propose = Propose::find($id);
-            if ($propose === null)
+            $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
+            if ($flow_status->status_code === 'SS')
             {
-                $this->setCSS404();
-
-                return abort('404');
-            }
-            DB::transaction(function () use ($propose, $request)
-            {
-                $path = Storage::url('upload/' . md5(Auth::user()->nidn) . '/propose/');
-                if ($propose->file_propose !== null) //Delete old propose that already uploaded
+                if ($request->submit_button === 'save')
                 {
-                    Storage::delete($path . $propose->file_propose);
-                }
-                $propose->file_propose_ori = $request->file('file_propose')->getClientOriginalName();
-                $propose->file_propose = md5($request->file('file_propose')->getClientOriginalName() . Carbon::now()->toDateTimeString()) . $propose->id . '.pdf';
-                $propose->save();
-
-                $request->file('file_propose')->storeAs($path, $propose->file_propose);
-
-                $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
-                $store_flow_status = new FlowStatus();
-                $store_flow_status->item = $flow_status->item + 1;
-                if ($propose->is_own === '1')
-                {
-                    $store_flow_status->status_code = 'RS'; // Review Selesai, Menunggu Hasil
+                    $lv_waiting = 'waiting';
                 } else
                 {
-                    $store_flow_status->status_code = 'PR'; // Penentuan Reviewer
+                    $lv_waiting = 'no action';
                 }
-                $store_flow_status->created_by = Auth::user()->nidn;
+                $is_waiting = false;
+                $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
 
-                if ($flow_status->status_code === 'UU')
+                $proposes_own = new Propose_own();
+                if ($request->is_own === '1')
                 {
-                    $propose->flowStatus()->save($store_flow_status);
+                    $propose->is_own = '1';
+                    if ($request['own-years'] !== '')
+                    {
+                        $proposes_own->years = $request['own-years'];
+                    }
+                    $proposes_own->research_type = $request['own-research_type'];
+                    $proposes_own->scheme = $request['own-scheme'];
+                    $proposes_own->sponsor = $request['own-sponsor'];
+                    if ($request['own-member'] !== '')
+                    {
+                        $proposes_own->member = $request['own-member'];
+                    }
+                    $proposes_own->annotation = $request['own-annotation'];
+                } else
+                {
+                    $propose->is_own = null;
+                    $propose->period_id = $request->period_id;
                 }
-            });
 
-            return redirect()->intended('/proposes');
+                $members = new Collection();
+                $external_members = new Collection();
+                $i = 1;
+                foreach ($request->member_nidn as $key => $member_nidn)
+                {
+                    if ($request['external' . $key] != '1')
+                    {
+                        $member = new Member();
+                        $member->item = $i++;
+                        $member->nidn = $member_nidn;
+                        $member->status = $lv_waiting;
+                        $member->areas_of_expertise = $request->member_areas_of_expertise[$key];
+                        $members->add($member);
+
+                        $is_waiting = true;
+                    } else
+                    {
+                        $member = new Member();
+                        $member->item = $i++;
+                        if ($request->submit_button === 'save')
+                        {
+                            $member->status = 'accepted';
+                        } else
+                        {
+                            $member->status = 'no action';
+                        }
+                        $member->areas_of_expertise = $request->member_areas_of_expertise[$key];
+                        $member->external = '1';
+                        $members->add($member);
+
+                        $external_member = new ExternalMember();
+                        $external_member->name = $request->external_name[$key];
+                        $external_member->affiliation = $request->external_affiliation[$key];
+                        $external_members->add($external_member);
+                    }
+                }
+
+                $propose_output_types = new Collection();
+                $i = 1;
+                foreach ($request->output_type as $item)
+                {
+                    if ($item !== '')
+                    {
+                        $propose_output_type = new ProposeOutputType();
+                        $propose_output_type->item = $i++;
+                        $propose_output_type->output_type_id = $item;
+                        $propose_output_types->add($propose_output_type);
+                    }
+                }
+
+                $propose->faculty_code = $request->faculty_code;
+                $propose->title = $request->title;
+                if ($request->total_amount !== '')
+                {
+                    $propose->total_amount = str_replace(',', '', $request->total_amount);
+                }
+                if ($request->time_period !== '')
+                {
+                    $propose->time_period = $request->time_period;
+                }
+                $propose->bank_account_name = $request->bank_account_name;
+                $propose->bank_account_no = $request->bank_account_no;
+                if ($request->student_involved !== '')
+                {
+                    $propose->student_involved = $request->student_involved;
+                }
+                $propose->areas_of_expertise = $request->areas_of_expertise;
+                $propose->address = $request->address;
+                $propose->created_by = Auth::user()->nidn;
+
+                $flow_statuses = new FlowStatus();
+                if ($is_waiting)
+                {
+                    $flow_statuses->item = $flow_status->item + 1;
+                    $flow_statuses->status_code = 'VA'; //Menunggu Verifikasi Anggota
+                    $flow_statuses->created_by = $propose->created_by;
+                } else
+                {
+                    $flow_statuses->item = $flow_status->item + 1;
+                    $flow_statuses->status_code = 'UU'; //Menunggu Unggah Usulan
+                    $flow_statuses->created_by = $propose->created_by;
+                }
+
+                if ($request->submit_button !== 'save')
+                {
+                    $flow_statuses->status_code = 'SS'; //Simpan Sementara
+                    $flow_statuses->created_by = $propose->created_by;
+                }
+
+                DB::transaction(function () use ($propose, $proposes_own, $members, $external_members, $flow_statuses, $propose_output_types, $request)
+                {
+                    //Delete saved data to be overwritten with new data
+                    DB::table('proposes_own')->where('propose_id', $propose->id)->delete();
+                    $del_members = $propose->member()->get();
+                    foreach ($del_members as $del_member)
+                    {
+                        $del_external = $del_member->externalMember()->first();
+                        if ($del_external !== null) $del_external->delete();
+                        $del_member->forceDelete();
+                    }
+                    DB::table('propose_output_types')->where('propose_id', $propose->id)->delete();
+
+                    //Now begin saving
+                    $propose->save();
+                    if ($propose->is_own === '1')
+                    {
+                        $propose->proposesOwn()->save($proposes_own);
+                    }
+                    $propose->member()->saveMany($members);
+                    $propose->proposeOutputType()->saveMany($propose_output_types);
+                    $i = 0;
+                    foreach ($members as $member)
+                    {
+                        if ($member->external === '1')
+                        {
+                            $external_member = $external_members[$i];
+                            $member->externalMember()->save($external_member);
+                            $i++;
+                        }
+                    }
+                    $propose->flowStatus()->save($flow_statuses);
+                });
+
+                return redirect()->intended('/proposes');
+            } else
+            {
+                $this->validate(
+                    $request,
+                    [
+                        'file_propose' => 'required|mimes:pdf'
+                    ],
+                    [
+                        'file_propose.required' => 'Usulan harus diunggah',
+                        'file_propose.mimes'    => 'Usulan harus dalam bentuk PDF'
+                    ]);
+                DB::transaction(function () use ($propose, $request)
+                {
+                    $path = Storage::url('upload/' . md5(Auth::user()->nidn) . '/propose/');
+                    if ($propose->file_propose !== null) //Delete old propose that already uploaded
+                    {
+                        Storage::delete($path . $propose->file_propose);
+                    }
+                    $propose->file_propose_ori = $request->file('file_propose')->getClientOriginalName();
+                    $propose->file_propose = md5($request->file('file_propose')->getClientOriginalName() . Carbon::now()->toDateTimeString()) . $propose->id . '.pdf';
+                    $propose->save();
+
+                    $request->file('file_propose')->storeAs($path, $propose->file_propose);
+
+                    $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
+                    $store_flow_status = new FlowStatus();
+                    $store_flow_status->item = $flow_status->item + 1;
+                    if ($propose->is_own === '1')
+                    {
+                        $store_flow_status->status_code = 'RS'; // Review Selesai, Menunggu Hasil
+                    } else
+                    {
+                        $store_flow_status->status_code = 'PR'; // Penentuan Reviewer
+                    }
+                    $store_flow_status->created_by = Auth::user()->nidn;
+
+                    if ($flow_status->status_code === 'UU')
+                    {
+                        $propose->flowStatus()->save($store_flow_status);
+                    }
+                });
+
+                return redirect()->intended('/proposes');
+            }
         }
     }
 

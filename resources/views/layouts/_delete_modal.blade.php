@@ -11,11 +11,11 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">
-                    <i class="fa fa-times"></i> Tidak
+                    <i class="fa fa-times submit"></i> Tidak
                 </button>
                 {{--<button type="button" class="btn btn-theme"><i class="fa fa-check"></i> Ya</button>--}}
-                <form class="delete_action pull-right" action="{{ url( $deleteUrl . '/actionid') }}" method="POST">
-                    <button class="btn btn-theme" name="submit">
+                <form class="submit-form delete_action pull-right" action="{{ url( $deleteUrl . '/actionid') }}" method="POST">
+                    <button class="btn btn-theme submit" name="submit">
                         <i class="fa fa-check"></i> Ya
                     </button>
                     {{ csrf_field() }}

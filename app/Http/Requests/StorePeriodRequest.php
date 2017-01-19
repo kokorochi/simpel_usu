@@ -45,7 +45,50 @@ class StorePeriodRequest extends FormRequest {
             'monev_endda'    => 'required|date',
             'last_begda'     => 'required|date',
             'last_endda'     => 'required|date',
+            'total_amount'   => 'required',
+            'score'          => 'required',
             'annotation'     => '',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'years.required'          => 'Tahun harus diisi',
+            'years.date_format'       => 'Tahun harus sesuai dengan format tahun',
+            'category_type.required'  => 'Jenis Sumber Dana harus diisi',
+            'research_type.required'  => 'Jenis Penelitian harus diisi',
+            'appraisal_type.required' => 'Jenis Penilaian harus diisi',
+            'scheme.required'         => 'Scheme harus diisi',
+            'scheme.max'              => 'Maksimal 255 karakter untuk Scheme',
+            'sponsor.required'        => 'Sumber Dana harus diisi',
+            'sponsor.max'             => 'Maksimal 255 karakter untuk sumber dana',
+            'min_member.required'     => 'Anggota minimal harus diiisi',
+            'min_member.numeric'      => 'Anggota harus dalam angka',
+            'max_member.required'     => 'Anggota maksimal harus diiisi',
+            'max_member.numeric'      => 'Anggota harus dalam angka',
+            'propose_begda.required'  => 'Periode usulan harus diisi',
+            'propose_begda.date'      => 'Periode usulan harus sesuai dengan format tanggal',
+            'propose_endda.required'  => 'Periode usulan harus diisi',
+            'propose_endda.date'      => 'Periode usulan harus sesuai dengan format tanggal',
+            'review_begda.required'   => 'Periode review harus diisi',
+            'review_begda.date'       => 'Periode review harus sesuai dengan format tanggal',
+            'review_endda.required'   => 'Periode review harus diisi',
+            'review_endda.date'       => 'Periode review harus sesuai dengan format tanggal',
+            'first_begda.required'    => 'Periode laporan kemajuan harus diisi',
+            'first_begda.date'        => 'Periode laporan kemajuan harus sesuai dengan format tanggal',
+            'first_endda.required'    => 'Periode laporan kemajuan harus diisi',
+            'first_endda.date'        => 'Periode laporan kemajuan harus sesuai dengan format tanggal',
+            'monev_begda.required'    => 'Periode monev harus diisi',
+            'monev_begda.date'        => 'Periode monev harus sesuai dengan format tanggal',
+            'monev_endda.required'    => 'Periode monev harus diisi',
+            'monev_endda.date'        => 'Periode monev harus sesuai dengan format tanggal',
+            'last_begda.required'     => 'Periode laporan akhir harus diisi',
+            'last_begda.date'         => 'Periode laporan akhir harus sesuai dengan format tanggal',
+            'last_endda.required'     => 'Periode laporan akhir harus diisi',
+            'last_endda.date'         => 'Periode laporan akhir harus sesuai dengan format tanggal',
+            'total_amount.required'   => 'Jumlah dana maksimal harus diisi',
+            'score.required'          => 'Skor minimal harus diisi',
         ];
     }
 
@@ -65,15 +108,6 @@ class StorePeriodRequest extends FormRequest {
         {
             $validator->errors()->add('sumErrors', $check);
         }
-    }
-
-    public function messages()
-    {
-        return [
-            'aspect.*.required'  => 'The aspect description field is required',
-            'quality.*.required' => 'The quality field is required',
-            'quality.*.integer'  => 'The quality must be a number',
-        ];
     }
 
     private function checkBeforeSave()

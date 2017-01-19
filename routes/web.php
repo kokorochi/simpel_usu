@@ -99,6 +99,7 @@ Route::post('proposes/create', 'ProposeController@store');
 
 Route::get('proposes/{id}/edit', 'ProposeController@edit');
 Route::put('proposes/{id}/edit', 'ProposeController@update');
+Route::put('proposes/{id}/edit-temporary', 'ProposeController@updateTemporary');
 
 Route::get('proposes/{id}/revision', 'ProposeController@revision');
 Route::put('proposes/{id}/revision', 'ProposeController@revisionUpdate');

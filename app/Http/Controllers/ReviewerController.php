@@ -143,6 +143,10 @@ class ReviewerController extends BlankonController {
     public function assignList()
     {
         $periods = Period::where('review_endda', '>=', Carbon::now()->toDateString())->get();
+        if($periods->isEmpty())
+        {
+            $periods->add(new Period);
+        }
         $period = $periods[0];
         $proposes = $period->propose()->paginate(10);
         $data_not_found = 'Tidak ada pengajuan proposal untuk scheme ini';

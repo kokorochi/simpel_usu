@@ -166,7 +166,7 @@ $(document).ready(function () {
         }
     });
 
-    $("form#submit-form").submit(function (e) {
-        $(this).find('button#submit').attr('disabled', 'disabled');
+    $("form.submit-form").submit(function (e) {
+        $(this).find('button.submit').attr('disabled', 'disabled');
     });
 });

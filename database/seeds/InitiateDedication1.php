@@ -123,7 +123,11 @@ class InitiateDedication1 extends Seeder {
 //      End Output Type
 
 //      Status Code
-
+        StatusCode::create([
+            'code'        => 'SS',
+            'description' => 'Simpan Sementara',
+            'created_by'  => 'admin',
+        ]);
         StatusCode::create([
             'code'        => 'VA',
             'description' => 'Menunggu Verifikasi Anggota',

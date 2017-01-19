@@ -35,7 +35,7 @@
             {{--@endforeach--}}
                 @include('form-input.panel-errors')
 
-            <form class="" action="{{url('proposes', $propose->id) . '/verification'}}" method="POST" enctype="multipart/form-data">
+            <form class="submit-form" action="{{url('proposes', $propose->id) . '/verification'}}" method="POST" enctype="multipart/form-data">
                 @include('form-input.propose-scheme')
 
                 @include('form-input.propose-member')
@@ -52,8 +52,8 @@
                             <div class="form-footer">
                                 <div class="col-sm-offset-4 col-md-offset-3">
                                     <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
-                                    <button name="reject" type="submit" class="btn btn-warning btn-slideright" value="x">Tolak</button>
-                                    <button name="accept" type="submit" class="btn btn-success btn-slideright" value="x">Setuju</button>
+                                    <button name="reject" type="submit" class="btn btn-warning btn-slideright submit" value="x">Tolak</button>
+                                    <button name="accept" type="submit" class="btn btn-success btn-slideright submit" value="x">Setuju</button>
                                 </div><!-- /.col-sm-offset-3 -->
                             </div><!-- /.form-footer -->
                         </div><!-- /.panel -->

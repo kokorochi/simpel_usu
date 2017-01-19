@@ -100,6 +100,7 @@ $errors->has('period_id')           || old('period_id')
                             <label for="own-member" class="col-sm-4 col-md-3 control-label">Anggota</label>
                             <div class="col-sm-7 mb-10">
                                 <input name="own-member" class="form-control input-sm" type="text"
+                                       maxlength="2" data-inputmask="'alias': 'decimal', 'rightAlign': false"
                                        value="{{ $propose_own->member }}" {{$disabled}}>
                                 @if($errors->has('own-member'))
                                     <label class="error" for="member" style="display: inline-block;">
@@ -171,6 +172,41 @@ $errors->has('period_id')           || old('period_id')
                                 <div class="col-sm-3 col-md-3">
                                     <input name="max_member" class="form-control input-sm mb-10" type="text" disabled
                                            value="{{$period->max_member }}">
+                                </div>
+
+                                <label for="total_amount" class="col-sm-4 col-md-3 control-label">Jumlah Dana
+                                    Maksimal</label>
+                                <div class="col-sm-7">
+                                    <input name="total_amount" class="form-control input-sm mb-10"
+                                           data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'rightAlign': false"
+                                           type="text" value="{{$period->total_amount}}" disabled>
+                                </div>
+
+                                {{--<label for="score" class="col-sm-4 col-md-3 control-label">Skor Minimal</label>--}}
+                                {{--<div class="col-sm-7">--}}
+                                    {{--<input name="score" class="form-control input-sm mb-10"--}}
+                                           {{--maxlength="5"--}}
+                                           {{--data-inputmask="'alias': 'decimal', 'rightAlign': false"--}}
+                                           {{--type="text" value="{{$period->score}}" disabled>--}}
+                                {{--</div>--}}
+
+                                <label for="external" class="col-sm-4 col-md-3 control-label">Dosen Luar
+                                    Diperbolehkan</label>
+                                <div class="col-md-7 mb-10">
+                                    <div class="rdio rdio-theme circle">
+                                        <div class="radio-inline">
+                                            <input id="external_no" name="allow_external" type="radio"
+                                                   value="0"
+                                                   {{$period->allow_external == false ? 'checked' : ''}} disabled>
+                                            <label for="external_no">Tidak</label>
+                                        </div>
+                                        <div class="radio-inline">
+                                            <input id="external_yes" name="allow_external" type="radio"
+                                                   value="1"
+                                                   {{$period->allow_external == true ? 'checked' : ''}} disabled>
+                                            <label for="external_yes">Ya</label>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <label for="annotation" class="col-sm-4 col-md-3 control-label">Keterangan</label>

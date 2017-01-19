@@ -39,7 +39,7 @@
                     </div><!-- /.panel-heading -->
 
                     <div class="panel-body no-padding">
-                        <form class="form-horizontal form-bordered" action="{{url('appraisals/create')}}" method="POST">
+                        <form class="form-horizontal form-bordered submit-form" action="{{url('appraisals/create')}}" method="POST">
                             <div class="form-body">
                                 {{--<div class="form-footer">--}}
                                     {{--<div class="col-sm-offset-1">--}}
@@ -131,7 +131,7 @@
                                     <div class="col-sm-offset-2">
                                         <a href="#" class="add_field_button btn btn-success btn-stroke"><i class="fa fa-plus"></i></a>
                                         <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
-                                        <button type="submit" class="btn btn-success btn-slideright">Tambah</button>
+                                        <button type="submit" class="btn btn-success btn-slideright submit">Tambah</button>
                                     </div>
                                 </div>
                             </div><!-- /.form-body -->
