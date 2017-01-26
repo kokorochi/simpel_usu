@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\OutputFlowStatus;
 use App\Research;
 use App\Period;
 use App\Propose;
@@ -32,8 +33,9 @@ class ResearchController extends BlankonController {
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('isLecturer')->except(['approveList', 'approveDetail', 'approveUpdate']);
+        $this->middleware('isLecturer')->except(['approveList', 'approveDetail', 'approveUpdate', 'getOutputFile']);
         $this->middleware('isOperator')->only(['approveList', 'approveDetail', 'approveUpdate']);
+        $this->middleware('isLecturerOrOperator')->only(['getOutputFile']);
         parent::__construct();
 
         array_push($this->css['pages'], 'global/plugins/bower_components/fontawesome/css/font-awesome.min.css');
@@ -47,7 +49,7 @@ class ResearchController extends BlankonController {
         array_push($this->css['pages'], 'global/plugins/bower_components/jasny-bootstrap-fileinput/css/jasny-bootstrap-fileinput.min.css');
 
         array_push($this->js['plugins'], 'global/plugins/bower_components/chosen_v1.2.0/chosen.jquery.min.js');
-        array_push($this->js['plugins'], 'global/plugins/bower_components/jquery-ui/jquery-ui.min.js');
+        array_push($this->js['plugins'], 'global/plugins/bower_components/jquery-ui/jquery-ui.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/jquery-ui/ui/minified/autocomplete.min.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/bootstrap-datepicker-vitalets/js/bootstrap-datepicker.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/datatables/js/jquery.dataTables.min.js');
@@ -80,6 +82,37 @@ class ResearchController extends BlankonController {
             $research = $propose->research()->first();
             if ($research !== null) $researches->add($research);
         }
+
+        foreach ($researches as $research)
+        {
+            $output_status = '';
+            $research_output_generals = $research->researchOutputGeneral()->get();
+            if ($research_output_generals->isEmpty())
+            {
+                $research->output_status = 'Luaran belum diunggah';
+            } else
+            {
+                $output_flow_status = $research->outputFlowStatus()->orderBy('id', 'desc')->first();
+                if ($output_flow_status->status_code !== null)
+                {
+                    $output_status = $output_flow_status->statusCode()->first()->description;
+                } else
+                {
+                    foreach ($research_output_generals as $research_output_general)
+                    {
+                        if ($output_status == '')
+                        {
+                            $output_status = $research_output_general->output_description . ': ' . $research_output_general->status;
+                        } else
+                        {
+                            $output_status = $output_status . '<br />' . $research_output_general->output_description . ': ' . $research_output_general->status;
+                        }
+                    }
+                }
+            }
+            $research->output_status = $output_status;
+        }
+
         $data_not_found = 'Data tidak ditemukan';
 
         return view('research.research-list', compact(
@@ -98,9 +131,7 @@ class ResearchController extends BlankonController {
             return abort('404');
         }
 
-        $disabled = 'disabled';
         $propose = $research->propose()->first();
-
         if ($propose === null)
         {
             $this->setCSS404();
@@ -115,83 +146,38 @@ class ResearchController extends BlankonController {
             return abort('403');
         }
 
-        $flow_status = $research->propose()->first()->flowStatus()->orderBy('item', 'desc')->first();
-        if ($flow_status->status_code === 'UD')
+        $propose_relation = $this->getProposeRelationData($propose);
+        $propose_relation->propose = $propose;
+
+        if ($propose_relation->flow_status->status_code === 'UD')
         {
             $research->propose()->first()->flowStatus()->create([
-                'item'        => $flow_status->item + 1,
+                'item'        => $propose_relation->flow_status->item + 1,
                 'status_code' => 'LK', //Menunggu Laporan Kemajuan
                 'created_by'  => Auth::user()->nidn,
             ]);
-            $flow_status->status_code = 'LK';
-        }
-
-        $propose_output_types = $propose->proposeOutputType()->get();
-        $propose_own = $propose->proposesOwn()->first();
-        $periods = $propose->period()->get();
-        $period = $propose->period()->first();
-        $members = $propose->member()->get();
-        foreach ($members as $member)
-        {
-            if ($member->external === '1')
-            {
-                $external_member = $member->externalMember()->first();
-                $member->external_name = $external_member->name;
-                $member->external_affiliation = $external_member->affiliation;
-            } else
-            {
-                $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
-            }
-        }
-        $member = $propose->member()->first();
-        $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
-        $faculties = Faculty::where('is_faculty', '1')->get();
-        $output_types = Output_type::all();
-        $research_types = ResearchType::all();
-
-        if ($propose_own === null)
-        {
-            $propose_own = new Propose_own();
-        }
-        if ($periods === null)
-        {
-            $periods = new Collection();
-            $periods->add(new Period);
-        }
-        if ($period === null)
-        {
-            $period = new Period();
+            $propose_relation->flow_status->status_code = 'LK';
         }
 
         $disable_upload = false;
-        $status_code = $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code;
+        $status_code = $propose_relation->flow_status->status_code;
         if ($status_code !== 'UU' && $status_code !== 'PR')
         {
             $disable_upload = true;
         }
 
+        $disabled = 'disabled';
         $disable_final_amount = 'readonly';
         $upd_mode = 'edit';
 
         return view('research.research-edit', compact(
             'research',
-            'propose',
-            'propose_own',
-            'propose_output_types',
-            'periods',
-            'period',
-            'output_types',
-            'research_types',
-            'faculties',
+            'propose_relation',
             'disable_upload',
-            'members',
-            'member',
-            'lecturer',
             'status_code',
             'disable_final_amount',
             'disabled',
-            'upd_mode',
-            'flow_status'
+            'upd_mode'
         ));
     }
 
@@ -220,7 +206,7 @@ class ResearchController extends BlankonController {
             $request->file('file_progress_activity')->storeAs($path, $research->file_progress_activity);
             $request->file('file_progress_budgets')->storeAs($path, $research->file_progress_budgets);
 
-            $flow_status = $research->propose()->first()->flowStatus()->orderBy('item', 'desc')->first();
+            $flow_status = $research->propose()->first()->flowStatus()->orderBy('id', 'desc')->first();
             if ($flow_status->status_code === 'LK')
             {
                 $research->propose()->first()->flowStatus()->create([
@@ -260,7 +246,7 @@ class ResearchController extends BlankonController {
             $request->file('file_final_activity')->storeAs($path, $research->file_final_activity);
             $request->file('file_final_budgets')->storeAs($path, $research->file_final_budgets);
 
-            $flow_status = $research->propose()->first()->flowStatus()->orderBy('item', 'desc')->first();
+            $flow_status = $research->propose()->first()->flowStatus()->orderBy('id', 'desc')->first();
             if ($flow_status->status_code === 'LA')
             {
                 $research->propose()->first()->flowStatus()->create([
@@ -269,6 +255,7 @@ class ResearchController extends BlankonController {
                     'created_by'  => Auth::user()->nidn,
                 ]);
             }
+            $this->setOutputFlowStatuses($research);
 
         });
 
@@ -324,24 +311,28 @@ class ResearchController extends BlankonController {
         $propose = $research->propose()->first();
         $propose_output_types = $propose->proposeOutputType()->get();
 
-        $status_code = $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code;
+        $status_code = $propose->flowStatus()->orderBy('id', 'desc')->first()->status_code;
 
         $research_output_generals = $research->researchOutputGeneral()->get();
         if ($research_output_generals->isEmpty())
         {
             $research_output_generals = new Collection();
-            for ($i = 0; $i < 2; $i++)
+            foreach ($propose_output_types as $propose_output_type)
             {
                 $research_output_general = new ResearchOutputGeneral();
+                $research_output_general->output_description = $propose_output_type->outputType()->first()->output_name;
+                $research_output_general->status = 'draft';
                 $research_output_generals->add($research_output_general);
             }
         }
 
-        $research_output_revision = $research->researchOutputRevision()->orderBy('item', 'desc')->first();
+        $research_output_revision = $research->researchOutputRevision()->orderBy('id', 'desc')->first();
         if ($research_output_revision === null) $research_output_revision = new ResearchOutputRevision();
 
         $disabled = '';
-        if ($status_code === 'PS') $disabled = 'disabled';
+        $output_flow_status = $research->outputFlowStatus()->orderBy('id', 'desc')->first();
+        $output_code = $output_flow_status->status_code;
+        if ($output_flow_status !== null && ($output_code === 'VL' || $status_code === 'PS')) $disabled = 'disabled';
         $upd_mode = 'output';
 
         return view('research.research-output', compact(
@@ -349,6 +340,7 @@ class ResearchController extends BlankonController {
             'propose',
             'propose_output_types',
             'status_code',
+            'output_code',
             'research_output_generals',
             'research_output_revision',
             'upd_mode',
@@ -386,11 +378,11 @@ class ResearchController extends BlankonController {
                 }
             }
 
-            if ($request->file_name !== null)
+            foreach ($request->output_description as $key => $item)
             {
-                foreach ($request->file_name as $key => $item)
+                $research_output_general = $research_output_generals->get($key);
+                if ($request->file_name[$key] !== null)
                 {
-                    $research_output_general = $research_output_generals->get($key);
                     if ($research_output_general !== null && $item !== null)
                     {
                         Storage::delete($path . $research_output_general->file_name);
@@ -399,134 +391,67 @@ class ResearchController extends BlankonController {
                     {
                         $research_output_general = new ResearchOutputGeneral();
                     }
-                    $research_output_general->item = $key + 1;
-                    $research_output_general->output_description = $request->output_description[$key];
+                }
+                $research_output_general->item = $key + 1;
+                $research_output_general->output_description = $request->output_description[$key];
+                $research_output_general->status = $request->status[$key];
+                $research_output_general->url_address = $request->url_address[$key];
+                if ($request->file_name[$key] !== null)
+                {
                     $research_output_general->file_name_ori = $request->file('file_name')[$key]->getClientOriginalName();
                     $research_output_general->file_name = md5($request->file('file_name')[$key]->getClientOriginalName() . Carbon::now()->toDateTimeString()) . $research->id . '.' . $request->file('file_name')[$key]->extension();
-                    $research->researchOutputGeneral()->save($research_output_general);
-
                     $request->file('file_name')[$key]->storeAs($path, $research_output_general->file_name);
                 }
+                $research->researchOutputGeneral()->save($research_output_general);
+
             }
-            $this->setFlowStatuses($research);
+            $this->setOutputFlowStatuses($research);
+
+//            if ($request->file_name !== null)
+//            {
+//                foreach ($request->file_name as $key => $item)
+//                {
+//                    $research_output_general = $research_output_generals->get($key);
+//                    if ($research_output_general !== null && $item !== null)
+//                    {
+//                        Storage::delete($path . $research_output_general->file_name);
+//                    }
+//                    if ($research_output_general === null)
+//                    {
+//                        $research_output_general = new ResearchOutputGeneral();
+//                    }
+//                    $research_output_general->item = $key + 1;
+//                    $research_output_general->output_description = $request->output_description[$key];
+//                    $research_output_general->status = $request->status[$key];
+//                    $research_output_general->url_address = $request->url_address[$key];
+//                    $research_output_general->file_name_ori = $request->file('file_name')[$key]->getClientOriginalName();
+//                    $research_output_general->file_name = md5($request->file('file_name')[$key]->getClientOriginalName() . Carbon::now()->toDateTimeString()) . $research->id . '.' . $request->file('file_name')[$key]->extension();
+//                    $research->researchOutputGeneral()->save($research_output_general);
+//
+//                    $request->file('file_name')[$key]->storeAs($path, $research_output_general->file_name);
+//                }
+//            }
         });
 
         return redirect()->intended('researches');
     }
 
-    public function getOutputFile($id, $type, $subtype = 0)
+    public function getOutputFile($id)
     {
-        if ($type == 1) //Service
+        $research_output_general = ResearchOutputGeneral::find($id);
+        if ($research_output_general === null)
         {
-            $research_output_general = DedicationOutputService::find($id);
-            if ($research_output_general === null)
-            {
-                $this->setCSS404();
+            $this->setCSS404();
 
-                return abort('404');
-            }
-            $propose = $research_output_general->dedication()->first()->propose()->first();
-            $nidn = $propose->created_by;
-            $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/dedication-output/services/' . $research_output_general->file_name);
-
-            $this->storeDownloadLog($propose->id, 'output services', $research_output_general->file_name_ori, $research_output_general->file_name, $nidn);
-
-            return response()->download($path, $research_output_general->file_name_ori, ['Content-Type' => 'images/jpeg']);
-        } elseif ($type == 2) //Method
-        {
-            $dedication_output_method = DedicationOutputMethod::find($id);
-            if ($dedication_output_method === null)
-            {
-                $this->setCSS404();
-
-                return abort('404');
-            }
-            $propose = $dedication_output_method->dedication()->first()->propose()->first();
-            $nidn = $propose->created_by;
-            $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/dedication-output/methods/' . $dedication_output_method->file_name);
-
-            $this->storeDownloadLog($propose->id, 'output methods', $dedication_output_method->file_name_ori, $dedication_output_method->file_name, $nidn);
-
-            return response()->download($path, $dedication_output_method->file_name_ori, []);
-        } elseif ($type == 3) //Product
-        {
-            $dedication_output_product = DedicationOutputProduct::find($id);
-            if ($dedication_output_product === null)
-            {
-                $this->setCSS404();
-
-                return abort('404');
-            }
-            $propose = $dedication_output_product->dedication()->first()->propose()->first();
-            $nidn = $propose->created_by;
-            if ($subtype == 1)
-            {
-                $file_ori = $dedication_output_product->file_blueprint_ori;
-                $file = $dedication_output_product->file_blueprint;
-                $this->storeDownloadLog($propose->id, 'output products blueprint', $dedication_output_product->file_blueprint_ori, $dedication_output_product->file_blueprint, $nidn);
-            } elseif ($subtype == 2)
-            {
-                $file_ori = $dedication_output_product->file_finished_good_ori;
-                $file = $dedication_output_product->file_finished_good;
-                $this->storeDownloadLog($propose->id, 'output products FG', $dedication_output_product->file_finished_good_ori, $dedication_output_product->file_finished_good, $nidn);
-            } elseif ($subtype == 3)
-            {
-                $file_ori = $dedication_output_product->file_working_pic_ori;
-                $file = $dedication_output_product->file_working_pic;
-                $this->storeDownloadLog($propose->id, 'output products WP', $dedication_output_product->file_working_pic_ori, $dedication_output_product->file_working_pic, $nidn);
-            }
-
-            $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/dedication-output/products/' . $file);
-
-            return response()->download($path, $file_ori, []);
-        } elseif ($type == 4) //Patent
-        {
-            $dedication_output_patent = DedicationOutputPatent::find($id);
-            if ($dedication_output_patent === null)
-            {
-                $this->setCSS404();
-
-                return abort('404');
-            }
-            $propose = $dedication_output_patent->dedication()->first()->propose()->first();
-            $nidn = $propose->created_by;
-            $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/dedication-output/patents/' . $dedication_output_patent->file_patent);
-
-            $this->storeDownloadLog($propose->id, 'output patents', $dedication_output_patent->file_patent_ori, $dedication_output_patent->file_patent, $nidn);
-
-            return response()->download($path, $dedication_output_patent->file_patent_ori, []);
-        } elseif ($type == 5) //Guidebook
-        {
-            $dedication_output_guidebook = DedicationOutputGuidebook::find($id);
-            if ($dedication_output_guidebook === null)
-            {
-                $this->setCSS404();
-
-                return abort('404');
-            }
-            $propose = $dedication_output_guidebook->dedication()->first()->propose()->first();
-            $nidn = $propose->created_by;
-            if ($subtype == 1)
-            {
-                $file_ori = $dedication_output_guidebook->file_cover_ori;
-                $file = $dedication_output_guidebook->file_cover;
-                $this->storeDownloadLog($propose->id, 'output guidebooks', $dedication_output_guidebook->file_cover_ori, $dedication_output_guidebook->file_cover, $nidn);
-            } elseif ($subtype == 2)
-            {
-                $file_ori = $dedication_output_guidebook->file_back_ori;
-                $file = $dedication_output_guidebook->file_back;
-                $this->storeDownloadLog($propose->id, 'output guidebooks', $dedication_output_guidebook->file_back_ori, $dedication_output_guidebook->file_back, $nidn);
-            } elseif ($subtype == 3)
-            {
-                $file_ori = $dedication_output_guidebook->file_table_of_contents_ori;
-                $file = $dedication_output_guidebook->file_table_of_contents;
-                $this->storeDownloadLog($propose->id, 'output guidebooks', $dedication_output_guidebook->file_table_of_contents_ori, $dedication_output_guidebook->file_table_of_contents, $nidn);
-            }
-
-            $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/dedication-output/guidebooks/' . $file);
-
-            return response()->download($path, $file_ori, []);
+            return abort('404');
         }
+        $propose = $research_output_general->research()->first()->propose()->first();
+        $nidn = $propose->created_by;
+
+        $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/research-output/generals/' . $research_output_general->file_name);
+        $this->storeDownloadLog($propose->id, 'output services', $research_output_general->file_name_ori, $research_output_general->file_name, $nidn);
+
+        return response()->download($path, $research_output_general->file_name_ori, []);
     }
 
     public function approveList()
@@ -558,7 +483,8 @@ class ResearchController extends BlankonController {
         $propose = $research->propose()->first();
         $propose_output_types = $propose->proposeOutputType()->get();
 
-        $status_code = $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code;
+        $status_code = $propose->flowStatus()->orderBy('id', 'desc')->first()->status_code;
+        $output_code = $research->outputFlowStatus()->orderBy('id', 'desc')->first()->status_code;
 
         $research_output_generals = $research->researchOutputGeneral()->get();
         if ($research_output_generals->isEmpty())
@@ -568,8 +494,8 @@ class ResearchController extends BlankonController {
             return abort('404');
         }
 
-        $research_output_revision = $research->researchOutputRevision()->orderBy('item', 'desc')->first();
-        if ($research_output_revision === null) $research_output_revision = new ResearchOutputRevision();
+        $research_output_revision = $research->researchOutputRevision()->orderBy('id', 'desc')->first();
+        if ($research_output_revision === null || $output_code === 'VL') $research_output_revision = new ResearchOutputRevision();
 
         $disabled = 'disabled';
         $upd_mode = 'approve';
@@ -582,6 +508,7 @@ class ResearchController extends BlankonController {
             'research_output_revision',
             'upd_mode',
             'status_code',
+            'output_code',
             'disabled'
         ));
 
@@ -602,10 +529,10 @@ class ResearchController extends BlankonController {
 
         DB::transaction(function () use ($request, $research)
         {
-            $flow_status = $research->propose()->first()->flowStatus()->orderBy('item', 'desc')->first();
+            $flow_status = $research->propose()->first()->flowStatus()->orderBy('id', 'desc')->first();
             if ($request->is_approved === 'no')
             {
-                $research_output_revision = $research->researchOutputRevision()->orderBy('item', 'desc')->first();
+                $research_output_revision = $research->researchOutputRevision()->orderBy('id', 'desc')->first();
                 if ($research_output_revision === null)
                 {
                     $research_output_revision = new ResearchOutputRevision();
@@ -622,7 +549,7 @@ class ResearchController extends BlankonController {
                     $research_output_revision->created_by = Auth::user()->nidn;
                     $research_output_revision->item = $research_output_revision->item + 1;
                     $research->researchOutputRevision()->save($research_output_revision);
-                    $research->propose()->first()->flowStatus()->create([
+                    $research->outputFlowStatus()->create([
                         'item'        => $flow_status->item + 1,
                         'status_code' => 'RL', // Revisi Luaran,
                         'created_by'  => Auth::user()->nidn
@@ -630,9 +557,14 @@ class ResearchController extends BlankonController {
                 }
             } else
             {
+                $research->outputFlowStatus()->create([
+                    'item'        => $flow_status->item + 1,
+                    'status_code' => 'LT', // Validasi Luaran Diterima
+                    'created_by'  => Auth::user()->nidn
+                ]);
                 $research->propose()->first()->flowStatus()->create([
                     'item'        => $flow_status->item + 1,
-                    'status_code' => 'PS', // Penelitian Selesai,
+                    'status_code' => 'PS', // Penelitian Selesai
                     'created_by'  => Auth::user()->nidn
                 ]);
             }
@@ -643,7 +575,7 @@ class ResearchController extends BlankonController {
 
     private function setFlowStatuses($research)
     {
-        $flow_status = $research->propose()->first()->flowStatus()->orderBy('item', 'desc')->first();
+        $flow_status = $research->propose()->first()->flowStatus()->orderBy('id', 'desc')->first();
         if ($flow_status->status_code === 'UL' || $flow_status->status_code === 'RL')
         {
             $research->propose()->first()->flowStatus()->create([
@@ -652,6 +584,100 @@ class ResearchController extends BlankonController {
                 'created_by'  => Auth::user()->nidn,
             ]);
         }
+    }
+
+    private function setOutputFlowStatuses($research)
+    {
+        $output_flow_status = $research->outputFlowStatus()->orderBy('id', 'desc')->first();
+        if ($output_flow_status === null)
+        {
+            $output_flow_status = new OutputFlowStatus();
+        }
+
+        $continue_output_flow = true;
+        $research_output_generals = $research->researchOutputGeneral()->get();
+        if ($research_output_generals->isEmpty())
+        {
+            $continue_output_flow = false;
+        }
+        foreach ($research_output_generals as $research_output_general)
+        {
+            if ($research_output_general->status == 'draft' ||
+                $research_output_general->status == 'submitted' ||
+                $research_output_general->status == 'accepted'
+            )
+            {
+                $continue_output_flow = false;
+                break;
+            }
+        }
+
+        if ($continue_output_flow || $output_flow_status->status_code === 'RL')
+        {
+            $research->outputFlowStatus()->create([
+                'item'        => $output_flow_status->item + 1,
+                'status_code' => 'VL', //Menunggu Validasi Luaran
+                'created_by'  => Auth::user()->nidn,
+            ]);
+        }
+        if ($output_flow_status->status_code === 'LT')
+        {
+            $flow_status = $research->propose()->first()->flowStatus()->orderBy('id', 'desc')->first();
+            $research->propose()->first()->flowStatus()->create([
+                'item'        => $flow_status->item + 1,
+                'status_code' => 'PS', //Pengabdian Selesai
+                'created_by'  => Auth::user()->nidn,
+            ]);
+        }
+    }
+
+    private function getProposeRelationData($propose = null)
+    {
+        $ret = new \stdClass();
+        $ret->propose_own = $propose->proposesOwn()->first();
+        $ret->periods = $propose->period()->get();
+        $ret->period = $propose->period()->first();
+        $ret->propose_output_types = $propose->proposeOutputType()->get();
+        $ret->members = $propose->member()->get();
+        $ret->flow_status = $propose->flowStatus()->orderBy('id', 'desc')->first();
+        foreach ($ret->members as $member)
+        {
+            if ($member->external === '1')
+            {
+                $external_member = $member->externalMember()->first();
+                $member->external_name = $external_member->name;
+                $member->external_affiliation = $external_member->affiliation;
+            } else
+            {
+                if ($member->nidn !== null && $member->nidn !== '')
+                {
+                    $member->member_display = $member->nidn . ' : ' . Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+                    $member->member_nidn = $member->nidn;
+                }
+            }
+        }
+        $ret->member = $ret->members->get(0);
+        $ret->lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
+        $ret->faculties = Faculty::where('is_faculty', '1')->get();
+        $ret->output_types = Output_type::all();
+        $ret->output_types->add(new Output_type());
+        $ret->research_types = ResearchType::all();
+
+        if ($ret->propose_own === null)
+        {
+            $ret->propose_own = new Propose_own();
+        }
+        if ($ret->periods === null)
+        {
+            $ret->periods = new Collection();
+            $ret->periods->add(new Period);
+        }
+        if ($ret->period === null)
+        {
+            $ret->period = new Period();
+        }
+
+        return $ret;
     }
 
     private function setCSS404()

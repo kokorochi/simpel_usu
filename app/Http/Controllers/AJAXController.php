@@ -218,6 +218,12 @@ class AJAXController extends BlankonController {
             }
             $i++;
         }
+        $count_data = count($data);
+        if($count_data == 0)
+        {
+            $data['data'] = [];
+        }
+        $data['iTotalRecords'] = $data['iTotalDisplayRecords'] = $count_data;
         $data = json_encode($data, JSON_PRETTY_PRINT);
 
         return response($data, 200)->header('Content-Type', 'application/json');

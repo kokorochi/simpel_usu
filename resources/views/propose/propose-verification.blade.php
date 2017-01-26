@@ -35,7 +35,7 @@
             {{--@endforeach--}}
                 @include('form-input.panel-errors')
 
-            <form class="submit-form" action="{{url('proposes', $propose->id) . '/verification'}}" method="POST" enctype="multipart/form-data">
+            <form class="submit-form" action="{{url('proposes', $propose_relation->propose->id) . '/verification'}}" method="POST" enctype="multipart/form-data">
                 @include('form-input.propose-scheme')
 
                 @include('form-input.propose-member')

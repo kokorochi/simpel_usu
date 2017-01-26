@@ -25,7 +25,7 @@ $errors->has('sumErrors')
                 <form action="{{url($deleteUrl, $research->id) . '/approve'}}" method="post"
                       class="form-body form-horizontal form-bordered submit-form">
                     <div class="form-group">
-                        <label for="title" class="col-sm-4 col-md-3 control-label">Disetujui</label>
+                        <label for="is_approved" class="col-sm-4 col-md-3 control-label">Disetujui</label>
                         <div class="col-sm-7">
                             <div class="rdio rdio-theme circle">
                                 <input id="radio-yes" value="yes" type="radio" name="is_approved" {{ ( old('is_approved') === "yes" || old('is_approved') === null ) ? 'checked="checked"' : ''}}>
@@ -36,9 +36,9 @@ $errors->has('sumErrors')
                                 <label for="radio-no">Tidak</label>
                             </div>
                         </div>
-                    </div>
-                    <div id="revision-text-wrapper">
-                        @include('form-input.research-approve-revisiontext')
+                        <div id="revision-text-wrapper">
+                            @include('form-input.research-approve-revisiontext')
+                        </div>
                     </div>
 
                     {{ csrf_field() }}

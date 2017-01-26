@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Auths;
 use App\Research;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -42,7 +43,7 @@ class ApproveProposeController extends BlankonController {
         array_push($this->css['pages'], 'global/plugins/bower_components/fuelux/dist/css/fuelux.min.css');
 
         array_push($this->js['plugins'], 'global/plugins/bower_components/chosen_v1.2.0/chosen.jquery.min.js');
-        array_push($this->js['plugins'], 'global/plugins/bower_components/jquery-ui/jquery-ui.min.js');
+        array_push($this->js['plugins'], 'global/plugins/bower_components/jquery-ui/jquery-ui.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/jquery-ui/ui/minified/autocomplete.min.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/bootstrap-datepicker-vitalets/js/bootstrap-datepicker.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/datatables/js/jquery.dataTables.min.js');
@@ -91,7 +92,9 @@ class ApproveProposeController extends BlankonController {
 
             return abort('404');
         }
-        $propose->final_amount = $propose->total_amount;
+
+        $propose_relation = $this->getProposeRelationData($propose);
+        $propose_relation->propose = $propose;
 
         $research_reviewers = ResearchReviewer::where('propose_id', $propose->id)->get();
         $research_reviewer = new ResearchReviewer();
@@ -109,32 +112,24 @@ class ApproveProposeController extends BlankonController {
                 $research_reviewer->disabled = 'readonly';
             }
         }
-        if ($propose->is_own === '1')
+        $reviewers = Auths::where('auth_object_ref_id', '3')->get();
+        foreach ($reviewers as $reviewer)
         {
-            $propose_own = $propose->proposesOwn()->first();
-        } else
-        {
-            $propose_own = new Propose_own;
+            $lecturer = $reviewer->user()->first()->lecturer()->first();
+            $reviewer->nidn = $lecturer->employee_card_serial_number;
+            $reviewer->full_name = $reviewer->nidn . ' : ' . $lecturer->full_name;
         }
-        $periods = Period::all();
-        $period = $propose->period()->first();
-        $members = $propose->member()->get();
-        foreach ($members as $member)
+
+        $count_reviewers = count($research_reviewers);
+        $review_proposes = $propose->reviewPropose()->get();
+        $count_amount = 0;
+        foreach ($review_proposes as $review_propose)
         {
-            if ($member->external === '1')
-            {
-                $external_member = $member->externalMember()->first();
-                $member->external_name = $external_member->name;
-                $member->external_affiliation = $external_member->affiliation;
-            } else
-            {
-                $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
-            }
+            $count_amount += $review_propose->recommended_amount;
         }
-        $research_types = ResearchType::all();
-        $output_types = Output_type::all();
-        $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
-        $faculties = Faculty::where('is_faculty', 1)->get();
+
+        $propose_relation->propose->final_amount = $count_amount / $count_reviewers;
+
         $disabled = 'disabled';
         $disable_upload = true;
         $disable_reviewer = true;
@@ -142,6 +137,8 @@ class ApproveProposeController extends BlankonController {
         $disable_final_amount = '';
 
         return view('approve-propose/approve-propose-create', compact(
+            'propose_relation',
+            'reviewers',
             'propose',
             'research_reviewers',
             'lecturer',
@@ -212,6 +209,55 @@ class ApproveProposeController extends BlankonController {
         });
 
         return redirect()->intended('approve-proposes');
+    }
+
+    private function getProposeRelationData($propose = null)
+    {
+        $ret = new \stdClass();
+        $ret->propose_own = $propose->proposesOwn()->first();
+        $ret->periods = $propose->period()->get();
+        $ret->period = $propose->period()->first();
+        $ret->propose_output_types = $propose->proposeOutputType()->get();
+        $ret->members = $propose->member()->get();
+        $ret->flow_status = $propose->flowStatus()->orderBy('id', 'desc')->first();
+        foreach ($ret->members as $member)
+        {
+            if ($member->external === '1')
+            {
+                $external_member = $member->externalMember()->first();
+                $member->external_name = $external_member->name;
+                $member->external_affiliation = $external_member->affiliation;
+            } else
+            {
+                if ($member->nidn !== null && $member->nidn !== '')
+                {
+                    $member->member_display = $member->nidn . ' : ' . Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+                    $member->member_nidn = $member->nidn;
+                }
+            }
+        }
+        $ret->member = $ret->members->get(0);
+        $ret->lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
+        $ret->faculties = Faculty::where('is_faculty', '1')->get();
+        $ret->output_types = Output_type::all();
+        $ret->output_types->add(new Output_type());
+        $ret->research_types = ResearchType::all();
+
+        if ($ret->propose_own === null)
+        {
+            $ret->propose_own = new Propose_own();
+        }
+        if ($ret->periods === null)
+        {
+            $ret->periods = new Collection();
+            $ret->periods->add(new Period);
+        }
+        if ($ret->period === null)
+        {
+            $ret->period = new Period();
+        }
+
+        return $ret;
     }
 
     private function setCSS404()

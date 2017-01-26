@@ -52,7 +52,7 @@
                             <div class="rdio rdio-theme circle">
                                 <div class="radio-inline">
                                     <input id="head" name="sign_2" type="radio" checked="checked" value="head">
-                                    <label for="head">Ketua LP/label>
+                                    <label for="head">Ketua LP</label>
                                 </div>
                                 <div class="radio-inline">
                                     <input id="secretary" name="sign_2" type="radio" value="secretary">

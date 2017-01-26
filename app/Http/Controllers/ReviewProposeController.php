@@ -40,12 +40,17 @@ class ReviewProposeController extends BlankonController {
         array_push($this->css['pages'], 'global/plugins/bower_components/datatables/css/dataTables.bootstrap.css');
         array_push($this->css['pages'], 'global/plugins/bower_components/datatables/css/datatables.responsive.css');
         array_push($this->css['pages'], 'global/plugins/bower_components/jasny-bootstrap-fileinput/css/jasny-bootstrap-fileinput.min.css');
+        array_push($this->css['pages'], 'global/plugins/bower_components/chosen_v1.2.0/chosen.min.css');
 
         array_push($this->js['plugins'], 'global/plugins/bower_components/datatables/js/jquery.dataTables.min.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/datatables/js/dataTables.bootstrap.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/datatables/js/datatables.responsive.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/jasny-bootstrap-fileinput/js/jasny-bootstrap.fileinput.min.js');
+        array_push($this->js['plugins'], 'global/plugins/bower_components/jquery.inputmask/dist/jquery.inputmask.bundle.min.js');
+        array_push($this->js['plugins'], 'global/plugins/bower_components/chosen_v1.2.0/chosen.jquery.min.js');
 
+        array_push($this->js['scripts'], 'admin/js/pages/blankon.form.advanced.js');
+        array_push($this->js['scripts'], 'admin/js/pages/blankon.form.element.js');
         array_push($this->js['scripts'], 'admin/js/datatable-custom.js');
         array_push($this->js['scripts'], 'admin/js/customize.js');
 
@@ -102,6 +107,7 @@ class ReviewProposeController extends BlankonController {
         {
             $review_propose = new ReviewPropose;
             $review_propose->disabled = '';
+            $review_propose->recommended_amount = $propose->total_amount;
             $appraisal = $propose->period()->first()->appraisal()->first();
             $appraisals_i = $appraisal->appraisal_i()->get();
             $review_proposes_i = new Collection;
@@ -154,6 +160,7 @@ class ReviewProposeController extends BlankonController {
         $review_propose->nidn = Auth::user()->nidn;
         $review_propose->suggestion = $request->suggestion;
         $review_propose->conclusion_id = $request->conclusion_id;
+        $review_propose->recommended_amount = str_replace(',', '', $request->recommended_amount);
 
         $review_proposes_i = new Collection();
         foreach ($appraisals_i as $key => $appraisal_i)

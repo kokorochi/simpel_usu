@@ -24,9 +24,11 @@ $(document).ready(function () {
         },
         rowCallback: function (nRow) {
             responsiveHelperAjax.createExpandIcon(nRow);
+            BlankonApp.handleTooltip();
         },
         drawCallback: function (oSettings) {
             responsiveHelperAjax.respond();
+            BlankonApp.handleTooltip();
         }
     });
 
@@ -49,6 +51,7 @@ $(document).ready(function () {
             // },
             drawCallback: function (oSettings) {
                 responsiveHelperAjax.respond();
+                BlankonApp.handleTooltip();
             }
         });
     });
@@ -68,9 +71,11 @@ $(document).ready(function () {
         },
         rowCallback: function (nRow) {
             responsiveHelperAjax.createExpandIcon(nRow);
+            BlankonApp.handleTooltip();
         },
         drawCallback: function (oSettings) {
             responsiveHelperAjax.respond();
+            BlankonApp.handleTooltip();
         }
     });
 
@@ -93,6 +98,7 @@ $(document).ready(function () {
             // },
             drawCallback: function (oSettings) {
                 responsiveHelperAjax.respond();
+                BlankonApp.handleTooltip();
             }
         });
     });
@@ -111,9 +117,11 @@ $(document).ready(function () {
         },
         rowCallback: function (nRow) {
             responsiveHelperAjax.createExpandIcon(nRow);
+            BlankonApp.handleTooltip();
         },
         drawCallback: function (oSettings) {
             responsiveHelperAjax.respond();
+            BlankonApp.handleTooltip();
         }
     });
 
@@ -128,10 +136,12 @@ $(document).ready(function () {
                 // Initialize the responsive datatables helper once.
                 if (!responsiveHelperAjax) {
                     responsiveHelperAjax = new ResponsiveDatatablesHelper(tableApproveDedicationAjax, breakpointDefinition);
+                    BlankonApp.handleTooltip();
                 }
             },
             drawCallback: function (oSettings) {
                 responsiveHelperAjax.respond();
+                BlankonApp.handleTooltip();
             }
         });
     });
@@ -151,9 +161,11 @@ $(document).ready(function () {
         },
         rowCallback: function (nRow) {
             responsiveHelperAjax.createExpandIcon(nRow);
+            BlankonApp.handleTooltip();
         },
         drawCallback: function (oSettings) {
             responsiveHelperAjax.respond();
+            BlankonApp.handleTooltip();
         }
     });
 
@@ -169,10 +181,12 @@ $(document).ready(function () {
                 // Initialize the responsive datatables helper once.
                 if (!responsiveHelperAjax) {
                     responsiveHelperAjax = new ResponsiveDatatablesHelper(tableReviewDedicationAjax, breakpointDefinition);
+                    BlankonApp.handleTooltip();
                 }
             },
             drawCallback: function (oSettings) {
                 responsiveHelperAjax.respond();
+                BlankonApp.handleTooltip();
             }
         });
     });

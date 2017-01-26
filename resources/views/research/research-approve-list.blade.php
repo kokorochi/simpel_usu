@@ -35,7 +35,7 @@
                             </div>
                             <div class="pull-right">
                                 <a class="btn btn-sm" data-action="collapse" data-container="body"
-                                   data-toggle="tooltip"
+                                   data-toggle="tooltip" title="Collapse"
                                    data-placement="top" data-title="Collapse"><i class="fa fa-angle-up"></i></a>
                             </div>
                             <div class="clearfix"></div>

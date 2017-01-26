@@ -10,6 +10,6 @@ class ResearchOutputGeneral extends Model
 
     public function research()
     {
-        $this->belongsTo(Research::class);
+        return $this->belongsTo(Research::class);
     }
 }

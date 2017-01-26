@@ -2,28 +2,29 @@
 @php($ctr = 0)
 
 @php
-    while($errors->has('file_name.' . $ctr) || old('file_name.' . $ctr) ||
-          $errors->has('output_description.' . $ctr) || old('output_description.' . $ctr) )
+    $olds = session()->getOldInput();
+
+    if(!empty($olds))
     {
-        $research_output_general = $research_output_generals->get($ctr);
-        if($research_output_general === null)
+        foreach ($olds as $key => $old)
         {
-            $research_output_general->file_name = old('file_name.' . $ctr);
-            $research_output_general->output_description = old('output_description.' . $ctr);
-            $research_output_generals->add($research_output_general);
-        }else
-        {
-            $research_output_generals[$ctr]->file_name = old('file_name.' . $ctr);
-            $research_output_generals[$ctr]->output_description = old('output_description.' . $ctr);
+            if(is_array($old))
+            {
+                foreach ($old as $key_2 => $old_2)
+                {
+                    $research_output_general = $research_output_generals->get($key_2);
+                    if($research_output_general === null)
+                    {
+                        $research_output_generals->add(new \App\ResearchOutputGeneral());
+                    }
+
+                    $research_output_generals[$key_2][$key] = $old_2;
+                }
+            }
         }
-
-        $ctr++;
     }
+//if(count($research_output_generals) == 5) dd($research_output_generals);
 @endphp
-
-@if($status_code === 'RL')
-    @include('form-input.research-approve-revisiontext')
-@endif
 
 <div class="row">
     <div class="col-md-12">
@@ -42,9 +43,34 @@
                 <form action="{{url($deleteUrl, $research->id) . '/output-general'}}" method="post"
                       enctype="multipart/form-data"
                       class="form-body form-horizontal form-bordered">
+                    @if($output_code === 'RL')
+                        <div class="form-group">
+                            @include('form-input.research-approve-revisiontext')
+                        </div>
+                        <hr>
+                    @endif
                     <div class="research-general-wrapper">
                         @foreach($research_output_generals as $key => $research_output_general)
                             <div class="form-group">
+                                <label for="status[{{$key}}]" class="col-sm-4 col-md-3 control-label">Jenis</label>
+                                <div class="col-sm-7">
+                                    <div class="rdio rdio-theme circle pull-left mr-10">
+                                        <input id="radio-draft[{{$key}}]" value="draft" type="radio" name="status[{{$key}}]" {{$research_output_general->status === 'draft' ? 'checked' : ''}} {{$disabled}}>
+                                        <label for="radio-draft[{{$key}}]">Draft</label>
+                                    </div>
+                                    <div class="rdio rdio-theme circle pull-left mr-10">
+                                        <input id="radio-submitted[{{$key}}]" value="submitted" type="radio" name="status[{{$key}}]"{{$research_output_general->status === 'submitted' ? 'checked' : ''}} {{$disabled}}>
+                                        <label for="radio-submitted[{{$key}}]">Submitted</label>
+                                    </div>
+                                    <div class="rdio rdio-theme circle pull-left mr-10">
+                                        <input id="radio-accepted[{{$key}}]" value="accepted" type="radio" name="status[{{$key}}]"{{$research_output_general->status === 'accepted' ? 'checked' : ''}} {{$disabled}}>
+                                        <label for="radio-accepted[{{$key}}]">Accepted</label>
+                                    </div>
+                                    <div class="rdio rdio-theme circle pull-left mr-10">
+                                        <input id="radio-publish[{{$key}}]" value="publish" type="radio" name="status[{{$key}}]"{{$research_output_general->status === 'publish' ? 'checked' : ''}} {{$disabled}}>
+                                        <label for="radio-publish[{{$key}}]">Publish</label>
+                                    </div>
+                                </div>
                                 @if($research_output_general->file_name_ori !== null)
                                     @if($upd_mode !== 'approve' && $status_code !== 'PS')
                                         <div class="clearfix"></div>
@@ -67,7 +93,7 @@
                                                    type="text" disabled
                                                    value="{{ $research_output_general->file_name_ori }}">
                                                         <span class="input-group-btn">
-                                                            <a href="{{url('researches', $research_output_general->id) . '/output-download/1' }}"
+                                                            <a href="{{url('researches', $research_output_general->id) . '/output-download' }}"
                                                                class="btn btn-primary btn-sm" target="_blank">Unduh</a>
                                                         </span>
                                         </div>
@@ -88,7 +114,20 @@
                                     @endif
                                 </div>
 
-                                @if($upd_mode !== 'approve' && $status_code !== 'PS')
+                                <div class="clearfix"></div>
+                                <label for="url_address[]" class="control-label col-sm-4 col-md-3">Url Address</label>
+                                <div class="col-sm-6 mb-10">
+                                    <input name="url_address[]" class="form-control input-sm" type="text"
+                                           value="{{ $research_output_general->url_address }}" {{$disabled}}>
+                                    @if($errors->has('url_address.' . $key))
+                                        <label class="error" for="url_address[]"
+                                               style="display: inline-block;">
+                                            {{ $errors->first('url_address.' . $key) }}
+                                        </label>
+                                    @endif
+                                </div>
+
+                                @if($upd_mode !== 'approve' && $status_code !== 'PS' && $disabled == null)
                                     <div class="clearfix"></div>
                                     <label class="control-label col-sm-4 col-md-3">Unggah Luaran</label>
                                     <div class="col-sm-6">
@@ -126,7 +165,7 @@
                         @endforeach
                     </div>
 
-                    @if($upd_mode !== 'approve' && $status_code !== 'PS')
+                    @if($upd_mode !== 'approve' && $status_code !== 'PS' && $disabled == null)
                         {{ csrf_field() }}
                         <input type="hidden" name="_method" value="PUT">
 

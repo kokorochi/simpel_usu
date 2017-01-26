@@ -1,26 +1,27 @@
 @extends('layouts.lay_admin')
 
 {{--Get Old Value And Place It To VARIABLE--}}
-@php($ctr_old = 0)
-
-@while(
-$errors->has('score.' . $ctr_old) || old('score.' . $ctr_old)
-)
-    @php
-        $review_proposes_i[$ctr_old]->score = old('score.' . $ctr_old);
-        $review_proposes_i[$ctr_old]->comment = old('comment.' . $ctr_old);
-        $ctr_old++;
-    @endphp
-@endwhile
-
-@if(old('suggestion'))
-    @php($review_propose->suggestion = old('suggestion'))
-@endif
-@if(old('conclusion_id'))
-    @php($review_propose->conclusion_id = old('conclusion_id'))
-@endif
+@php
+    $olds = session()->getOldInput();
+    if(!empty($olds))
+    {
+        foreach ($olds as $key => $old)
+        {
+            if(is_array($old))
+            {
+                foreach ($old as $key_2 => $old_2)
+                {
+                    $review_proposes_i[$key_2][$key] = $old_2;
+                }
+            }else{
+                $review_propose[$key] = $old;
+            }
+        }
+    }
+@endphp
 
 @php
+    $olds = session()->getOldInput();
     foreach ($review_proposes_i as $item)
     {
         $item->total_score = $item->score * $item->quality;
@@ -94,7 +95,8 @@ $errors->has('score.' . $ctr_old) || old('score.' . $ctr_old)
                             </div>
                         </div>
                     </div>
-                    <form class="submit-form" action="{{url('review-proposes',$propose->id) . '/review'}}" method="POST">
+                    <form class="submit-form" action="{{url('review-proposes',$propose->id) . '/review'}}"
+                          method="POST" id="input-mask">
                         <table class="table table-bordered table-striped">
                             <tbody>
                             @foreach($review_proposes_i as $key => $review_propose_i)
@@ -102,7 +104,13 @@ $errors->has('score.' . $ctr_old) || old('score.' . $ctr_old)
                                     <td width="30%">{{$review_propose_i->aspect}}</td>
                                     <td width="15%">
                                         <div class="form-group">
-                                            <input name="score[]" class="form-control input-sm input-score" type="text" value="{{$review_propose_i->score}}" {{$review_propose_i->disabled}}>
+                                            <select name="score[]" class="chosen-select" {{$review_propose_i->disabled}}>
+                                                @for($i = 1; $i <= 7; $i++)
+                                                    <option value="{{$i}}" {{$i == $review_propose_i->score ? 'selected' : ''}}>{{$i}}</option>
+                                                @endfor
+                                            </select>
+                                            {{--<input name="score[]" class="form-control input-sm input-score" type="text"--}}
+                                                   {{--value="{{$review_propose_i->score}}" {{$review_propose_i->disabled}}>--}}
                                             @if($errors->has('score.' . $key))
                                                 <label class="error" for="score[]" style="display: inline-block;">
                                                     {{ $errors->first('score.' . $key) }}
@@ -111,11 +119,14 @@ $errors->has('score.' . $ctr_old) || old('score.' . $ctr_old)
                                         </div>
                                     </td>
                                     <td width="10%">
-                                        <input name="quality[]" class="form-control input-sm text-center" type="text" value="{{$review_propose_i->quality}}"
+                                        <input name="quality[]" class="form-control input-sm text-center" type="text"
+                                               value="{{$review_propose_i->quality}}"
                                                disabled>
                                     </td>
                                     <td width="15%">
-                                        <input name="final-score[]" class="form-control input-sm text-center output-score" type="text" value="{{$review_propose_i->total_score}}"
+                                        <input name="final-score[]"
+                                               class="form-control input-sm text-center output-score" type="text"
+                                               value="{{$review_propose_i->total_score}}"
                                                disabled>
                                     </td>
                                     <td width="30%">
@@ -128,9 +139,24 @@ $errors->has('score.' . $ctr_old) || old('score.' . $ctr_old)
                         </table>
                         <div class="form-body form-horizontal form-bordered no-padding">
                             <div class="form-group">
+                                <label for="recommended_amount" class="col-sm-4 col-md-3 control-label">Rekomendasi
+                                    Jumlah Dana</label>
+                                <div class="col-sm-7 mb-10">
+                                    <input name="recommended_amount" class="form-control input-sm" type="text"
+                                           data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'rightAlign': false"
+                                           value="{{ $review_propose->recommended_amount }}" {{$review_propose->disabled}}>
+                                    @if($errors->has('recommended_amount'))
+                                        <label class="error" for="recommended_amount" style="display: inline-block;">
+                                            {{ $errors->first('recommended_amount') }}
+                                        </label>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label for="conclusion_id" class="col-sm-4 col-md-3 control-label">Kesimpulan</label>
                                 <div class="col-sm-7 mb-10">
-                                    <select name="conclusion_id" class="form-control input-sm" {{$review_propose->disabled}}>
+                                    <select name="conclusion_id"
+                                            class="form-control input-sm" {{$review_propose->disabled}}>
                                         @foreach($conclusions as $conclusion)
                                             <option value="{{$conclusion->id}}"
                                                     {{$review_propose->conclusion_id == $conclusion->id ? 'selected' : null}}
@@ -153,7 +179,8 @@ $errors->has('score.' . $ctr_old) || old('score.' . $ctr_old)
                         <div class="form-footer">
                             <div class="col-sm-offset-4 col-md-offset-3">
                                 @if($upd_mode === 'display')
-                                    <a href="{{url('review-proposes', $review_propose->id) . '/print-review'}}" target="_blank" class="btn btn-default btn-slideright">
+                                    <a href="{{url('review-proposes', $review_propose->id) . '/print-review'}}"
+                                       target="_blank" class="btn btn-primary btn-stroke btn-dashed btn-slideright">
                                         <i class="fa fa-print"></i> Print
                                     </a>
                                 @endif

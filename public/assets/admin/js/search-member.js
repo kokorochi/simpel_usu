@@ -67,10 +67,17 @@ $(document).ready(function () {
         countChild = $(".reviewer-wrapper div.form-group").length;
         x = countChild;
         if (x < 10) { //max input box allowed
-            x++; //text box increment
-            var newtr = '<div class="form-group"><label for="nidn[]" class="col-sm-4 col-md-3 control-label">Reviewer</label> <div class="col-sm-6 input-icon right"> <input name="display[]" type="text" class="input-reviewer-auto form-control input-sm mb-15" value=""/> <input name="nidn[]" type="text" class="input-reviewer-value" hidden="hidden" value=""/> </div> <div class="col-sm-1"> <a href="#" class="remove_field btn btn-sm btn-danger btn-stroke"> <i class="fa fa-minus"></i> </a> </div> </div><!-- /.form-group -->';
-            $(".reviewer-wrapper").append(newtr); //add input box
-            $('.input-reviewer-auto').autocomplete(autocomp_reviewer);
+            var reviewer_clone = $(".reviewer-wrapper").find("div.form-group:first").clone();
+            reviewer_clone.find("select").remove();
+            reviewer_clone.find(".chosen-container").remove();
+            reviewer_clone = reviewer_clone.appendTo(".reviewer-wrapper");
+
+            var reviewer_option = $(".reviewer-wrapper").find("div.form-group:first").find("select.chosen-select").find("option").clone();
+            var reviewer_select = $("<select name='nidn[]' class='chosen-select'>").appendTo(reviewer_clone.find('.chosen-select-container'));
+            reviewer_option.each(function(index){
+                reviewer_select.append($("<option>").attr('value', reviewer_option[index].value).text(this.text))
+            });
+            $(".chosen-select").chosen();
         }
     });
 

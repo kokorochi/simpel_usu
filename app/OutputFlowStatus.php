@@ -4,9 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class FlowStatus extends Model {
+class OutputFlowStatus extends Model
+{
     protected $fillable = [
-        'propose_id',
+        'research_id',
         'item',
         'status_code',
         'created_by',

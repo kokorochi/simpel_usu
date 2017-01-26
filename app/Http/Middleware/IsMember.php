@@ -34,7 +34,7 @@ class IsMember extends BlankonController {
                     return abort('403');
                 }
             }
-        }elseif($request->type == 2 || $request->type == 3){
+        }elseif($request->type == 2 || $request->type == 3 || $request->type == null){
             $propose = Propose::find($request->id);
             if ($propose !== null)
             {

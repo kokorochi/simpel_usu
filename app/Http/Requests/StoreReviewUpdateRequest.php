@@ -25,17 +25,19 @@ class StoreReviewUpdateRequest extends FormRequest {
     public function rules()
     {
         return [
-            'score.*' => 'required|numeric|min:1|max:7'
+            'score.*'            => 'required|numeric|min:1|max:7',
+            'recommended_amount' => 'required'
         ];
     }
 
     public function messages()
     {
         return [
-            'score.*.required' => 'Skor harus diisi',
-            'score.*.numeric'  => 'Skor harus angka',
-            'score.*.min'      => 'Skor diisi 1-7',
-            'score.*.max'      => 'Skor diisi 1-7',
+            'score.*.required'            => 'Skor harus diisi',
+            'score.*.numeric'             => 'Skor harus angka',
+            'score.*.min'                 => 'Skor diisi 1-7',
+            'score.*.max'                 => 'Skor diisi 1-7',
+            'recommended_amount.required' => 'Rekomendasi jumlah dana harus diisi',
         ];
     }
 
@@ -64,10 +66,11 @@ class StoreReviewUpdateRequest extends FormRequest {
     {
         $ret = [];
         $review_propose = ReviewPropose::where('propose_id', $this->id)->where('nidn', Auth::user()->nidn)->first();
-        if($review_propose !== null)
+        if ($review_propose !== null)
         {
             array_push($ret, 'Sudah pernah direview sebelumnya, tidak diperkenankan untuk mengubah hasil review sebelumnya');
         }
+
         return $ret;
     }
 }

@@ -4,10 +4,10 @@
 <!-- START @META SECTION -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href="http://localhost/lppm_blankon/public/assets//images/shortcut icon.png" rel="shortcut icon">
+    <link href="{{$assetUrl}}images/shortcut icon.png" rel="shortcut icon">
 <!-- START @FONT STYLES -->
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet">
-    <link href="http://fonts.googleapis.com/css?family=Oswald:700,400" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:700,400" rel="stylesheet">
     <!--/ END FONT STYLES -->
 <!-- START @GLOBAL MANDATORY STYLES -->
     <link href="{{$assetUrl}}global/plugins/bower_components/bootstrap/dist/css/bootstrap.min.css"
@@ -168,6 +168,9 @@
             <td class="print-col-1">7.</td>
             <td class="print-col-2">Biaya yang diperlukan</td>
             <td class="print-col-3">:</td>
+            @if($propose->final_amount !== null)
+                @php($propose->total_amount = $propose->final_amount)
+            @endif
             <td class="print-col-4">{{'Rp. ' . number_format($propose->total_amount, 0, ',', '.')}}</td>
         </tr>
 

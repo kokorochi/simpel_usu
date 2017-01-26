@@ -36,16 +36,20 @@
 
             @include('form-input.propose-detail')
 
-            <form class="submit-form" action="{{url('proposes', $propose->id) . '/edit'}}" method="POST"
+            <form class="submit-form" action="{{url('proposes', $propose_relation->propose->id) . '/edit'}}" method="POST"
                   enctype="multipart/form-data">
 
-                @include('form-input.propose-upload')
+                @if($status_code !== 'VA')
+                    @include('form-input.propose-upload')
+                @endif
 
                 @if($status_code === 'UD')
                     @include('form-input.propose-revision')
                 @endif
 
-                @include('form-input.propose-print-selection')
+                @if($upd_mode === 'edit')
+                    @include('form-input.propose-print-selection')
+                @endif
 
                 <div class="row">
                     <div class="col-md-12">
@@ -56,13 +60,12 @@
 
                             <div class="form-footer">
                                 <div class="col-sm-offset-4 col-md-offset-3">
-                                    <button name="submit_button" type="submit" value="print"
-                                       class="btn btn-primary btn-stroke btn-dashed btn-slideright submit">
-                                        <i class="fa fa-print"></i> Print
-                                    </button>
                                     <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
-                                    @if($disable_upload === false)
-                                        <button name="submit_button" type="submit" class="btn btn-success btn-slideright submit" value="edit">Ubah</button>
+                                    @if($upd_mode === 'edit')
+                                        <button name="submit_button" type="submit" class="btn btn-primary btn-stroke btn-dashed btn-slideright submit" value="print"><i class="fa fa-print"></i>Print</button>
+                                        @if($disable_upload === false)
+                                            <button name="submit_button" type="submit" class="btn btn-success btn-slideright submit" value="edit">Ubah</button>
+                                        @endif
                                     @endif
                                 </div><!-- /.col-sm-offset-3 -->
                             </div><!-- /.form-footer -->

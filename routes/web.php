@@ -97,6 +97,8 @@ Route::get('proposes/', 'ProposeController@index');
 Route::get('proposes/create', 'ProposeController@create');
 Route::post('proposes/create', 'ProposeController@store');
 
+Route::get('proposes/{id}/display', 'ProposeController@display');
+
 Route::get('proposes/{id}/edit', 'ProposeController@edit');
 Route::put('proposes/{id}/edit', 'ProposeController@update');
 Route::put('proposes/{id}/edit-temporary', 'ProposeController@updateTemporary');
@@ -150,13 +152,8 @@ Route::put('researches/{id}/edit-progress', 'ResearchController@updateProgress')
 Route::put('researches/{id}/edit-final', 'ResearchController@updateFinal');
 Route::get('researches/{id}/download/{type}', 'ResearchController@getFile');
 Route::get('researches/{id}/output', 'ResearchController@output');
-//Route::get('researches/{id}/output-download/{type}', 'DedicationController@getOutputFile');
-//Route::get('researches/{id}/output-download/{type}/{subtype}', 'DedicationController@getOutputFile');
+Route::get('researches/{id}/output-download', 'ResearchController@getOutputFile');
 Route::put('researches/{id}/output-general', 'ResearchController@updateOutputGeneral');
-//Route::put('researches/{id}/output-method', 'DedicationController@updateOutputMethod');
-//Route::put('researches/{id}/output-product', 'DedicationController@updateOutputProduct');
-//Route::put('researches/{id}/output-patent', 'DedicationController@updateOutputPatent');
-//Route::put('researches/{id}/output-guidebook', 'DedicationController@updateOutputGuidebook');
 Route::get('researches/approve-list', 'ResearchController@approveList');
 Route::get('researches/{id}/approve', 'ResearchController@approveDetail');
 Route::put('researches/{id}/approve', 'ResearchController@approveUpdate');

@@ -135,11 +135,26 @@ $(document).ready(function () {
     $(".add-research-general-button").click(function (e) {
         e.preventDefault();
         countChild = $(".research-general-wrapper div.form-group").length;
-        console.log(countChild);
         x = countChild;
         if (x < max_fields) { //max input box allowed
             x++; //text box increment
-            $(".research-general-wrapper").append('<div class="form-group"><input name="delete_output[]" type="hidden" value="0"><div class="clearfix"></div> <label for="output_description[]" class="control-label col-sm-4 col-md-3">Deskripsi Luaran</label> <div class="col-sm-6 mb-10"> <input name="output_description[]" class="form-control input-sm" type="text" value=""> </div><div class="clearfix"></div> <label class="control-label col-sm-4 col-md-3">Unggah Luaran</label> <div class="col-sm-6"> <div class="fileinput fileinput-new input-group" data-provides="fileinput"> <div class="form-control input-sm" data-trigger="fileinput"> <i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span> </div> <span class="input-group-addon btn btn-success btn-file"> <span class="fileinput-new">Pilih file</span> <span class="fileinput-exists">Ubah</span> <input type="file" name="file_name[]" value=""> </span> <a href="#" class="input-group-addon btn btn-danger fileinput-exists" data-dismiss="fileinput">Hapus</a> </div> </div> <div class="col-sm-1"><a href="#" class="remove_field btn btn-sm btn-danger btn-stroke"> <i class="fa fa-minus"></i> </a> </div></div> <!-- /.form-group -->'); //add input box
+            var research_clone = $('.research-general-wrapper').find('div.form-group:last').clone();
+            var idx = research_clone.find('input[name^=status]:first').attr("name").substring(7,8);
+            idx++;
+            research_clone.find('input[name^=status]').attr("name", "status[" + idx + "]");
+            research_clone.find('input[id^=radio-draft]').attr("id", "radio-draft[" + idx + "]");
+            research_clone.find('label[for^=radio-draft]').attr("for", "radio-draft[" + idx + "]");
+            research_clone.find('input[id^=radio-submitted]').attr("id", "radio-submitted[" + idx + "]");
+            research_clone.find('label[for^=radio-submitted]').attr("for", "radio-submitted[" + idx + "]");
+            research_clone.find('input[id^=radio-accepted]').attr("id", "radio-accepted[" + idx + "]");
+            research_clone.find('label[for^=radio-accepted]').attr("for", "radio-accepted[" + idx + "]");
+            research_clone.find('input[id^=radio-publish]').attr("id", "radio-publish[" + idx + "]");
+            research_clone.find('label[for^=radio-publish]').attr("for", "radio-publish[" + idx + "]");
+            research_clone.find('input[name^=output_description]').attr("value", "");
+            research_clone.find('input[name^=url_address]').attr("value", "");
+            $('.research-general-wrapper').append(research_clone);
+            BlankonApp.handleSound();
+            // $(".research-general-wrapper").append('<div class="form-group"><input name="delete_output[]" type="hidden" value="0"><div class="clearfix"></div> <label for="output_description[]" class="control-label col-sm-4 col-md-3">Deskripsi Luaran</label> <div class="col-sm-6 mb-10"> <input name="output_description[]" class="form-control input-sm" type="text" value=""> </div><div class="clearfix"></div> <label class="control-label col-sm-4 col-md-3">Unggah Luaran</label> <div class="col-sm-6"> <div class="fileinput fileinput-new input-group" data-provides="fileinput"> <div class="form-control input-sm" data-trigger="fileinput"> <i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span> </div> <span class="input-group-addon btn btn-success btn-file"> <span class="fileinput-new">Pilih file</span> <span class="fileinput-exists">Ubah</span> <input type="file" name="file_name[]" value=""> </span> <a href="#" class="input-group-addon btn btn-danger fileinput-exists" data-dismiss="fileinput">Hapus</a> </div> </div> <div class="col-sm-1"><a href="#" class="remove_field btn btn-sm btn-danger btn-stroke"> <i class="fa fa-minus"></i> </a> </div></div> <!-- /.form-group -->'); //add input box
         }
     });
 
@@ -167,6 +182,14 @@ $(document).ready(function () {
     });
 
     $("form.submit-form").submit(function (e) {
-        $(this).find('button.submit').attr('disabled', 'disabled');
+        var form = $(this);
+        $(this).find('button[type="submit"]').each(function (index) {
+            // Create a disabled clone of the submit button
+            $(this).clone(false).removeAttr('id').prop('disabled', true).insertBefore($(this));
+
+            // Hide the actual submit button and move it to the beginning of the form
+            $(this).hide();
+            form.prepend($(this));
+        });
     });
 });

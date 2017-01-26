@@ -32,7 +32,7 @@
 
             @include('form-input.research-output-general')
 
-            @if($upd_mode === 'approve')
+            @if($upd_mode === 'approve' && $status_code !== 'PS')
                 @include('form-input.research-approve')
             @endif
         </div><!-- /.body-content -->

@@ -7,6 +7,7 @@ use App\ModelSDM\Lecturer;
 use App\ProposeOutputType;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -24,6 +25,7 @@ use App\ModelSDM\Faculty;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Validator;
+use Illuminate\Support\Facades\Input;
 use View;
 
 class ProposeController extends BlankonController {
@@ -36,7 +38,7 @@ class ProposeController extends BlankonController {
     {
         $this->middleware('auth');
         $this->middleware('isLecturer')->except('getFile');
-        $this->middleware('isMember')->only('getFile');
+        $this->middleware('isMember')->only('getFile', 'edit');
         parent::__construct();
 
         array_push($this->css['pages'], 'global/plugins/bower_components/fontawesome/css/font-awesome.min.css');
@@ -47,7 +49,6 @@ class ProposeController extends BlankonController {
         array_push($this->css['pages'], 'global/plugins/bower_components/jasny-bootstrap-fileinput/css/jasny-bootstrap-fileinput.min.css');
 
         array_push($this->js['plugins'], 'global/plugins/bower_components/chosen_v1.2.0/chosen.jquery.min.js');
-        array_push($this->js['plugins'], 'global/plugins/bower_components/jquery-ui/jquery-ui.min.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/jquery-ui/ui/minified/autocomplete.min.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/jquery-autosize/jquery.autosize.min.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js');
@@ -69,7 +70,19 @@ class ProposeController extends BlankonController {
 
     public function index()
     {
-        $proposes = Propose::where('created_by', Auth::user()->nidn)->paginate(10);
+        $proposes = Propose::where('created_by', Auth::user()->nidn)->get();
+
+        $members = Member::where('nidn', Auth::user()->nidn)->get();
+        foreach ($members as $member)
+        {
+            $propose = $member->propose()->first();
+            if ($propose !== null)
+            {
+                $proposes->add($propose);
+            }
+        }
+
+        $proposes = new Paginator($proposes, 10, Input::get('page', 1));
 
         if ($proposes->isEmpty())
         {
@@ -84,34 +97,8 @@ class ProposeController extends BlankonController {
     {
         $upd_mode = 'create';
         $this->lv_disable = null;
-        $propose = new Propose();
-        $propose_own = new Propose_own();
 
-        $periods = Period::where('propose_begda', '<=', Carbon::now()->toDateString())->where('propose_endda', '>=', Carbon::now()->toDateString())->get();
-        if ($periods->isEmpty())
-        {
-            $period = new Period();
-            $propose->is_own = '1';
-        } else
-        {
-            $period = $periods[0];
-        }
-        $output_types = Output_type::all();
-        $output_types->add(new Output_type());
-        $category_types = Category_type::all();
-        $research_types = ResearchType::all();
-        $propose_output_types = new Collection();
-        $propose_output_types->add(new ProposeOutputType());
-        $propose_output_types->add(new ProposeOutputType());
-        $propose_output_types->add(new ProposeOutputType());
-
-        $lecturer = $this->getEmployee(Auth::user()->nidn);
-
-        $members = new Collection;
-        $member = new Member;
-        $members->add(new Member);
-
-        $faculties = Faculty::where('is_faculty', '1')->where('faculty_code', '<>', 'SPS')->get();
+        $propose_relation = $this->getProposeRelationData();
 
         $disable_upload = false;
         $form_action = url('proposes/create');
@@ -119,20 +106,10 @@ class ProposeController extends BlankonController {
         view::share('disabled', $this->lv_disable);
 
         return view('propose.propose-create', compact(
-            'propose',
-            'propose_own',
-            'periods',
-            'period',
-            'output_types',
-            'research_types',
-            'faculties',
+            'propose_relation',
             'disable_upload',
             'upd_mode',
-            'form_action',
-            'propose_output_types',
-            'members',
-            'member',
-            'lecturer'
+            'form_action'
         ));
     }
 
@@ -309,58 +286,55 @@ class ProposeController extends BlankonController {
             return abort('404');
         }
 
-        $propose_own = $propose->proposesOwn()->first();
-        $periods = $propose->period()->get();
-        $period = $propose->period()->first();
-        $members = $propose->member()->get();
-        foreach ($members as $member)
-        {
-            if ($member->external === '1')
-            {
-                $external_member = $member->externalMember()->first();
-                $member->external_name = $external_member->name;
-                $member->external_affiliation = $external_member->affiliation;
-            } else
-            {
-                $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+        $propose_relation = $this->getProposeRelationData($propose);
+        $propose_relation->propose = $propose;
 
-            }
-            $member['member_nidn'] = $member->nidn;
-            $member['member_areas_of_expertise'] = $member->areas_of_expertise;
-        }
-        $member = $propose->member()->first();
-        $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
-        $faculties = Faculty::where('is_faculty', '1')->get();
-        $output_types = Output_type::all();
-        $research_types = ResearchType::all();
 
-        if ($propose_own === null)
-        {
-            $propose_own = new Propose_own;
-        }
-        if ($periods === null)
-        {
-            $periods = new Collection();
-            $periods->add(new Period);
-        }
-        if ($period === null)
-        {
-            $period = new Period;
-        }
+//        $propose_own = $propose->proposesOwn()->first();
+//        $periods = $propose->period()->get();
+//        $period = $propose->period()->first();
+//        $members = $propose->member()->get();
+//        foreach ($members as $member)
+//        {
+//            if ($member->external === '1')
+//            {
+//                $external_member = $member->externalMember()->first();
+//                $member->external_name = $external_member->name;
+//                $member->external_affiliation = $external_member->affiliation;
+//            } else
+//            {
+//                $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+//
+//            }
+//            $member['member_nidn'] = $member->nidn;
+//            $member['member_areas_of_expertise'] = $member->areas_of_expertise;
+//        }
+//        $member = $propose->member()->first();
+//        $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
+//        $faculties = Faculty::where('is_faculty', '1')->get();
+//        $output_types = Output_type::all();
+//        $research_types = ResearchType::all();
+//
+//        if ($propose_own === null)
+//        {
+//            $propose_own = new Propose_own;
+//        }
+//        if ($periods === null)
+//        {
+//            $periods = new Collection();
+//            $periods->add(new Period);
+//        }
+//        if ($period === null)
+//        {
+//            $period = new Period;
+//        }
 
+        $upd_mode = 'edit';
         view::share('disabled', $this->lv_disable);
 
         return view('propose.propose-verification', compact(
-            'propose',
-            'propose_own',
-            'periods',
-            'period',
-            'output_types',
-            'research_types',
-            'faculties',
-            'members',
-            'member',
-            'lecturer'
+            'upd_mode',
+            'propose_relation'
         ));
     }
 
@@ -424,51 +398,11 @@ class ProposeController extends BlankonController {
             return abort('404');
         }
 
-        $propose_own = $propose->proposesOwn()->first();
-        $periods = $propose->period()->get();
-        $period = $propose->period()->first();
-        $propose_output_types = $propose->proposeOutputType()->get();
-        $members = $propose->member()->get();
-        $flow_status = $propose->flowStatus()->first();
-        foreach ($members as $member)
-        {
-            if ($member->external === '1')
-            {
-                $external_member = $member->externalMember()->first();
-                $member->external_name = $external_member->name;
-                $member->external_affiliation = $external_member->affiliation;
-            } else
-            {
-                if ($member->nidn !== null && $member->nidn !== '')
-                {
-                    $member->member_display = $member->nidn . ' : ' . Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
-                    $member->member_nidn = $member->nidn;
-                }
-            }
-        }
-        $member = $propose->member()->first();
-        $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
-        $faculties = Faculty::where('is_faculty', '1')->get();
-        $output_types = Output_type::all();
-        $output_types->add(new Output_type());
-        $research_types = ResearchType::all();
-
-        if ($propose_own === null)
-        {
-            $propose_own = new Propose_own();
-        }
-        if ($periods === null)
-        {
-            $periods = new Collection();
-            $periods->add(new Period);
-        }
-        if ($period === null)
-        {
-            $period = new Period();
-        }
+        $propose_relation = $this->getProposeRelationData($propose);
+        $propose_relation->propose = $propose;
 
         $disable_upload = false;
-        $status_code = $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code;
+        $status_code = $propose_relation->flow_status->status_code;
         if ($status_code !== 'UU' && $status_code !== 'PR')
         {
             $disable_upload = true;
@@ -476,73 +410,59 @@ class ProposeController extends BlankonController {
 
         $disable_final_amount = 'readonly';
 
-        if ($flow_status->status_code === 'SS')
+        if ($status_code === 'SS')
         {
             // Initialize data for temporary saved proposes
-            $periods = Period::where('propose_begda', '<=', Carbon::now()->toDateString())->where('propose_endda', '>=', Carbon::now()->toDateString())->get();
-            if ($periods->isEmpty())
+            $propose_relation->periods = Period::where('propose_begda', '<=', Carbon::now()->toDateString())->where('propose_endda', '>=', Carbon::now()->toDateString())->get();
+            if ($propose_relation->periods->isEmpty())
             {
-                $period = new Period();
+                $propose_relation->period = new Period();
             } else
             {
-                $period = $periods[0];
+                $propose_relation->period = $propose_relation->periods[0];
             }
-            $propose->is_own = null;
+            $propose_relation->propose->is_own = null;
             $form_action = url('proposes', $propose->id) . '/edit';
             $this->lv_disable = null;
-            if ($propose_output_types->isEmpty())
+            if ($propose_relation->propose_output_types->isEmpty())
             {
-                $propose_output_types = new Collection();
-                $propose_output_types->add(new ProposeOutputType());
-                $propose_output_types->add(new ProposeOutputType());
-                $propose_output_types->add(new ProposeOutputType());
+                $propose_relation->propose_output_types = new Collection();
+                $propose_relation->propose_output_types->add(new ProposeOutputType());
+                $propose_relation->propose_output_types->add(new ProposeOutputType());
+                $propose_relation->propose_output_types->add(new ProposeOutputType());
             }
-            for ($i = count($propose_output_types); $i < 3; $i++)
+            for ($i = count($propose_relation->propose_output_types); $i < 3; $i++)
             {
-                $propose_output_types->add(new ProposeOutputType());
-            }
-
-            if ($members->isEmpty())
-            {
-                $members = new Collection;
-                $member = new Member;
-                $members->add(new Member);
+                $propose_relation->propose_output_types->add(new ProposeOutputType());
             }
 
+            if ($propose_relation->members->isEmpty())
+            {
+                $propose_relation->members = new Collection;
+                $propose_relation->member = new Member;
+                $propose_relation->members->add(new Member);
+            }
+
+            $upd_mode = 'edit';
             view::share('disabled', $this->lv_disable);
 
             return view('propose.propose-create', compact(
-                'propose',
-                'propose_own',
-                'periods',
-                'period',
-                'output_types',
-                'research_types',
-                'faculties',
+                'upd_mode',
                 'disable_upload',
                 'form_action',
                 'upd_mode',
-                'propose_output_types',
-                'members',
-                'member',
-                'lecturer'
+                'propose_relation'
             ));
         } else
         {
+            $upd_mode = 'edit';
+            view::share('disabled', $this->lv_disable);
+
             return view('propose.propose-edit', compact(
-                'propose',
-                'propose_own',
-                'periods',
-                'period',
-                'output_types',
-                'research_types',
-                'faculties',
+                'upd_mode',
                 'disable_upload',
-                'propose_output_types',
-                'members',
-                'member',
-                'lecturer',
                 'status_code',
+                'propose_relation',
                 'disable_final_amount'
             ));
         }
@@ -1014,61 +934,18 @@ class ProposeController extends BlankonController {
             return abort('404');
         }
 
-        $propose_own = $propose->proposesOwn()->first();
-        $periods = $propose->period()->get();
-        $period = $propose->period()->first();
-        $members = $propose->member()->get();
-        foreach ($members as $member)
-        {
-            if ($member->external === '1')
-            {
-                $external_member = $member->externalMember()->first();
-                $member->external_name = $external_member->name;
-                $member->external_affiliation = $external_member->affiliation;
-            } else
-            {
-                $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
-            }
-        }
-        $member = $propose->member()->first();
-        $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
-        $faculties = Faculty::where('is_faculty', '1')->get();
-        $output_types = Output_type::all();
-        $research_types = ResearchType::all();
-
-        if ($propose_own === null)
-        {
-            $propose_own = new Propose_own();
-        }
-        if ($periods === null)
-        {
-            $periods = new Collection();
-            $periods->add(new Period);
-        }
-        if ($period === null)
-        {
-            $period = new Period();
-        }
+        $propose_relation = $this->getProposeRelationData($propose);
+        $propose_relation->propose = $propose;
+        $status_code = $propose_relation->flow_status->status_code;
 
         $disable_upload = true;
-
-        $status_code = $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code;
         $disable_final_amount = 'readonly';
 
         view::share('disabled', $this->lv_disable);
 
         return view('propose.propose-revision', compact(
-            'propose',
-            'propose_own',
-            'periods',
-            'period',
-            'output_types',
-            'research_types',
-            'faculties',
+            'propose_relation',
             'disable_upload',
-            'members',
-            'member',
-            'lecturer',
             'status_code',
             'disable_final_amount'
         ));
@@ -1110,6 +987,117 @@ class ProposeController extends BlankonController {
         });
 
         return redirect()->intended('proposes');
+    }
+
+    public function display($id)
+    {
+        $propose = Propose::find($id);
+        if($propose === null)
+        {
+            $this->setCSS404();
+
+            return abort('404');
+        }
+
+        $propose_relation = $this->getProposeRelationData($propose);
+        $propose_relation->propose = $propose;
+        $status_code = $propose_relation->flow_status->status_code;
+
+        $upd_mode = 'display';
+        $disabled = 'disabled';
+        $disable_upload = true;
+        $disable_final_amount = 'readonly';
+
+        return view('propose.propose-edit', compact(
+            'upd_mode',
+            'disabled',
+            'disable_upload',
+            'status_code',
+            'propose_relation',
+            'disable_final_amount'
+        ));
+    }
+
+    private function getProposeRelationData($propose = null)
+    {
+        $ret = new \stdClass();
+        if ($propose !== null)
+        {
+            $ret->propose_own = $propose->proposesOwn()->first();
+            $ret->periods = $propose->period()->get();
+            $ret->period = $propose->period()->first();
+            $ret->propose_output_types = $propose->proposeOutputType()->get();
+            $ret->members = $propose->member()->get();
+            $ret->flow_status = $propose->flowStatus()->orderBy('id', 'desc')->first();
+            foreach ($ret->members as $member)
+            {
+                if ($member->external === '1')
+                {
+                    $external_member = $member->externalMember()->first();
+                    $member->external_name = $external_member->name;
+                    $member->external_affiliation = $external_member->affiliation;
+                } else
+                {
+                    if ($member->nidn !== null && $member->nidn !== '')
+                    {
+                        $member->member_display = $member->nidn . ' : ' . Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+                        $member->member_nidn = $member->nidn;
+                    }
+                }
+            }
+            $ret->member = $ret->members->get(0);
+            $ret->lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
+            $ret->faculties = Faculty::where('is_faculty', '1')->get();
+            $ret->output_types = Output_type::all();
+            $ret->output_types->add(new Output_type());
+            $ret->research_types = ResearchType::all();
+
+            if ($ret->propose_own === null)
+            {
+                $ret->propose_own = new Propose_own();
+            }
+            if ($ret->periods === null)
+            {
+                $ret->periods = new Collection();
+                $ret->periods->add(new Period);
+            }
+            if ($ret->period === null)
+            {
+                $ret->period = new Period();
+            }
+        } else
+        {
+            $ret->propose = new Propose();
+            $ret->propose_own = new Propose_own();
+
+            $ret->periods = Period::where('propose_begda', '<=', Carbon::now()->toDateString())->where('propose_endda', '>=', Carbon::now()->toDateString())->get();
+            if ($ret->periods->isEmpty())
+            {
+                $ret->period = new Period();
+                $ret->propose->is_own = '1';
+            } else
+            {
+                $ret->period = $ret->periods->get(0);
+            }
+            $ret->output_types = Output_type::all();
+            $ret->output_types->add(new Output_type());
+            $ret->category_types = Category_type::all();
+            $ret->research_types = ResearchType::all();
+            $ret->propose_output_types = new Collection();
+            $ret->propose_output_types->add(new ProposeOutputType());
+            $ret->propose_output_types->add(new ProposeOutputType());
+            $ret->propose_output_types->add(new ProposeOutputType());
+
+            $ret->lecturer = $this->getEmployee(Auth::user()->nidn);
+
+            $ret->members = new Collection;
+            $ret->member = new Member;
+            $ret->members->add(new Member);
+
+            $ret->faculties = Faculty::where('is_faculty', '1')->where('faculty_code', '<>', 'SPS')->get();
+        }
+
+        return $ret;
     }
 
     private function setCSS404()

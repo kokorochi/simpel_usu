@@ -17,17 +17,17 @@ $errors->has('external_affiliation.' . $ctr_old) || old('external_affiliation.' 
         $member['member_display'] = old('member_display.' . $ctr_old);
         $member['member_nidn'] = old('member_nidn.' . $ctr_old);
         $member['areas_of_expertise'] = old('member_areas_of_expertise.' . $ctr_old);
-        if($members->get($ctr_old) === null){
-            $members->add($member);
+        if($propose_relation->members->get($ctr_old) === null){
+            $propose_relation->members->add($member);
         }else{
-            $members[$ctr_old] = $member;
+            $propose_relation->members[$ctr_old] = $member;
         }
         $ctr_old++;
     @endphp
 @endwhile
 
 @if($errors->has('areas_of_expertise') || old('areas_of_expertise'))
-    @php($propose->areas_of_expertise = old('areas_of_expertise'))
+    @php($propose_relation->propose->areas_of_expertise = old('areas_of_expertise'))
 @endif
 {{--Get Old Value And Place It To VARIABLE--}}
 
@@ -50,14 +50,14 @@ $errors->has('external_affiliation.' . $ctr_old) || old('external_affiliation.' 
                         <label for="full_name" class="col-sm-4 col-md-3 control-label">Ketua</label>
                         <div class="col-sm-7">
                             <input name="full_name" class="form-control input-sm mb-15" type="text"
-                                   value="{{$lecturer->full_name}}" disabled>
+                                   value="{{$propose_relation->lecturer->full_name}}" disabled>
                         </div>
                         <div class="clearfix"></div>
                         <label for="areas_of_expertise" class="col-sm-4 col-md-3 control-label">Bidang Keahlian</label>
                         <div class="col-sm-7">
                             <input name="areas_of_expertise" type="text"
                                    class="form-control input-sm"
-                                   value="{{$propose->areas_of_expertise}}" {{$disabled}} />
+                                   value="{{$propose_relation->propose->areas_of_expertise}}" {{$disabled}} />
                             @if($errors->has('areas_of_expertise'))
                                 <label class="error" for="areas_of_expertise" style="display: inline-block;">
                                     {{$errors->first('areas_of_expertise')}}
@@ -67,7 +67,7 @@ $errors->has('external_affiliation.' . $ctr_old) || old('external_affiliation.' 
                     </div><!-- /.form-group -->
 
                     <div class="member-wrapper">
-                        @foreach($members as $key => $member)
+                        @foreach($propose_relation->members as $key => $member)
                             <div class="form-group">
                                 <label class="control-label col-sm-4 col-md-3">Dosen Luar</label>
                                 <div class="col-sm-7 mb-10">
@@ -122,7 +122,7 @@ $errors->has('external_affiliation.' . $ctr_old) || old('external_affiliation.' 
                                 <div class="col-sm-7">
                                     <input name="member_areas_of_expertise[]" type="text"
                                            class="form-control input-sm mb-15"
-                                           value="{{$member->areas_of_expertise}}" {{$disabled === null ? '' : ( $member->member_nidn === Auth::user()->nidn ? '' : 'disabled') }} />
+                                           value="{{$member->areas_of_expertise}}" {{$disabled === null ? '' : ( $member->member_nidn === Auth::user()->nidn ? ($upd_mode === 'display' ? 'disabled' : '') : 'disabled') }} />
                                     @if($errors->has('member_areas_of_expertise.' . $key))
                                         <label class="error" for="member_areas_of_expertise[]"
                                                style="display: inline-block;">

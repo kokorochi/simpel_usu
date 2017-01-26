@@ -36,4 +36,9 @@ class Research extends Model
     {
         return $this->hasMany(ResearchOutputRevision::class);
     }
+
+    public function outputFlowStatus()
+    {
+        return $this->hasMany(OutputFlowStatus::class);
+    }
 }
