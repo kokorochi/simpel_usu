@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Auth;
 
 
 class ApproveProposeController extends BlankonController {
-    protected $pageTitle = 'Approve Proposal';
+    protected $pageTitle = 'Proposal';
     protected $deleteQuestion = '';
     protected $deleteUrl = 'approve-proposes';
 
@@ -68,7 +68,8 @@ class ApproveProposeController extends BlankonController {
 
     public function index()
     {
-        $periods = Period::where('first_endda', '>=', Carbon::now()->toDateString())->get();
+//        $periods = Period::where('first_endda', '>=', Carbon::now()->toDateString())->get();
+        $periods = Period::orderBy('id', 'desc')->get();
 
         $period = new Period();
         $period->id = '0';
@@ -135,9 +136,11 @@ class ApproveProposeController extends BlankonController {
         $disable_reviewer = true;
         $status_code = '';
         $disable_final_amount = '';
+        $upd_mode = 'create';
 
         return view('approve-propose/approve-propose-create', compact(
             'propose_relation',
+            'upd_mode',
             'reviewers',
             'propose',
             'research_reviewers',
@@ -209,6 +212,72 @@ class ApproveProposeController extends BlankonController {
         });
 
         return redirect()->intended('approve-proposes');
+    }
+
+    public function display($id)
+    {
+        $propose = Propose::find($id);
+        if($propose === null)
+        {
+            $this->setCSS404();
+
+            return abort('404');
+        }
+
+        $propose_relation = $this->getProposeRelationData($propose);
+        $propose_relation->propose = $propose;
+
+        $research_reviewers = ResearchReviewer::where('propose_id', $propose->id)->get();
+
+        foreach ($research_reviewers as $research_reviewer)
+        {
+            $research_reviewer->display = Lecturer::where('employee_card_serial_number', $research_reviewer->nidn)->first()->full_name;
+            $research_reviewer->disabled = 'readonly';
+        }
+
+        $reviewers = Auths::where('auth_object_ref_id', '3')->get();
+        foreach ($reviewers as $reviewer)
+        {
+            $lecturer = $reviewer->user()->first()->lecturer()->first();
+            $reviewer->nidn = $lecturer->employee_card_serial_number;
+            $reviewer->full_name = $reviewer->nidn . ' : ' . $lecturer->full_name;
+        }
+
+        $count_reviewers = count($research_reviewers);
+        $review_proposes = $propose->reviewPropose()->get();
+        $count_amount = 0;
+        foreach ($review_proposes as $review_propose)
+        {
+            $count_amount += $review_propose->recommended_amount;
+        }
+
+        if($count_reviewers === 0)
+        {
+            $propose_relation->propose->final_amount = $propose_relation->propose->total_amount;
+        }else{
+            $propose_relation->propose->final_amount = $count_amount / $count_reviewers;
+        }
+
+        $disabled = 'disabled';
+        $disable_upload = true;
+        $disable_reviewer = true;
+        $status_code = '';
+        $disable_final_amount = 'disabled';
+        $upd_mode = 'display';
+
+        return view('approve-propose/approve-propose-create', compact(
+            'propose_relation',
+            'reviewers',
+            'research_reviewers',
+            'upd_mode',
+            'disabled',
+            'disable_upload',
+            'disable_reviewer',
+            'status_code',
+            'disable_final_amount'
+        ));
+
+        return view();
     }
 
     private function getProposeRelationData($propose = null)

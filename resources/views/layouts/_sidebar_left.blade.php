@@ -181,7 +181,7 @@ START @SIDEBAR LEFT
             <li {!! Request::is('approve-proposes','approve-proposes/*')? 'class="submenu active"' : 'class="submenu"' !!}>
                 <a href="javascript:void(0);">
                     <span class="icon"><i class="fa fa-check-square-o"></i></span>
-                    <span class="text">Approve Usulan</span>
+                    <span class="text">Usulan</span>
                     <span class="arrow"></span>
                     {!! Request::is('approve-proposes', 'approve-proposes/*') ? '<span class="selected"></span>' : null !!}
                 </a>

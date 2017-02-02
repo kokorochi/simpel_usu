@@ -49,11 +49,14 @@
                 <div class="form-footer">
                     <div class="col-sm-offset-4 col-md-offset-3">
                         <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
-                        <button name="rejected" value="1" type="submit" class="btn btn-danger btn-slideright submit">Ditolak
-                        </button>
-                        <button name="approved" value="1" type="submit" class="btn btn-success btn-slideright submit">
-                            Disetujui
-                        </button>
+                        @if($upd_mode === 'create')
+                            <button name="rejected" value="1" type="submit" class="btn btn-danger btn-slideright submit">
+                                Ditolak
+                            </button>
+                            <button name="approved" value="1" type="submit" class="btn btn-success btn-slideright submit">
+                                Disetujui
+                            </button>
+                        @endif
                     </div><!-- /.col-sm-offset-3 -->
                 </div>
                 <!-- /.form-footer -->

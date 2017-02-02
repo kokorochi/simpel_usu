@@ -49,6 +49,7 @@ class ProposeController extends BlankonController {
         array_push($this->css['pages'], 'global/plugins/bower_components/jasny-bootstrap-fileinput/css/jasny-bootstrap-fileinput.min.css');
 
         array_push($this->js['plugins'], 'global/plugins/bower_components/chosen_v1.2.0/chosen.jquery.min.js');
+        array_push($this->js['plugins'], 'global/plugins/bower_components/jquery-ui/jquery-ui.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/jquery-ui/ui/minified/autocomplete.min.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/jquery-autosize/jquery.autosize.min.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js');
@@ -72,7 +73,7 @@ class ProposeController extends BlankonController {
     {
         $proposes = Propose::where('created_by', Auth::user()->nidn)->get();
 
-        $members = Member::where('nidn', Auth::user()->nidn)->get();
+        $members = Member::where('nidn', Auth::user()->nidn)->where('status', '<>', 'rejected')->get();
         foreach ($members as $member)
         {
             $propose = $member->propose()->first();
@@ -371,7 +372,7 @@ class ProposeController extends BlankonController {
                 'status'             => $status,
                 'areas_of_expertise' => $areas_of_expertise
             ]);
-            if ($member_left_to_accept === 1 && $member_rejected === false)
+            if ($member_left_to_accept === 1 && $member_rejected === false && $status === 'accepted')
             {
                 $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
                 $propose->flowStatus()->create([
@@ -421,7 +422,7 @@ class ProposeController extends BlankonController {
             {
                 $propose_relation->period = $propose_relation->periods[0];
             }
-            $propose_relation->propose->is_own = null;
+
             $form_action = url('proposes', $propose->id) . '/edit';
             $this->lv_disable = null;
             if ($propose_relation->propose_output_types->isEmpty())

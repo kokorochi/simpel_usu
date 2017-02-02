@@ -62,7 +62,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: baseUrl + '/ajax/proposes/getbyscheme?period_id=' + $('#scheme-approve-propose').val() +
-        '&status_code[]=RS&type=APPROVE',
+        '&type=APPROVE',
         preDrawCallback: function () {
             // Initialize the responsive datatables helper once.
             if (!responsiveHelperAjax) {
@@ -86,7 +86,7 @@ $(document).ready(function () {
             processing: true,
             serverSide: true,
             ajax: baseUrl + '/ajax/proposes/getbyscheme?period_id=' + $('#scheme-approve-propose').val() +
-            '&status_code[]=RS&type=APPROVE',
+            '&type=APPROVE',
             preDrawCallback: function () {
                 // Initialize the responsive datatables helper once.
                 if (!responsiveHelperAjax) {

@@ -18,6 +18,7 @@ Route::get('/', 'HomeController@index');
 Route::get('files/upload', 'TestingController@upload');
 Route::post('files/upload', 'TestingController@storeUpload');
 Route::get('tests', 'TestingController@index');
+Route::get('tests/send-email', 'TestingController@sendEmail');
 
 // End TESTING Route
 
@@ -143,6 +144,7 @@ Route::get('review-proposes/{id}/research-display', 'ReviewProposeController@res
 Route::get('approve-proposes/', 'ApproveProposeController@index');
 Route::get('approve-proposes/{id}/approve', 'ApproveProposeController@approve');
 Route::put('approve-proposes/{id}/approve', 'ApproveProposeController@approveUpdate');
+Route::get('approve-proposes/{id}/display', 'ApproveProposeController@display');
 // End Approve Proposes Route
 
 // Start Dedication Route

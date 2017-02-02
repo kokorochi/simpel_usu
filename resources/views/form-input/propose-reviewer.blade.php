@@ -40,7 +40,7 @@ $errors->has('nidn.' . $ctr_old) || old('nidn.' . $ctr_old) )
                     <div class="reviewer-wrapper">
                         @foreach($research_reviewers as $key => $research_reviewer)
                             <div class="form-group">
-                                <label for="nidn[]" class="col-sm-4 col-md-3 control-label">Pilih Reviewer</label>
+                                <label for="nidn[]" class="col-sm-4 col-md-3 control-label">Reviewer</label>
                                 <div class="col-sm-6 input-icon right chosen-select-container">
                                     <select name="nidn[]" class="chosen-select" {{$disable_reviewer === true ? 'disabled' : ''}}>
                                         @foreach($reviewers as $reviewer)
@@ -57,36 +57,6 @@ $errors->has('nidn.' . $ctr_old) || old('nidn.' . $ctr_old) )
                                 @endif
                             </div>
                         @endforeach
-                        {{--@foreach($research_reviewers as $key => $research_reviewer)--}}
-                            {{--<div class="form-group">--}}
-                                {{--<label for="nidn[]" class="col-sm-4 col-md-3 control-label">Reviewer</label>--}}
-                                {{--<div class="col-sm-6 input-icon right">--}}
-                                    {{--<input name="display[]" type="text"--}}
-                                           {{--class="input-reviewer-auto form-control input-sm mb-15"--}}
-                                           {{--value="{{$research_reviewer->display}}" {{$research_reviewer->disabled}}/>--}}
-                                    {{--<input name="nidn[]" type="text" class="input-reviewer-value" hidden="hidden"--}}
-                                           {{--value="{{$research_reviewer->nidn}}" {{$research_reviewer->disabled}}/>--}}
-                                    {{--@if($errors->has('display.' . $key))--}}
-                                        {{--<label class="error" for="display[]" style="display: inline-block;">--}}
-                                            {{--{{ $errors->first('display.' . $key) }}--}}
-                                        {{--</label>--}}
-                                    {{--@endif--}}
-                                    {{--@if($errors->has('nidn.' . $key))--}}
-                                        {{--<label class="error" for="nidn[]" style="display: inline-block;">--}}
-                                            {{--Pemilihan reviewer harus dilakukan via autocomplete--}}
-                                        {{--</label>--}}
-                                    {{--@endif--}}
-                                {{--</div>--}}
-
-                                {{--@if($disable_reviewer !== true)--}}
-                                    {{--<div class="col-sm-1">--}}
-                                        {{--<a href="#" class="remove_field btn btn-sm btn-danger btn-stroke">--}}
-                                            {{--<i class="fa fa-minus"></i>--}}
-                                        {{--</a>--}}
-                                    {{--</div>--}}
-                                {{--@endif--}}
-                            {{--</div><!-- /.form-group -->--}}
-                        {{--@endforeach--}}
                     </div> <!-- /.member-wrapper -->
                 </div><!-- /.form-body -->
                 @if($disable_reviewer !== true)

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\TestMail;
 use App\ModelSDM\Lecturer;
 use App\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\File\File;
 use View;
 use Illuminate\Support\Facades\Storage;
@@ -117,5 +119,12 @@ class TestingController extends BlankonController {
                 $user->save();
             }
         }
+    }
+
+    public function sendEmail()
+    {
+        View::share('title', 'test');
+        Mail::to('kokorochi.zhou@gmail.com')->send(new TestMail());
+        return redirect()->intended('/');
     }
 }

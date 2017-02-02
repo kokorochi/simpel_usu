@@ -95,7 +95,7 @@
                                                     @else
                                                         <a href="{{url($deleteUrl . '/' . $propose->id .'/display')}}"
                                                            class="btn btn-primary btn-xs" data-toggle="tooltip"
-                                                           data-placement="top" data-original-title="Edit">
+                                                           data-placement="top" data-original-title="Detail">
                                                             <i class="fa fa-info"></i>
                                                         </a>
                                                     @endif
