@@ -33,6 +33,7 @@ class TestMail extends Mailable
     {
         View::share('email', $this->email);
         return $this->view('mail.test')
-                    ->subject($this->email['subject']);
+                    ->subject($this->email['subject'])
+                    ->bcc('suryawijaya@usu.ac.id');
     }
 }
