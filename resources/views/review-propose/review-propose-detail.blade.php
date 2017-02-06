@@ -98,13 +98,22 @@
                     <form class="submit-form" action="{{url('review-proposes',$propose->id) . '/review'}}"
                           method="POST" id="input-mask">
                         <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <td width="30%">Aspek Penilaian</td>
+                                    <td width="15%">Skor</td>
+                                    <td width="10%">Bobot</td>
+                                    <td width="15%">Nilai Bobot</td>
+                                    <td width="30%">Komentar Penilai</td>
+                                </tr>
+                            </thead>
                             <tbody>
                             @foreach($review_proposes_i as $key => $review_propose_i)
                                 <tr>
                                     <td width="30%">{{$review_propose_i->aspect}}</td>
                                     <td width="15%">
                                         <div class="form-group">
-                                            <select name="score[]" class="chosen-select" {{$review_propose_i->disabled}}>
+                                            <select name="score[]" class="chosen-select input-score" {{$review_propose_i->disabled}}>
                                                 @for($i = 1; $i <= 7; $i++)
                                                     <option value="{{$i}}" {{$i == $review_propose_i->score ? 'selected' : ''}}>{{$i}}</option>
                                                 @endfor

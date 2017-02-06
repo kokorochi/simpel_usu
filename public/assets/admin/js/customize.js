@@ -123,7 +123,7 @@ $(document).ready(function () {
         })
     });
 
-    $(".input-score").keyup(function () {
+    $(".input-score").change(function () {
         if ($.isNumeric($(this).val())) {
             // $(this).closest("output-score").val('2');
             var quality = $(this).parent().parent().parent().find("input[name='quality[]']").val();
