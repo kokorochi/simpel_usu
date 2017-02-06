@@ -210,6 +210,7 @@ class ApproveProposeController extends BlankonController {
                 }
             }
         });
+        $this->setEmail($status_code, $propose);
 
         return redirect()->intended('approve-proposes');
     }

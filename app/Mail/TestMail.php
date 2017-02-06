@@ -6,19 +6,22 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use View;
 
 class TestMail extends Mailable
 {
     use Queueable, SerializesModels;
+
+    protected $email;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($email)
     {
-        //
+        $this->email = $email;
     }
 
     /**
@@ -28,6 +31,8 @@ class TestMail extends Mailable
      */
     public function build()
     {
-        return $this->view('mail.test');
+        View::share('email', $this->email);
+        return $this->view('mail.test')
+                    ->subject($this->email['subject']);
     }
 }

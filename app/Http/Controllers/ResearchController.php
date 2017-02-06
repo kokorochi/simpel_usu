@@ -554,6 +554,8 @@ class ResearchController extends BlankonController {
                         'status_code' => 'RL', // Revisi Luaran,
                         'created_by'  => Auth::user()->nidn
                     ]);
+
+                    $this->setEmail('RL', $research->propose()->first());
                 }
             } else
             {
@@ -567,6 +569,7 @@ class ResearchController extends BlankonController {
                     'status_code' => 'PS', // Penelitian Selesai
                     'created_by'  => Auth::user()->nidn
                 ]);
+                $this->setEmail('PS', $research->propose()->first());
             }
         });
 
@@ -619,6 +622,8 @@ class ResearchController extends BlankonController {
                 'status_code' => 'VL', //Menunggu Validasi Luaran
                 'created_by'  => Auth::user()->nidn,
             ]);
+
+            $this->setEmail('RL', $research->propose()->first());
         }
         if ($output_flow_status->status_code === 'LT')
         {
@@ -628,6 +633,7 @@ class ResearchController extends BlankonController {
                 'status_code' => 'PS', //Pengabdian Selesai
                 'created_by'  => Auth::user()->nidn,
             ]);
+            $this->setEmail('PS', $research->propose()->first());
         }
     }
 

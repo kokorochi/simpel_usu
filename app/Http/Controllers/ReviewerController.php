@@ -265,23 +265,29 @@ class ReviewerController extends BlankonController {
         $flow_statuses->status_code = 'MR'; //Menunggu diReview
         $flow_statuses->created_by = Auth::user()->nidn;
 
-        DB::transaction(function() use($research_review_new, $research_review_restore, $research_review_delete, $flow_statuses){
+        DB::transaction(function() use($research_review_new, $research_review_restore, $research_review_delete, $flow_statuses, $propose){
             foreach ($research_review_restore as $item)
             {
                 $item->restore();
                 $item->updated_by = Auth::user()->nidn;
                 $item->save();
+
+                $this->setEmail('reviewer new', $propose, $item->nidn);
             }
             foreach ($research_review_new as $item)
             {
                 $item->created_by = Auth::user()->nidn;
                 $item->save();
+
+                $this->setEmail('reviewer new', $propose, $item->nidn);
             }
             foreach ($research_review_delete as $item)
             {
                 $item->updated_by = Auth::user()->nidn;
                 $item->save();
                 $item->delete();
+
+                $this->setEmail('reviewer delete', $propose, $item->nidn);
             }
             $flow_statuses->save();
         });

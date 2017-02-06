@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ExternalMember;
+use App\Jobs\SendNotificationEmail;
 use App\ModelSDM\Lecturer;
 use App\ProposeOutputType;
 use Carbon\Carbon;
@@ -247,7 +248,8 @@ class ProposeController extends BlankonController {
             $proposes->member()->saveMany($members);
             $proposes->proposeOutputType()->saveMany($propose_output_types);
             $i = 0;
-            foreach ($members as $member)
+            $recipients = [];
+            foreach ($members as $key => $member)
             {
                 if ($member->external === '1')
                 {
@@ -257,6 +259,9 @@ class ProposeController extends BlankonController {
                 }
             }
             $proposes->flowStatus()->save($flow_statuses);
+
+            //Send email to member
+            $this->setEmail($flow_statuses->status_code, $proposes);
         });
 
         return redirect()->intended('/proposes');
@@ -372,6 +377,9 @@ class ProposeController extends BlankonController {
                 'status'             => $status,
                 'areas_of_expertise' => $areas_of_expertise
             ]);
+
+            $this->setEmail($status, $propose);
+
             if ($member_left_to_accept === 1 && $member_rejected === false && $status === 'accepted')
             {
                 $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
@@ -380,6 +388,9 @@ class ProposeController extends BlankonController {
                     'status_code' => 'UU', //Menunggu Unggah Usulan
                     'created_by'  => Auth::user()->nidn,
                 ]);
+
+                $flow_status->status_code = 'UU';
+                $this->setEmail($flow_status->status_code, $propose);
             }
         });
 
@@ -818,7 +829,7 @@ class ProposeController extends BlankonController {
                     $propose->member()->saveMany($members);
                     $propose->proposeOutputType()->saveMany($propose_output_types);
                     $i = 0;
-                    foreach ($members as $member)
+                    foreach ($members as $key => $member)
                     {
                         if ($member->external === '1')
                         {
@@ -828,6 +839,9 @@ class ProposeController extends BlankonController {
                         }
                     }
                     $propose->flowStatus()->save($flow_statuses);
+
+                    //Send email to member
+                    $this->setEmail($flow_statuses->status_code, $propose);
                 });
 
                 return redirect()->intended('/proposes');
@@ -870,6 +884,8 @@ class ProposeController extends BlankonController {
                     if ($flow_status->status_code === 'UU')
                     {
                         $propose->flowStatus()->save($store_flow_status);
+
+                        $this->setEmail($store_flow_status->status_code, $propose);
                     }
                 });
 
@@ -986,6 +1002,8 @@ class ProposeController extends BlankonController {
                 'created_by' => Auth::user()->nidn,
             ]);
         });
+
+        $this->setEmail('UD', $propose);
 
         return redirect()->intended('proposes');
     }

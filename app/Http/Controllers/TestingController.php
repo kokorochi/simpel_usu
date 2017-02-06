@@ -123,8 +123,12 @@ class TestingController extends BlankonController {
 
     public function sendEmail()
     {
-        View::share('title', 'test');
-        Mail::to('kokorochi.zhou@gmail.com')->send(new TestMail());
+        $email = [];
+        $email['recipient_name'] = 'Bapak/Ibu';
+        $email['body_content'] = 'Kami informasikan bahwa anda telah didaftarkan pada usulan penelitian Universitas Sumatera Utara. Untuk itu, kami meminta Bapak/Ibu untuk melakukan verifikasi atas usulan tersebut. Untuk melakukan verifikasi, Bapak/Ibu diminta untuk login pada link ini: <a href="https://simpel.usu.ac.id">Sistem Penelitian USU</a>';
+        $email['body_detail_content'] = 'Demikian informasi ini kami sampaikan.<br/>Dikirim otomatis oleh Sistem Penlitian USU';
+        View::share('email', $email);
+        Mail::to('kokorochi.zhou@gmail.com')->send(new TestMail($email));
         return redirect()->intended('/');
     }
 }
