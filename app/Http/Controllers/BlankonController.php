@@ -214,7 +214,7 @@ class BlankonController extends Controller {
                 $email = [];
                 $email['subject'] = '[SIMPEL] Verifikasi Anggota';
                 $email['recipient_name'] = $lecturer->full_name;
-                $email['body_content'] = 'Kami informasikan bahwa anggota anda yakni : "' . $member->full_name . '" telah ' . $status_translate . ' permohonan verifikasi anggota untuk penelitian anda. Untuk informasi lebih lanjut, Bapak/Ibu diminta untuk login pada link ini: <a href="https://simpel.usu.ac.id/proposes/' . $propose->id . '">Sistem Penelitian USU</a>';
+                $email['body_content'] = 'Kami informasikan bahwa anggota anda yakni : "' . $member->full_name . '" telah ' . $status_translate . ' permohonan verifikasi anggota untuk penelitian anda. Untuk informasi lebih lanjut, Bapak/Ibu diminta untuk login pada link ini: <a href="https://simpel.usu.ac.id/proposes/' . $propose->id . '/edit">Sistem Penelitian USU</a>';
                 $email['body_detail_content'] = 'Demikian informasi ini kami sampaikan.<br/>Dikirim otomatis oleh Sistem Penlitian USU';
 
                 dispatch(new SendNotificationEmail($recipients, $email, $propose));
@@ -229,7 +229,7 @@ class BlankonController extends Controller {
                 $email = [];
                 $email['subject'] = '[SIMPEL] Verifikasi Anggota';
                 $email['recipient_name'] = $lecturer->full_name;
-                $email['body_content'] = 'Kami informasikan bahwa anggota anda yakni : "' . $member->full_name . '" telah ' . $status_translate . ' permohonan verifikasi anggota untuk penelitian anda. Untuk informasi lebih lanjut, Bapak/Ibu diminta untuk login pada link ini: <a href="https://simpel.usu.ac.id/proposes/' . $propose->id . '">Sistem Penelitian USU</a>';
+                $email['body_content'] = 'Kami informasikan bahwa anggota anda yakni : "' . $member->full_name . '" telah ' . $status_translate . ' permohonan verifikasi anggota untuk penelitian anda. Untuk informasi lebih lanjut, Bapak/Ibu diminta untuk login pada link ini: <a href="https://simpel.usu.ac.id/proposes/' . $propose->id . '/edit">Sistem Penelitian USU</a>';
                 $email['body_detail_content'] = 'Demikian informasi ini kami sampaikan.<br/>Dikirim otomatis oleh Sistem Penlitian USU';
 
                 dispatch(new SendNotificationEmail($recipients, $email, $propose));
@@ -240,7 +240,7 @@ class BlankonController extends Controller {
                 $recipients = $lecturer->email;
                 $email['subject'] = '[SIMPEL] Unggah Usulan';
                 $email['recipient_name'] = $lecturer->full_name;
-                $email['body_content'] = 'Kami informasikan bahwa usulan penelitian anda sudah selesai verifikasi anggota. Untuk itu, kami meminta Bapak/Ibu untuk melakukan unggah usulan atas usulan tersebut. Untuk melakukan unggah usulan, Bapak/Ibu diminta untuk login pada link ini: <a href="https://simpel.usu.ac.id/proposes/' . $propose->id . '">Sistem Penelitian USU</a>';
+                $email['body_content'] = 'Kami informasikan bahwa usulan penelitian anda sudah selesai verifikasi anggota. Untuk itu, kami meminta Bapak/Ibu untuk melakukan unggah usulan atas usulan tersebut. Untuk melakukan unggah usulan, Bapak/Ibu diminta untuk login pada link ini: <a href="https://simpel.usu.ac.id/proposes/' . $propose->id . '/edit">Sistem Penelitian USU</a>';
                 $email['body_detail_content'] = 'Demikian informasi ini kami sampaikan.<br/>Dikirim otomatis oleh Sistem Penlitian USU';
 
                 dispatch(new SendNotificationEmail($recipients, $email, $propose));
