@@ -217,9 +217,14 @@ class StoreProposeRequest extends FormRequest {
                 {
                     array_push($ret, 'Data dosen USU harus diisi dan dipilih via autocomplete');
                 }
-                if (! Lecturer::where('employee_card_serial_number', $member_nidn)->exists())
+                $lecturer = Lecturer::where('employee_card_serial_number', $member_nidn)->first();
+                if ($lecturer === null)
                 {
                     array_push($ret, 'Anggota yang dipilih tidak valid : ' . $this->input('member_display.' . $key));
+                }
+                if ($lecturer->email === null || $lecturer->email === '')
+                {
+                    array_push($ret, 'Anggota yang dipilih belum mengisi email di SIMSDM : ' . $this->input('member_display.' . $key));
                 }
             }
         }
