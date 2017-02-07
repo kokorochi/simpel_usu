@@ -13,6 +13,7 @@ use App\Output_type;
 use App\Period;
 use App\Propose;
 use App\Propose_own;
+use App\ReviewPropose;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -287,6 +288,9 @@ class ReviewerController extends BlankonController {
                 $item->updated_by = Auth::user()->nidn;
                 $item->save();
                 $item->delete();
+
+                $review_propose = $propose->reviewPropose()->where('nidn', $item->nidn)->first();
+                if($review_propose !== null) $review_propose->delete();
 
                 $this->setEmail('reviewer delete', $propose, $item->nidn);
             }
