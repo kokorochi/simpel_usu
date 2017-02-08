@@ -34,17 +34,6 @@ class SendNotificationEmail implements ShouldQueue {
      */
     public function handle()
     {
-//        $flow_status = $this->propose->flowStatus()->orderBy('id', 'desc')->first();
-//        if($flow_status->status_code === 'VA')
-//        {
-//            $members = $this->propose->member()->get();
-//            $recipients = [];
-//            foreach($members as $key => $member)
-//            {
-//                dd($member);
-//                $recipients[$key] = $member->lecturer()->first()->email;
-//            }
-//        }
         if ($this->recipients != '' && $this->recipients != null)
         {
             Mail::to($this->recipients)->send(new TestMail($this->email));

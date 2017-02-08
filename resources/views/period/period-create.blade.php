@@ -52,7 +52,8 @@
                         </div><!-- /.panel-heading -->
 
                         <div class="panel-body no-padding">
-                            <form id="dp" class="form-horizontal submit-form" action="{{url('periods/create')}}" method="POST">
+                            <form id="dp" class="form-horizontal submit-form" action="{{url('periods/create')}}"
+                                  method="POST">
                                 <div class="form-body" id="input-mask">
 
                                     <div class="form-group">
@@ -354,7 +355,8 @@
                                         <div class="col-sm-offset-3">
                                             <a href="{{url($deleteUrl)}}"
                                                class="btn btn-teal btn-slideright">Kembali</a>
-                                            <button type="submit" class="btn btn-success btn-slideright submit">Tambah</button>
+                                            <button type="submit" class="btn btn-success btn-slideright submit">Tambah
+                                            </button>
                                         </div>
                                     </div>
                                 </div><!-- /.form-body -->

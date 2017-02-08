@@ -26,14 +26,7 @@
 
         <div class="body-content animated fadeIn">
 
-            {{--@foreach($dedication_partners as $key_1 => $dedication_partners_1)--}}
-            {{--@foreach($dedication_partners_1 as $key_2 => $dedication_partners_2)--}}
-            {{--@if(old($key_2, $key_1))--}}
-            {{--@php($dedication_partners[$key_1][$key_2] = old($key_2, $key_1))--}}
-            {{--@endif--}}
-            {{--@endforeach--}}
-            {{--@endforeach--}}
-                @include('form-input.panel-errors')
+            @include('form-input.panel-errors')
 
             <form class="submit-form" action="{{url('proposes', $propose_relation->propose->id) . '/verification'}}" method="POST" enctype="multipart/form-data">
                 @include('form-input.propose-scheme')
