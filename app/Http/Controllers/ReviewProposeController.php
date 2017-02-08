@@ -115,8 +115,10 @@ class ReviewProposeController extends BlankonController {
             {
                 $review_propose_i = new ReviewProposesI;
                 $review_propose_i->item = $item->item;
+                $review_propose_i->score = 1;
                 $review_propose_i->aspect = $item->aspect;
                 $review_propose_i->quality = $item->quality;
+                $review_propose_i->final_score = $item->quality;
                 $review_propose_i->disabled = '';
                 $review_proposes_i->add($review_propose_i);
             }
