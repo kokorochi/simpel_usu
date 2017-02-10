@@ -91,7 +91,6 @@ class ProposeController extends BlankonController {
             $data_not_found = 'Data tidak ditemukan';
         }
 
-//        View::share('js', $this->js);
         return view('propose.propose-list', compact('data_not_found', 'proposes'));
     }
 
@@ -248,7 +247,6 @@ class ProposeController extends BlankonController {
             $proposes->member()->saveMany($members);
             $proposes->proposeOutputType()->saveMany($propose_output_types);
             $i = 0;
-            $recipients = [];
             foreach ($members as $key => $member)
             {
                 if ($member->external === '1')
@@ -267,19 +265,6 @@ class ProposeController extends BlankonController {
         return redirect()->intended('/proposes');
     }
 
-    public function updateTemporary(Requests\StoreProposeRequest $request, $id)
-    {
-        $proposes = Propose::find($id);
-        if ($proposes === null)
-        {
-            $this->setCSS404();
-
-            return abort('404');
-        }
-
-
-    }
-
     public function verification($id)
     {
         $this->lv_disable = 'disabled';
@@ -294,46 +279,6 @@ class ProposeController extends BlankonController {
 
         $propose_relation = $this->getProposeRelationData($propose);
         $propose_relation->propose = $propose;
-
-
-//        $propose_own = $propose->proposesOwn()->first();
-//        $periods = $propose->period()->get();
-//        $period = $propose->period()->first();
-//        $members = $propose->member()->get();
-//        foreach ($members as $member)
-//        {
-//            if ($member->external === '1')
-//            {
-//                $external_member = $member->externalMember()->first();
-//                $member->external_name = $external_member->name;
-//                $member->external_affiliation = $external_member->affiliation;
-//            } else
-//            {
-//                $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
-//
-//            }
-//            $member['member_nidn'] = $member->nidn;
-//            $member['member_areas_of_expertise'] = $member->areas_of_expertise;
-//        }
-//        $member = $propose->member()->first();
-//        $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
-//        $faculties = Faculty::where('is_faculty', '1')->get();
-//        $output_types = Output_type::all();
-//        $research_types = ResearchType::all();
-//
-//        if ($propose_own === null)
-//        {
-//            $propose_own = new Propose_own;
-//        }
-//        if ($periods === null)
-//        {
-//            $periods = new Collection();
-//            $periods->add(new Period);
-//        }
-//        if ($period === null)
-//        {
-//            $period = new Period;
-//        }
 
         $upd_mode = 'edit';
         view::share('disabled', $this->lv_disable);
@@ -681,7 +626,7 @@ class ProposeController extends BlankonController {
                 'sign_1',
                 'sign_2'
             ));
-        } else
+        } else //Button Save
         {
             $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
             if ($flow_status->status_code === 'SS')
@@ -1011,7 +956,7 @@ class ProposeController extends BlankonController {
     public function display($id)
     {
         $propose = Propose::find($id);
-        if($propose === null)
+        if ($propose === null)
         {
             $this->setCSS404();
 

@@ -231,7 +231,7 @@ class AJAXController extends BlankonController {
                 $data['data'][$i][4] = '<td class="text-center"><a href="' . url('researches', $research->id) . '/approve' . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Approve"><i class="fa fa-check-square-o"></i></a></td>';
             } else
             {
-                $data['data'][$i][4] = '<td class="text-center"><a href="' . url('review-proposes', $research->id) . '/research-display' . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Approve"><i class="fa fa-search-plus"></i></a></td>';
+                $data['data'][$i][4] = '<td class="text-center"><a href="' . url('review-proposes', $research->id) . '/research-display' . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Display"><i class="fa fa-search-plus"></i></a></td>';
             }
             $i++;
         }
