@@ -74,7 +74,7 @@ $(document).ready(function () {
 
             var reviewer_option = $(".reviewer-wrapper").find("div.form-group:first").find("select.chosen-select").find("option").clone();
             var reviewer_select = $("<select name='nidn[]' class='chosen-select'>").appendTo(reviewer_clone.find('.chosen-select-container'));
-            reviewer_option.each(function(index){
+            reviewer_option.each(function (index) {
                 reviewer_select.append($("<option>").attr('value', reviewer_option[index].value).text(this.text))
             });
             $(".chosen-select").chosen();
@@ -115,11 +115,11 @@ $(document).ready(function () {
             $('.input-member').autocomplete(autocomp_opt);
             $("input#external" + id).closest('.form-group').find('.external-member-wrapper').hide();
             $("input#external" + id).closest('.form-group').find('.internal-member-wrapper').show();
-            $("input.external-checkbox").on("click", function(){
-                if($(this).is(":checked")){
+            $("input.external-checkbox").on("click", function () {
+                if ($(this).is(":checked")) {
                     $(this).closest('.form-group').find('.external-member-wrapper').show();
                     $(this).closest('.form-group').find('.internal-member-wrapper').hide();
-                }else{
+                } else {
                     $(this).closest('.form-group').find('.external-member-wrapper').hide();
                     $(this).closest('.form-group').find('.internal-member-wrapper').show();
                 }

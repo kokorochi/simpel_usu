@@ -406,31 +406,6 @@ class ResearchController extends BlankonController {
 
             }
             $this->setOutputFlowStatuses($research);
-
-//            if ($request->file_name !== null)
-//            {
-//                foreach ($request->file_name as $key => $item)
-//                {
-//                    $research_output_general = $research_output_generals->get($key);
-//                    if ($research_output_general !== null && $item !== null)
-//                    {
-//                        Storage::delete($path . $research_output_general->file_name);
-//                    }
-//                    if ($research_output_general === null)
-//                    {
-//                        $research_output_general = new ResearchOutputGeneral();
-//                    }
-//                    $research_output_general->item = $key + 1;
-//                    $research_output_general->output_description = $request->output_description[$key];
-//                    $research_output_general->status = $request->status[$key];
-//                    $research_output_general->url_address = $request->url_address[$key];
-//                    $research_output_general->file_name_ori = $request->file('file_name')[$key]->getClientOriginalName();
-//                    $research_output_general->file_name = md5($request->file('file_name')[$key]->getClientOriginalName() . Carbon::now()->toDateTimeString()) . $research->id . '.' . $request->file('file_name')[$key]->extension();
-//                    $research->researchOutputGeneral()->save($research_output_general);
-//
-//                    $request->file('file_name')[$key]->storeAs($path, $research_output_general->file_name);
-//                }
-//            }
         });
 
         return redirect()->intended('researches');

@@ -77,13 +77,11 @@
                                                            data-placement="top" data-original-title="Ubah">
                                                             <i class="fa fa-pencil"></i>
                                                         </a>
-{{--                                                        @if($status_code === 'UL' || $status_code === 'VL' || $status_code === 'RL' || $status_code === 'PS')--}}
                                                         <a href="{{url($deleteUrl . '/' . $research->id .'/output')}}"
                                                            class="btn btn-success btn-xs" data-toggle="tooltip"
                                                            data-placement="top" data-original-title="Unggah Luaran">
                                                             <i class="fa fa-upload"></i>
                                                         </a>
-                                                        {{--@endif--}}
                                                     </td>
                                                 </tr>
                                             @endforeach

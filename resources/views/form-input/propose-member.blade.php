@@ -72,8 +72,10 @@ $errors->has('external_affiliation.' . $ctr_old) || old('external_affiliation.' 
                                 <label class="control-label col-sm-4 col-md-3">Dosen Luar</label>
                                 <div class="col-sm-7 mb-10">
                                     <div class="ckbox ckbox-default">
-                                        <input name="external{{$key}}" id="external{{$key}}" type="checkbox" value="1" class="external-checkbox" {{$member->external === '1' ? "checked" : ""}} {{$disabled}}>
-                                        <label for="external{{$key}}">*Tick ini jika anggota merupakan dosen dari luar USU</label>
+                                        <input name="external{{$key}}" id="external{{$key}}" type="checkbox" value="1"
+                                               class="external-checkbox" {{$member->external === '1' ? "checked" : ""}} {{$disabled}}>
+                                        <label for="external{{$key}}">*Tick ini jika anggota merupakan dosen dari luar
+                                            USU</label>
                                     </div>
                                 </div>
                                 <div class="external-member-wrapper">
@@ -83,7 +85,8 @@ $errors->has('external_affiliation.' . $ctr_old) || old('external_affiliation.' 
                                                class="form-control input-sm mb-15"
                                                value="{{$member->external_name}}" {{$disabled}} />
                                     </div>
-                                    <label for="external_affiliation[]" class="col-sm-4 col-md-3 control-label">Afiliasi</label>
+                                    <label for="external_affiliation[]"
+                                           class="col-sm-4 col-md-3 control-label">Afiliasi</label>
                                     <div class="col-sm-7 input-icon right">
                                         <input name="external_affiliation[]" type="text"
                                                class="form-control input-sm mb-15"
@@ -94,7 +97,8 @@ $errors->has('external_affiliation.' . $ctr_old) || old('external_affiliation.' 
                                     <label for="member_nidn[]" class="col-sm-4 col-md-3 control-label">Anggota</label>
                                     <div class="col-sm-7 input-icon right">
                                         @if($member->status === 'waiting')
-                                            <i class="fa fa-circle-o-notch fa-spin fg-warning" style="bottom: 18px;"></i>
+                                            <i class="fa fa-circle-o-notch fa-spin fg-warning"
+                                               style="bottom: 18px;"></i>
                                         @elseif($member->status === 'accepted')
                                             <i class="fa fa-check-circle fg-success" style="bottom: 18px;"></i>
                                         @elseif($member->status === 'rejected')

@@ -4,7 +4,7 @@
 <!-- START @META SECTION -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href="{{$assetUrl}}/images/shortcut icon.png" rel="shortcut icon">
+    <link href="{{$assetUrl}}images/shortcut icon.png" rel="shortcut icon">
 <!-- START @FONT STYLES -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Oswald:700,400" rel="stylesheet">

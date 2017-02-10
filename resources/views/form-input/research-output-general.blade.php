@@ -23,7 +23,6 @@
             }
         }
     }
-//if(count($research_output_generals) == 5) dd($research_output_generals);
 @endphp
 
 <div class="row">
@@ -55,19 +54,23 @@
                                 <label for="status[{{$key}}]" class="col-sm-4 col-md-3 control-label">Jenis</label>
                                 <div class="col-sm-7">
                                     <div class="rdio rdio-theme circle pull-left mr-10">
-                                        <input id="radio-draft[{{$key}}]" value="draft" type="radio" name="status[{{$key}}]" {{$research_output_general->status === 'draft' ? 'checked' : ''}} {{$disabled}}>
+                                        <input id="radio-draft[{{$key}}]" value="draft" type="radio"
+                                               name="status[{{$key}}]" {{$research_output_general->status === 'draft' ? 'checked' : ''}} {{$disabled}}>
                                         <label for="radio-draft[{{$key}}]">Draft</label>
                                     </div>
                                     <div class="rdio rdio-theme circle pull-left mr-10">
-                                        <input id="radio-submitted[{{$key}}]" value="submitted" type="radio" name="status[{{$key}}]"{{$research_output_general->status === 'submitted' ? 'checked' : ''}} {{$disabled}}>
+                                        <input id="radio-submitted[{{$key}}]" value="submitted" type="radio"
+                                               name="status[{{$key}}]"{{$research_output_general->status === 'submitted' ? 'checked' : ''}} {{$disabled}}>
                                         <label for="radio-submitted[{{$key}}]">Submitted</label>
                                     </div>
                                     <div class="rdio rdio-theme circle pull-left mr-10">
-                                        <input id="radio-accepted[{{$key}}]" value="accepted" type="radio" name="status[{{$key}}]"{{$research_output_general->status === 'accepted' ? 'checked' : ''}} {{$disabled}}>
+                                        <input id="radio-accepted[{{$key}}]" value="accepted" type="radio"
+                                               name="status[{{$key}}]"{{$research_output_general->status === 'accepted' ? 'checked' : ''}} {{$disabled}}>
                                         <label for="radio-accepted[{{$key}}]">Accepted</label>
                                     </div>
                                     <div class="rdio rdio-theme circle pull-left mr-10">
-                                        <input id="radio-publish[{{$key}}]" value="publish" type="radio" name="status[{{$key}}]"{{$research_output_general->status === 'publish' ? 'checked' : ''}} {{$disabled}}>
+                                        <input id="radio-publish[{{$key}}]" value="publish" type="radio"
+                                               name="status[{{$key}}]"{{$research_output_general->status === 'publish' ? 'checked' : ''}} {{$disabled}}>
                                         <label for="radio-publish[{{$key}}]">Publish</label>
                                     </div>
                                 </div>
@@ -92,10 +95,10 @@
                                             <input name="file_name_ori[]" class="form-control input-sm"
                                                    type="text" disabled
                                                    value="{{ $research_output_general->file_name_ori }}">
-                                                        <span class="input-group-btn">
-                                                            <a href="{{url('researches', $research_output_general->id) . '/output-download' }}"
-                                                               class="btn btn-primary btn-sm" target="_blank">Unduh</a>
-                                                        </span>
+                                            <span class="input-group-btn">
+                                                <a href="{{url('researches', $research_output_general->id) . '/output-download' }}"
+                                                   class="btn btn-primary btn-sm" target="_blank">Unduh</a>
+                                            </span>
                                         </div>
                                     </div>
                                 @endif

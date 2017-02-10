@@ -86,10 +86,10 @@
                                     <input name="file_partner_contract[]" class="form-control input-sm"
                                            type="text" disabled
                                            value="{{ $propose->file_propose_ori }}">
-                                        <span class="input-group-btn">
+                                    <span class="input-group-btn">
                                         {{--<button type="button" class="btn btn-default">Go!</button>--}}
-                                            <a href="{{url('proposes', $propose->id) . '/download/2' }}"
-                                               class="btn btn-primary btn-sm">Unduh</a>
+                                        <a href="{{url('proposes', $propose->id) . '/download/2' }}"
+                                           class="btn btn-primary btn-sm">Unduh</a>
                                         </span>
                                 </div>
                             </div>
@@ -99,13 +99,13 @@
                           method="POST" id="input-mask">
                         <table class="table table-bordered table-striped">
                             <thead>
-                                <tr>
-                                    <td width="30%">Aspek Penilaian</td>
-                                    <td width="15%">Skor</td>
-                                    <td width="10%">Bobot</td>
-                                    <td width="15%">Nilai Bobot</td>
-                                    <td width="30%">Komentar Penilai</td>
-                                </tr>
+                            <tr>
+                                <td width="30%">Aspek Penilaian</td>
+                                <td width="15%">Skor</td>
+                                <td width="10%">Bobot</td>
+                                <td width="15%">Nilai Bobot</td>
+                                <td width="30%">Komentar Penilai</td>
+                            </tr>
                             </thead>
                             <tbody>
                             @foreach($review_proposes_i as $key => $review_propose_i)
@@ -113,13 +113,12 @@
                                     <td width="30%">{{$review_propose_i->aspect}}</td>
                                     <td width="15%">
                                         <div class="form-group">
-                                            <select name="score[]" class="chosen-select input-score" {{$review_propose_i->disabled}}>
+                                            <select name="score[]"
+                                                    class="chosen-select input-score" {{$review_propose_i->disabled}}>
                                                 @for($i = 1; $i <= 7; $i++)
                                                     <option value="{{$i}}" {{$i == $review_propose_i->score ? 'selected' : ''}}>{{$i}}</option>
                                                 @endfor
                                             </select>
-                                            {{--<input name="score[]" class="form-control input-sm input-score" type="text"--}}
-                                                   {{--value="{{$review_propose_i->score}}" {{$review_propose_i->disabled}}>--}}
                                             @if($errors->has('score.' . $key))
                                                 <label class="error" for="score[]" style="display: inline-block;">
                                                     {{ $errors->first('score.' . $key) }}

@@ -44,12 +44,13 @@ $errors->has('final_amount') || old('final_amount')
                                 <div class="fileinput fileinput-new input-group" data-provides="fileinput">
                                     <div class="form-control input-sm" data-trigger="fileinput">
                                         <i class="glyphicon glyphicon-file fileinput-exists"></i>
-                                        <span class="fileinput-filename"></span></div>
-                                        <span class="input-group-addon btn btn-success btn-file">
-                                            <span class="fileinput-new">Select file</span>
-                                            <span class="fileinput-exists">Change</span>
-                                            <input type="file" name="file_propose_final">
-                                        </span>
+                                        <span class="fileinput-filename"></span>
+                                    </div>
+                                    <span class="input-group-addon btn btn-success btn-file">
+                                        <span class="fileinput-new">Select file</span>
+                                        <span class="fileinput-exists">Change</span>
+                                        <input type="file" name="file_propose_final">
+                                    </span>
                                     <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
                                        data-dismiss="fileinput">Remove</a>
                                 </div>

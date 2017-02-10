@@ -125,11 +125,9 @@ $(document).ready(function () {
 
     $(".input-score").change(function () {
         if ($.isNumeric($(this).val())) {
-            // $(this).closest("output-score").val('2');
             var quality = $(this).parent().parent().parent().find("input[name='quality[]']").val();
             $(this).parent().parent().parent().find(".output-score").val($(this).val() * quality);
         }
-        // console.log($.isNumeric($(this).val()));
     });
 
     $(".add-research-general-button").click(function (e) {
