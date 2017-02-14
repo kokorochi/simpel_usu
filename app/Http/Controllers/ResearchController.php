@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\OutputFlowStatus;
+use App\OutputMember;
 use App\Research;
 use App\Period;
 use App\Propose;
@@ -57,6 +58,7 @@ class ResearchController extends BlankonController {
         array_push($this->js['plugins'], 'global/plugins/bower_components/datatables/js/datatables.responsive.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/jquery.inputmask/dist/jquery.inputmask.bundle.min.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/jasny-bootstrap-fileinput/js/jasny-bootstrap.fileinput.min.js');
+        array_push($this->js['plugins'], 'global/plugins/bower_components/jquery.inputmask/dist/jquery.inputmask.bundle.min.js');
 
         array_push($this->js['scripts'], 'admin/js/pages/blankon.form.advanced.js');
         array_push($this->js['scripts'], 'admin/js/pages/blankon.form.element.js');
@@ -317,14 +319,26 @@ class ResearchController extends BlankonController {
         if ($research_output_generals->isEmpty())
         {
             $research_output_generals = new Collection();
-            foreach ($propose_output_types as $propose_output_type)
+            $output_members = new Collection();
+            foreach ($propose_output_types as $key => $propose_output_type)
             {
                 $research_output_general = new ResearchOutputGeneral();
                 $research_output_general->output_description = $propose_output_type->outputType()->first()->output_name;
                 $research_output_general->status = 'draft';
                 $research_output_generals->add($research_output_general);
+
+                $output_members[$key] = new Collection();
+                $output_members[$key]->add(new OutputMember);
+            }
+        }else{
+            $output_members = new Collection();
+            foreach ($research_output_generals as $key => $research_output_general)
+            {
+                $output_members[$key] = $research_output_general->outputMember()->get();
             }
         }
+
+//        dd($output_members[0]);/
 
         $research_output_revision = $research->researchOutputRevision()->orderBy('id', 'desc')->first();
         if ($research_output_revision === null) $research_output_revision = new ResearchOutputRevision();
@@ -339,6 +353,7 @@ class ResearchController extends BlankonController {
             'research',
             'propose',
             'propose_output_types',
+            'output_members',
             'status_code',
             'output_code',
             'research_output_generals',
@@ -348,8 +363,10 @@ class ResearchController extends BlankonController {
         ));
     }
 
-    public function updateOutputGeneral(Requests\StoreOutputGeneralRequest $request, $id)
+//    public function updateOutputGeneral(Requests\StoreOutputGeneralRequest $request, $id)
+    public function updateOutputGeneral(Request $request, $id)
     {
+        dd($request);
         $research = Research::find($id);
         if ($research === null)
         {

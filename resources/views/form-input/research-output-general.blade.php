@@ -41,7 +41,8 @@
             <div class="panel-body no-padding">
                 <form action="{{url($deleteUrl, $research->id) . '/output-general'}}" method="post"
                       enctype="multipart/form-data"
-                      class="form-body form-horizontal form-bordered">
+                      class="form-body form-horizontal form-bordered"
+                      id="input-mask">
                     @if($output_code === 'RL')
                         <div class="form-group">
                             @include('form-input.research-approve-revisiontext')
@@ -104,6 +105,22 @@
                                 @endif
 
                                 <div class="clearfix"></div>
+                                <label for="year[]" class="control-label col-sm-4 col-md-3">Tahun
+                                    Luaran</label>
+                                <div class="col-sm-6 mb-10">
+                                    <input name="year[]" class="form-control input-sm" type="text"
+                                           maxlength="4"
+                                           data-inputmask="'alias': 'decimal', 'rightAlign': false"
+                                           value="{{ $research_output_general->year }}" {{$disabled}}>
+                                    @if($errors->has('year.' . $key))
+                                        <label class="error" for="year[]"
+                                               style="display: inline-block;">
+                                            {{ $errors->first('year.' . $key) }}
+                                        </label>
+                                    @endif
+                                </div>
+
+                                <div class="clearfix"></div>
                                 <label for="output_description[]" class="control-label col-sm-4 col-md-3">Deskripsi
                                     Luaran</label>
                                 <div class="col-sm-6 mb-10">
@@ -130,10 +147,69 @@
                                     @endif
                                 </div>
 
+                                <div class="clearfix"></div>
+                                <div class="member-wrapper">
+                                    @foreach($output_members[$key] as $member_key => $output_member)
+                                        <div class="clone-member-wrapper">
+                                            <div class="clearfix"></div>
+                                            <label class="control-label col-sm-4 col-md-3">Dosen Luar</label>
+                                            <div class="col-sm-7 mb-10">
+                                                <div class="ckbox ckbox-default">
+                                                    <input name="is_external[{{$key}}][{{$member_key}}]"
+                                                           id="is_external[{{$key}}][{{$member_key}}]"
+                                                           type="checkbox" value="1"
+                                                           class="external-output-checkbox" {{$output_member->external === null ? "" : "checked"}} {{$disabled}}>
+                                                    <label for="is_external[{{$key}}][{{$member_key}}]">*Tick ini jika penulis bukan
+                                                        dosen USU</label>
+                                                </div>
+                                            </div>
+                                            <div class="external-member-wrapper">
+                                                <label for="external[{{$key}}][]"
+                                                       class="col-sm-4 col-md-3 control-label">Nama Penulis</label>
+                                                <div class="col-sm-6 input-icon right">
+                                                    <input name="external[{{$key}}][]" type="text"
+                                                           class="form-control input-sm mb-15"
+                                                           value="{{$output_member->external}}" {{$disabled}} />
+                                                </div>
+                                            </div>
+                                            <div class="internal-member-wrapper">
+                                                <label for="nidn[{{$key}}][]"
+                                                       class="col-sm-4 col-md-3 control-label">Nama Penulis</label>
+                                                <div class="col-sm-6 input-icon right">
+                                                    <input name="nidn_display[{{$key}}][]" type="text"
+                                                           class="input-member form-control input-sm mb-15"
+                                                           value="{{$output_member->nidn_display}}" {{$disabled}} />
+                                                    <input name="nidn[{{$key}}][]" type="text" class="input-value"
+                                                           hidden="hidden"
+                                                           value="{{$output_member->nidn}}"/>
+                                                    {{--@if($errors->has('nidn.' . $key))--}}
+                                                    {{--<label class="error" for="nidn[]" style="display: inline-block;">--}}
+                                                    {{--Pemilihan anggota harus dilakukan via autocomplete--}}
+                                                    {{--</label>--}}
+                                                    {{--@endif--}}
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <a href="#" class="remove_field btn btn-sm btn-danger btn-stroke">
+                                                    <i class="fa fa-minus"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <div class="clearfix"></div>
+                                <label class="control-label col-sm-4 col-md-3">Tambah Penulis</label>
+                                <div class="col-sm-1 mb-15">
+                                    <a href="#" class="add-output-member-button btn btn-sm btn-success btn-stroke">
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                </div>
+
                                 @if($upd_mode !== 'approve' && $status_code !== 'PS' && $disabled == null)
                                     <div class="clearfix"></div>
                                     <label class="control-label col-sm-4 col-md-3">Unggah Luaran</label>
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-6 mb-5">
                                         <div class="fileinput fileinput-new input-group" data-provides="fileinput">
                                             <div class="form-control input-sm" data-trigger="fileinput">
                                                 <i class="glyphicon glyphicon-file fileinput-exists"></i>
@@ -157,6 +233,8 @@
                                     </div>
 
                                     @if($research_output_general->file_name_ori === null)
+                                        <div class="clearfix"></div>
+                                        <label class="control-label col-sm-4 col-md-3">Hapus Luaran</label>
                                         <div class="col-sm-1">
                                             <a href="#" class="remove_field btn btn-sm btn-danger btn-stroke">
                                                 <i class="fa fa-minus"></i>

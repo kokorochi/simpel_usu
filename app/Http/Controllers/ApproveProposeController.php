@@ -129,7 +129,13 @@ class ApproveProposeController extends BlankonController {
             $count_amount += $review_propose->recommended_amount;
         }
 
-        $propose_relation->propose->final_amount = $count_amount / $count_reviewers;
+        if ($count_reviewers === 0)
+        {
+            $propose_relation->propose->final_amount = $propose_relation->propose->total_amount;
+        } else
+        {
+            $propose_relation->propose->final_amount = $count_amount / $count_reviewers;
+        }
 
         $disabled = 'disabled';
         $disable_upload = true;
@@ -207,6 +213,11 @@ class ApproveProposeController extends BlankonController {
                         'status_code' => 'UL', // Menunggu Luaran
                         'created_by'  => Auth::user()->nidn,
                     ]);
+                    $propose->research()->first()->outputFlowStatus()->create([
+                        'item'        => '1',
+                        'status_code' => 'UL',
+                        'created_by'  => Auth::user()->nidn,
+                    ]);
                 }
             }
         });
@@ -218,7 +229,7 @@ class ApproveProposeController extends BlankonController {
     public function display($id)
     {
         $propose = Propose::find($id);
-        if($propose === null)
+        if ($propose === null)
         {
             $this->setCSS404();
 
@@ -252,10 +263,11 @@ class ApproveProposeController extends BlankonController {
             $count_amount += $review_propose->recommended_amount;
         }
 
-        if($count_reviewers === 0)
+        if ($count_reviewers === 0)
         {
             $propose_relation->propose->final_amount = $propose_relation->propose->total_amount;
-        }else{
+        } else
+        {
             $propose_relation->propose->final_amount = $count_amount / $count_reviewers;
         }
 

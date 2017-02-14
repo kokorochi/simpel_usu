@@ -12,4 +12,9 @@ class ResearchOutputGeneral extends Model
     {
         return $this->belongsTo(Research::class);
     }
+
+    public function outputMember()
+    {
+        return $this->hasMany(OutputMember::class, 'id', 'output_id');
+    }
 }
