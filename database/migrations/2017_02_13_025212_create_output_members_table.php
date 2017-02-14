@@ -17,8 +17,8 @@ class CreateOutputMembersTable extends Migration
             $table->increments('id');
             $table->integer('output_id', false, true);
             $table->smallInteger('item', false, true);
-            $table->string('nidn', 30);
-            $table->string('external');
+            $table->string('nidn', 30)->nullable();
+            $table->string('external')->nullable();
             $table->timestamps();
         });
     }

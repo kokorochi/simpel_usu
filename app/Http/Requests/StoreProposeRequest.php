@@ -31,27 +31,40 @@ class StoreProposeRequest extends FormRequest {
     {
         if ($this->submit_button === 'save')
         {
-            $rules = [
-                //Check Own Proposes
-                'own-years'             => 'numeric',
-                'own-member'            => 'numeric',
-                //End Check Own Proposes
+            if($this->is_own !== '1')
+            {
+                $rules = [
+                    //Check Detail
+                    'faculty_code'          => 'required',
+                    'title'                 => 'required|max:100',
+                    'output_type'           => 'required',
+                    'total_amount'          => 'required',
+                    'areas_of_expertise'    => 'required',
+                    'time_period'           => 'required|max:2',
+                    'address'               => 'required',
+                    //End Check Detail
 
-                //Check Detail
-                'faculty_code'          => 'required',
-                'title'                 => 'required|max:100',
-                'output_type'           => 'required',
-                'total_amount'          => 'required',
-                'areas_of_expertise'    => 'required',
-                'time_period'           => 'required|max:2',
-                'address'               => 'required',
-                //End Check Detail
+                    //Check Upload
+                    'file_propose'          => 'mimes:pdf',
+                    'file_propose_final'    => 'mimes:pdf'
+                    //End Check Detail
+                ];
+            }else{
+                $rules = [
+                    //Check Own Proposes
+                    'own-years'             => 'numeric',
+                    'own-member'            => 'numeric',
+                    //End Check Own Proposes
 
-                //Check Upload
-                'file_propose'          => 'mimes:pdf',
-                'file_propose_final'    => 'mimes:pdf'
-                //End Check Detail
-            ];
+                    //Check Detail
+                    'faculty_code'          => 'required',
+                    'title'                 => 'required|max:100',
+                    'total_amount'          => 'required',
+                    'areas_of_expertise'    => 'required',
+                    //End Check Detail
+                ];
+            }
+
         } else
         {
             $rules = [];
@@ -111,11 +124,11 @@ class StoreProposeRequest extends FormRequest {
         {
             if (
                 $this->input('own-years') === "" ||
-                $this->input('own-dedication_type') === "" ||
-                $this->input('own-scheme') === "" ||
-                $this->input('own-sponsor') === "" ||
-                $this->input('own-member') === "" ||
-                $this->input('own-annotation') === ""
+                $this->input('own-member') === ""
+//                $this->input('own-dedication_type') === "" ||
+//                $this->input('own-scheme') === "" ||
+//                $this->input('own-sponsor') === "" ||
+//                $this->input('own-annotation') === ""
             )
             {
                 array_push($ret, 'Data mandiri masih belum lengkap');

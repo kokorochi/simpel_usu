@@ -87,12 +87,15 @@ class StoreOutputGeneralRequest extends FormRequest {
         {
             foreach ($this->file('file_name') as $key => $item)
             {
-                if ($this->input('delete_output')[$key] === null)
+                if ($this->input('delete_output') !== null && array_key_exists($key, $this->input('delete_output')))
                 {
-                    if ($this->input('output_description')[$key] === '' || $this->input('output_description')[$key] === null)
+                    if ($this->input('delete_output')[$key] === null)
                     {
-                        array_push($ret, 'Deskripsi luaran harus diisi');
-                        break;
+                        if ($this->input('output_description')[$key] === '' || $this->input('output_description')[$key] === null)
+                        {
+                            array_push($ret, 'Deskripsi luaran harus diisi');
+                            break;
+                        }
                     }
                 }
             }
@@ -100,14 +103,17 @@ class StoreOutputGeneralRequest extends FormRequest {
 
         foreach ($this->input('output_description') as $key => $item)
         {
-            if ($this->input('delete_output')[$key] === null)
+            if ($this->input('delete_output') !== null && array_key_exists($key, $this->input('delete_output')))
             {
-                if ($item !== '')
+                if ($this->input('delete_output')[$key] === null)
                 {
-                    if ($this->file(['file_name'])[$key] === null)
+                    if ($item !== '')
                     {
-                        array_push($ret, 'File luaran harus diisi jika deskripsi luaran sudah diisi');
-                        break;
+                        if ($this->file(['file_name'])[$key] === null)
+                        {
+                            array_push($ret, 'File luaran harus diisi jika deskripsi luaran sudah diisi');
+                            break;
+                        }
                     }
                 }
             }

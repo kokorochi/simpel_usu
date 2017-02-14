@@ -328,14 +328,21 @@ class ProposeController extends BlankonController {
             if ($member_left_to_accept === 1 && $member_rejected === false && $status === 'accepted')
             {
                 $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
-                $propose->flowStatus()->create([
-                    'item'        => $flow_status->item + 1,
-                    'status_code' => 'UU', //Menunggu Unggah Usulan
-                    'created_by'  => Auth::user()->nidn,
-                ]);
-
-                $flow_status->status_code = 'UU';
-                $this->setEmail($flow_status->status_code, $propose);
+                if($propose->is_own !== '1'){
+                    $propose->flowStatus()->create([
+                        'item'        => $flow_status->item + 1,
+                        'status_code' => 'UU', //Menunggu Unggah Usulan
+                        'created_by'  => Auth::user()->nidn,
+                    ]);
+                    $this->setEmail('UU', $propose);
+                }else{
+                    $propose->flowStatus()->create([
+                        'item'        => $flow_status->item + 1,
+                        'status_code' => 'RS', //Menunggu Persetujuan
+                        'created_by'  => Auth::user()->nidn,
+                    ]);
+                    $this->setEmail('RS', $propose);
+                }
             }
         });
 
@@ -943,12 +950,28 @@ class ProposeController extends BlankonController {
                 'created_by'  => Auth::user()->nidn,
             ]);
 
+            if ($propose->is_own === '1')
+            {
+                $propose->flowStatus()->create([
+                    'item'        => $flow_status->item + 2,
+                    'status_code' => 'UL', // Menunggu Luaran
+                    'created_by'  => Auth::user()->nidn,
+                ]);
+                $propose->research()->first()->outputFlowStatus()->create([
+                    'item'        => '1',
+                    'status_code' => 'UL', // Menunggu Luaran
+                    'created_by'  => Auth::user()->nidn,
+                ]);
+                $this->setEmail('UL', $propose);
+            }else{
+                $this->setEmail('UD', $propose);
+            }
+
             $propose->research()->create([
                 'created_by' => Auth::user()->nidn,
             ]);
         });
 
-        $this->setEmail('UD', $propose);
 
         return redirect()->intended('proposes');
     }

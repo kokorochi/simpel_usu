@@ -150,7 +150,7 @@ class InitiateDedication1 extends Seeder {
         ]);
         StatusCode::create([
             'code'        => 'RS',
-            'description' => 'Review Selesai, menunggu hasil',
+            'description' => 'Menunggu Persetujuan Usulan',
             'created_by'  => 'admin',
         ]);
         StatusCode::create([

@@ -41,7 +41,7 @@
             <div class="panel-body no-padding">
                 <form action="{{url($deleteUrl, $research->id) . '/output-general'}}" method="post"
                       enctype="multipart/form-data"
-                      class="form-body form-horizontal form-bordered"
+                      class="form-body form-horizontal form-bordered submit-form"
                       id="input-mask">
                     @if($output_code === 'RL')
                         <div class="form-group">
@@ -77,47 +77,53 @@
                                 </div>
                                 @if($research_output_general->file_name_ori !== null)
                                     @if($upd_mode !== 'approve' && $status_code !== 'PS')
-                                        <div class="clearfix"></div>
-                                        <label class="control-label col-sm-4 col-md-3">Hapus Luaran</label>
-                                        <div class="col-sm-6 mb-10">
-                                            <div class="ckbox ckbox-danger">
-                                                <input name="delete_output[{{$key}}]" type="hidden" value="0">
-                                                <input name="delete_output[{{$key}}]" id="checkbox-danger{{$key}}"
-                                                       type="checkbox" value="1">
-                                                <label for="checkbox-danger{{$key}}"></label>
+                                        <div class="remove-output-wrapper">
+                                            <div class="clearfix"></div>
+                                            <label class="control-label col-sm-4 col-md-3">Hapus Luaran</label>
+                                            <div class="col-sm-6 mb-10">
+                                                <div class="ckbox ckbox-danger">
+                                                    <input name="delete_output[{{$key}}]" type="hidden" value="0">
+                                                    <input name="delete_output[{{$key}}]" id="checkbox-danger{{$key}}"
+                                                           type="checkbox" value="1">
+                                                    <label for="checkbox-danger{{$key}}"></label>
+                                                </div>
                                             </div>
                                         </div>
                                     @endif
 
-                                    <div class="clearfix"></div>
-                                    <label class="control-label col-sm-4 col-md-3">Unduh Luaran</label>
-                                    <div class="col-sm-6 mb-10">
-                                        <div class="input-group">
-                                            <input name="file_name_ori[]" class="form-control input-sm"
-                                                   type="text" disabled
-                                                   value="{{ $research_output_general->file_name_ori }}">
-                                            <span class="input-group-btn">
-                                                <a href="{{url('researches', $research_output_general->id) . '/output-download' }}"
-                                                   class="btn btn-primary btn-sm" target="_blank">Unduh</a>
-                                            </span>
+                                    <div class="download-output-wrapper">
+                                        <div class="clearfix"></div>
+                                        <label class="control-label col-sm-4 col-md-3">Unduh Luaran</label>
+                                        <div class="col-sm-6 mb-10">
+                                            <div class="input-group">
+                                                <input name="file_name_ori[]" class="form-control input-sm"
+                                                       type="text" disabled
+                                                       value="{{ $research_output_general->file_name_ori }}">
+                                                <span class="input-group-btn">
+                                                    <a href="{{url('researches', $research_output_general->id) . '/output-download' }}"
+                                                       class="btn btn-primary btn-sm" target="_blank">Unduh</a>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 @endif
 
-                                <div class="clearfix"></div>
-                                <label for="year[]" class="control-label col-sm-4 col-md-3">Tahun
-                                    Luaran</label>
-                                <div class="col-sm-6 mb-10">
-                                    <input name="year[]" class="form-control input-sm" type="text"
-                                           maxlength="4"
-                                           data-inputmask="'alias': 'decimal', 'rightAlign': false"
-                                           value="{{ $research_output_general->year }}" {{$disabled}}>
-                                    @if($errors->has('year.' . $key))
-                                        <label class="error" for="year[]"
-                                               style="display: inline-block;">
-                                            {{ $errors->first('year.' . $key) }}
-                                        </label>
-                                    @endif
+                                <div class="output-year-wrapper">
+                                    <div class="clearfix"></div>
+                                    <label for="year[]" class="control-label col-sm-4 col-md-3">Tahun
+                                        Luaran</label>
+                                    <div class="col-sm-6 mb-10">
+                                        <input name="year[]" class="form-control input-sm" type="text"
+                                               maxlength="4"
+                                               data-inputmask="'alias': 'decimal', 'rightAlign': false"
+                                               value="{{ $research_output_general->year }}" {{$disabled}}>
+                                        @if($errors->has('year.' . $key))
+                                            <label class="error" for="year[]"
+                                                   style="display: inline-block;">
+                                                {{ $errors->first('year.' . $key) }}
+                                            </label>
+                                        @endif
+                                    </div>
                                 </div>
 
                                 <div class="clearfix"></div>
@@ -148,8 +154,10 @@
                                 </div>
 
                                 <div class="clearfix"></div>
+                                <hr />
                                 <div class="member-wrapper">
-                                    @foreach($output_members[$key] as $member_key => $output_member)
+                                    @php($lv_output_members = $output_members->get($key))
+                                    @foreach($lv_output_members as $member_key => $output_member)
                                         <div class="clone-member-wrapper">
                                             <div class="clearfix"></div>
                                             <label class="control-label col-sm-4 col-md-3">Dosen Luar</label>
@@ -182,32 +190,32 @@
                                                     <input name="nidn[{{$key}}][]" type="text" class="input-value"
                                                            hidden="hidden"
                                                            value="{{$output_member->nidn}}"/>
-                                                    {{--@if($errors->has('nidn.' . $key))--}}
-                                                    {{--<label class="error" for="nidn[]" style="display: inline-block;">--}}
-                                                    {{--Pemilihan anggota harus dilakukan via autocomplete--}}
-                                                    {{--</label>--}}
-                                                    {{--@endif--}}
                                                 </div>
                                             </div>
-                                            <div class="col-sm-1">
-                                                <a href="#" class="remove_field btn btn-sm btn-danger btn-stroke">
-                                                    <i class="fa fa-minus"></i>
-                                                </a>
-                                            </div>
+                                            @if($disabled === null)
+                                                <div class="col-sm-1">
+                                                    <a href="#" class="remove-output-member btn btn-sm btn-danger btn-stroke">
+                                                        <i class="fa fa-minus"></i>
+                                                    </a>
+                                                </div>
+                                            @endif
                                         </div>
                                     @endforeach
                                 </div>
 
-                                <div class="clearfix"></div>
-                                <label class="control-label col-sm-4 col-md-3">Tambah Penulis</label>
-                                <div class="col-sm-1 mb-15">
-                                    <a href="#" class="add-output-member-button btn btn-sm btn-success btn-stroke">
-                                        <i class="fa fa-plus"></i>
-                                    </a>
-                                </div>
+                                @if($disabled === null)
+                                    <div class="clearfix"></div>
+                                    <label class="control-label col-sm-4 col-md-3">Tambah Penulis</label>
+                                    <div class="col-sm-1">
+                                        <a href="#" class="add-output-member-button btn btn-sm btn-success btn-stroke">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                    </div>
+                                @endif
 
                                 @if($upd_mode !== 'approve' && $status_code !== 'PS' && $disabled == null)
                                     <div class="clearfix"></div>
+                                    <hr />
                                     <label class="control-label col-sm-4 col-md-3">Unggah Luaran</label>
                                     <div class="col-sm-6 mb-5">
                                         <div class="fileinput fileinput-new input-group" data-provides="fileinput">
@@ -257,7 +265,7 @@
                                    class="add-research-general-button btn btn-success btn-stroke btn-slideright"><i
                                             class="fa fa-plus"></i></a>
                                 <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
-                                <button type="submit" class="btn btn-success btn-slideright">Simpan</button>
+                                <button type="submit" class="btn btn-success btn-slideright submit">Simpan</button>
                             </div><!-- /.col-sm-offset-3 -->
                         </div><!-- /.form-footer -->
                     @endif

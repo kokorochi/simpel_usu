@@ -192,9 +192,10 @@ class ReviewProposeController extends BlankonController {
                 $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
                 $propose->flowStatus()->create([
                     'item'        => $flow_status->item + 1,
-                    'status_code' => 'RS', //Review Selesai, menunggu hasil
+                    'status_code' => 'RS', //Menunggu Persetujuan Usulan
                     'created_by'  => Auth::user()->nidn,
                 ]);
+                $this->setEmail('RS', $propose);
             }
         });
 

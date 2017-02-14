@@ -95,15 +95,15 @@ $(document).ready(function () {
 
     $("input[name^=is_external]").each(function(){
         if($(this).is(":checked")){
-            $(this).closest('.form-group').find('.external-member-wrapper').show();
-            $(this).closest('.form-group').find('.internal-member-wrapper').hide();
+            $(this).closest('.clone-member-wrapper').find('.external-member-wrapper').show();
+            $(this).closest('.clone-member-wrapper').find('.internal-member-wrapper').hide();
         }else{
-            $(this).closest('.form-group').find('.external-member-wrapper').hide();
-            $(this).closest('.form-group').find('.internal-member-wrapper').show();
+            $(this).closest('.clone-member-wrapper').find('.external-member-wrapper').hide();
+            $(this).closest('.clone-member-wrapper').find('.internal-member-wrapper').show();
         }
     });
 
-    $("input.external-checkbox").on("click", function () {
+    $(document).on("click", "input.external-checkbox", function () {
         if ($(this).is(":checked")) {
             $(this).closest('.form-group').find('.external-member-wrapper').show();
             $(this).closest('.form-group').find('.internal-member-wrapper').hide();
@@ -113,7 +113,7 @@ $(document).ready(function () {
         }
     });
 
-    $("input.external-output-checkbox").on("click", function () {
+    $(document).on("click", "input.external-output-checkbox", function () {
         if ($(this).is(":checked")) {
             $(this).closest('.clone-member-wrapper').find('.external-member-wrapper').show();
             $(this).closest('.clone-member-wrapper').find('.internal-member-wrapper').hide();
@@ -150,42 +150,6 @@ $(document).ready(function () {
             $(this).parent().parent().parent().find(".output-score").val($(this).val() * quality);
         }
     });
-
-    $(".add-research-general-button").click(function (e) {
-        e.preventDefault();
-        countChild = $(".research-general-wrapper div.form-group").length;
-        x = countChild;
-        if (x < max_fields) { //max input box allowed
-            x++; //text box increment
-            var research_clone = $('.research-general-wrapper').find('div.form-group:last').clone();
-            var idx = research_clone.find('input[name^=status]:first').attr("name").substring(7,8);
-            idx++;
-            research_clone.find('input[name^=status]').attr("name", "status[" + idx + "]");
-            research_clone.find('input[id^=radio-draft]').attr("id", "radio-draft[" + idx + "]");
-            research_clone.find('label[for^=radio-draft]').attr("for", "radio-draft[" + idx + "]");
-            research_clone.find('input[id^=radio-submitted]').attr("id", "radio-submitted[" + idx + "]");
-            research_clone.find('label[for^=radio-submitted]').attr("for", "radio-submitted[" + idx + "]");
-            research_clone.find('input[id^=radio-accepted]').attr("id", "radio-accepted[" + idx + "]");
-            research_clone.find('label[for^=radio-accepted]').attr("for", "radio-accepted[" + idx + "]");
-            research_clone.find('input[id^=radio-publish]').attr("id", "radio-publish[" + idx + "]");
-            research_clone.find('label[for^=radio-publish]').attr("for", "radio-publish[" + idx + "]");
-            research_clone.find('input[name^=output_description]').attr("value", "");
-            research_clone.find('input[name^=url_address]').attr("value", "");
-            $('.research-general-wrapper').append(research_clone);
-            BlankonApp.handleSound();
-            // $(".research-general-wrapper").append('<div class="form-group"><input name="delete_output[]" type="hidden" value="0"><div class="clearfix"></div> <label for="output_description[]" class="control-label col-sm-4 col-md-3">Deskripsi Luaran</label> <div class="col-sm-6 mb-10"> <input name="output_description[]" class="form-control input-sm" type="text" value=""> </div><div class="clearfix"></div> <label class="control-label col-sm-4 col-md-3">Unggah Luaran</label> <div class="col-sm-6"> <div class="fileinput fileinput-new input-group" data-provides="fileinput"> <div class="form-control input-sm" data-trigger="fileinput"> <i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span> </div> <span class="input-group-addon btn btn-success btn-file"> <span class="fileinput-new">Pilih file</span> <span class="fileinput-exists">Ubah</span> <input type="file" name="file_name[]" value=""> </span> <a href="#" class="input-group-addon btn btn-danger fileinput-exists" data-dismiss="fileinput">Hapus</a> </div> </div> <div class="col-sm-1"><a href="#" class="remove_field btn btn-sm btn-danger btn-stroke"> <i class="fa fa-minus"></i> </a> </div></div> <!-- /.form-group -->'); //add input box
-        }
-    });
-
-    $('.research-general-wrapper').on("click", ".remove_field", function (e) { //user click on remove text
-        e.preventDefault();
-        countChild = $(".research-general-wrapper div.form-group").length;
-        x = countChild;
-        if (x > 1) {
-            $(this).parents('div.form-group').remove();
-            x--;
-        }
-    })
 
     if ($("#radio-no").is(":checked")) {
         $("#revision-text-wrapper").show();

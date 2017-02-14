@@ -15,6 +15,6 @@ class ResearchOutputGeneral extends Model
 
     public function outputMember()
     {
-        return $this->hasMany(OutputMember::class, 'id', 'output_id');
+        return $this->hasMany(OutputMember::class, 'output_id', 'id');
     }
 }

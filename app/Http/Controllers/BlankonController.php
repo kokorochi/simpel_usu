@@ -36,6 +36,10 @@ class BlankonController extends Controller {
 
     public $v_auths = [];
 
+    private $operator_email = [
+        '0' => 'suryawijaya@usu.ac.id'
+    ];
+
     /**
      * Create a new controller instance.
      *
@@ -277,6 +281,16 @@ class BlankonController extends Controller {
 
                 dispatch(new SendNotificationEmail($recipients, $email, $propose));
                 break;
+            case 'RS':
+                $recipients = $this->operator_email;
+
+                $email['subject'] = '[SIMPEL] Menunggu Persetujuan Usulan';
+                $email['recipient_name'] = 'Operator Sistem Penelitian';
+                $email['body_content'] = 'Diinformasikan bahwa terdapat usulan yang menunggu untuk disetujui/ditolak. Untuk itu, kami meminta Bapak/Ibu untuk melakukan persetujuan atas usulan tersebut. Untuk melakukan persetujuan usulan, Bapak/Ibu diminta untuk login pada link ini: <a href="https://simpel.usu.ac.id/approve-proposes/' . $propose->id . '/approve">Sistem Penelitian USU</a>';
+                $email['body_detail_content'] = 'Demikian informasi ini kami sampaikan.<br/>Dikirim otomatis oleh Sistem Penlitian USU';
+
+                dispatch(new SendNotificationEmail($recipients, $email, $propose));
+                break;
             case 'PU':
                 $lecturer = $this->getEmployee($propose->created_by);
 
@@ -307,6 +321,18 @@ class BlankonController extends Controller {
                 $email['subject'] = '[SIMPEL] Usulan Ditolak';
                 $email['recipient_name'] = $lecturer->full_name;
                 $email['body_content'] = 'Kami informasikan bahwa usulan penelitian anda telah ditolak.';
+                $email['body_detail_content'] = 'Demikian informasi ini kami sampaikan.<br/>Dikirim otomatis oleh Sistem Penlitian USU';
+
+                dispatch(new SendNotificationEmail($recipients, $email, $propose));
+                break;
+            case 'UL':
+                $research = $propose->research()->first();
+                $lecturer = $this->getEmployee($propose->created_by);
+
+                $recipients = $lecturer->email;
+                $email['subject'] = '[SIMPEL] Unggah Luaran';
+                $email['recipient_name'] = $lecturer->full_name;
+                $email['body_content'] = 'Kami informasikan bahwa status penelitian anda saat ini adalah menunggu unggah luaran. Untuk itu, kami meminta Bapak/Ibu untuk melakukan unggah luaran atas penelitian tersebut. Untuk melakukan unggah luaran, Bapak/Ibu diminta untuk login pada link ini: <a href="https://simpel.usu.ac.id/researches/' . $research->id . '/output">Sistem Penelitian USU</a>';
                 $email['body_detail_content'] = 'Demikian informasi ini kami sampaikan.<br/>Dikirim otomatis oleh Sistem Penlitian USU';
 
                 dispatch(new SendNotificationEmail($recipients, $email, $propose));

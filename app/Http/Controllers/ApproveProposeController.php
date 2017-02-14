@@ -209,19 +209,25 @@ class ApproveProposeController extends BlankonController {
                 if ($propose->is_own === '1')
                 {
                     $propose->flowStatus()->create([
-                        'item'        => $flow_status->item + 1,
+                        'item'        => $flow_status->item + 2,
                         'status_code' => 'UL', // Menunggu Luaran
                         'created_by'  => Auth::user()->nidn,
                     ]);
                     $propose->research()->first()->outputFlowStatus()->create([
                         'item'        => '1',
-                        'status_code' => 'UL',
+                        'status_code' => 'UL', // Menunggu Luaran
                         'created_by'  => Auth::user()->nidn,
                     ]);
+                    $this->setEmail('UL', $propose);
+                } else
+                {
+                    $this->setEmail($status_code, $propose);
                 }
+            } else
+            {
+                $this->setEmail($status_code, $propose);
             }
         });
-        $this->setEmail($status_code, $propose);
 
         return redirect()->intended('approve-proposes');
     }

@@ -111,8 +111,8 @@ class ResearchController extends BlankonController {
                         }
                     }
                 }
+                $research->output_status = $output_status;
             }
-            $research->output_status = $output_status;
         }
 
         $data_not_found = 'Data tidak ditemukan';
@@ -330,20 +330,28 @@ class ResearchController extends BlankonController {
                 $output_members[$key] = new Collection();
                 $output_members[$key]->add(new OutputMember);
             }
-        }else{
+        } else
+        {
             $output_members = new Collection();
             foreach ($research_output_generals as $key => $research_output_general)
             {
                 $output_members[$key] = $research_output_general->outputMember()->get();
+                if ($output_members[$key]->isEmpty())
+                {
+                    $output_members[$key]->add(new OutputMember());
+                }else{
+                    foreach ($output_members[$key] as $output_member)
+                    {
+                        if($output_member->nidn !== null) $output_member->nidn_display = $output_member->nidn . ' : ' . Lecturer::where('employee_card_serial_number', $output_member->nidn)->first()->full_name;
+                    }
+                }
             }
         }
-
-//        dd($output_members[0]);/
 
         $research_output_revision = $research->researchOutputRevision()->orderBy('id', 'desc')->first();
         if ($research_output_revision === null) $research_output_revision = new ResearchOutputRevision();
 
-        $disabled = '';
+        $disabled = null;
         $output_flow_status = $research->outputFlowStatus()->orderBy('id', 'desc')->first();
         $output_code = $output_flow_status->status_code;
         if ($output_flow_status !== null && ($output_code === 'VL' || $status_code === 'PS')) $disabled = 'disabled';
@@ -363,10 +371,9 @@ class ResearchController extends BlankonController {
         ));
     }
 
-//    public function updateOutputGeneral(Requests\StoreOutputGeneralRequest $request, $id)
-    public function updateOutputGeneral(Request $request, $id)
+    public function updateOutputGeneral(Requests\StoreOutputGeneralRequest $request, $id)
     {
-        dd($request);
+//        dd($request);
         $research = Research::find($id);
         if ($research === null)
         {
@@ -386,6 +393,7 @@ class ResearchController extends BlankonController {
                     if ($item === '1')
                     {
                         $research_output_general = $research_output_generals->get($key);
+                        $research_output_general = ResearchOutputGeneral::find($research_output_general->id);
                         if ($research_output_general !== null && $item !== null)
                         {
                             Storage::delete($path . $research_output_general->file_name);
@@ -398,7 +406,9 @@ class ResearchController extends BlankonController {
             foreach ($request->output_description as $key => $item)
             {
                 $research_output_general = $research_output_generals->get($key);
-                if ($request->file_name[$key] !== null)
+                DB::table('output_members')->where('output_id', $research_output_general->id)->delete();
+
+                if ($request->file_name !== null && array_key_exists($key, $request->file_name))
                 {
                     if ($research_output_general !== null && $item !== null)
                     {
@@ -410,17 +420,43 @@ class ResearchController extends BlankonController {
                     }
                 }
                 $research_output_general->item = $key + 1;
+                $research_output_general->year = $request->year[$key];
                 $research_output_general->output_description = $request->output_description[$key];
                 $research_output_general->status = $request->status[$key];
                 $research_output_general->url_address = $request->url_address[$key];
-                if ($request->file_name[$key] !== null)
+                if ($request->file_name !== null && array_key_exists($key, $request->file_name))
                 {
                     $research_output_general->file_name_ori = $request->file('file_name')[$key]->getClientOriginalName();
-                    $research_output_general->file_name = md5($request->file('file_name')[$key]->getClientOriginalName() . Carbon::now()->toDateTimeString()) . $research->id . '.' . $request->file('file_name')[$key]->extension();
+                    $research_output_general->file_name = md5($request->file('file_name')[$key]->getClientOriginalName() . Carbon::now()->toDateTimeString()) . $research->id . $research_output_general->item . '.' . $request->file('file_name')[$key]->extension();
                     $request->file('file_name')[$key]->storeAs($path, $research_output_general->file_name);
                 }
-                $research->researchOutputGeneral()->save($research_output_general);
+                $research_output_general = $research->researchOutputGeneral()->save($research_output_general);
 
+                $output_members = new Collection();
+                $ctr_item = 1;
+                if (is_array($request->nidn) && array_key_exists($key, $request->nidn))
+                {
+                    foreach ($request->nidn[$key] as $nidn_key => $nidn)
+                    {
+                        $output_member = new OutputMember();
+                        $output_member->item = $ctr_item;
+                        if (is_array($request->is_external) && array_key_exists($key, $request->is_external) &&
+                            is_array($request->is_external[$key]) && array_key_exists($nidn_key, $request->is_external[$key])
+                        )
+                        {
+                            if ($request->is_external[$key][$nidn_key] === '1')
+                            {
+                                $output_member->external = $request->external[$key][$nidn_key];
+                            }
+                        } else
+                        {
+                            $output_member->nidn = $request->nidn[$key][$nidn_key];
+                        }
+                        $output_members->add($output_member);
+                        $ctr_item++;
+                    }
+                }
+                $research_output_general->outputMember()->saveMany($output_members);
             }
             $this->setOutputFlowStatuses($research);
         });
@@ -485,6 +521,19 @@ class ResearchController extends BlankonController {
 
             return abort('404');
         }
+        $output_members = new Collection();
+        foreach ($research_output_generals as $key => $research_output_general)
+        {
+            $output_members[$key] = $research_output_general->outputMember()->get();
+            if ($output_members[$key]->isEmpty())
+            {
+            }else{
+                foreach ($output_members[$key] as $output_member)
+                {
+                    if($output_member->nidn !== null) $output_member->nidn_display = $output_member->nidn . ' : ' . Lecturer::where('employee_card_serial_number', $output_member->nidn)->first()->full_name;
+                }
+            }
+        }
 
         $research_output_revision = $research->researchOutputRevision()->orderBy('id', 'desc')->first();
         if ($research_output_revision === null || $output_code === 'VL') $research_output_revision = new ResearchOutputRevision();
@@ -496,6 +545,7 @@ class ResearchController extends BlankonController {
             'research',
             'propose',
             'propose_output_types',
+            'output_members',
             'research_output_generals',
             'research_output_revision',
             'upd_mode',
