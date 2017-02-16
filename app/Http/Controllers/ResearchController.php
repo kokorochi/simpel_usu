@@ -716,7 +716,7 @@ class ResearchController extends BlankonController {
                 'created_by'  => Auth::user()->nidn,
             ]);
 
-            $this->setEmail('RL', $research->propose()->first());
+            $this->setEmail('VL', $research->propose()->first());
         }
         if ($output_flow_status->status_code === 'LT')
         {
