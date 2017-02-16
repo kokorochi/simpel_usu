@@ -16,6 +16,8 @@ use App\ResearchOutputRevision;
 use App\ResearchType;
 use App\Propose_own;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -78,6 +80,37 @@ class ResearchController extends BlankonController {
     public function index()
     {
         $proposes = Propose::where('created_by', Auth::user()->nidn)->get();
+
+        $members = Member::where('nidn', Auth::user()->nidn)->where('status', '<>', 'rejected')->get();
+        foreach ($members as $member)
+        {
+            $propose = $member->propose()->first();
+            if ($propose !== null)
+            {
+                $proposes->add($propose);
+            }
+        }
+
+        $output_members = OutputMember::where('nidn', Auth::user()->nidn)->get();
+        foreach ($output_members as $output_member)
+        {
+            $research_output_general = $output_member->researchOutputGeneral()->first();
+            $research = $research_output_general->research()->first();
+            if ($research !== null)
+            {
+                $propose = $research->propose()->first();
+                $find_propose = $proposes->find($propose->id);
+                if ($find_propose === null)
+                {
+                    $flow_status = $propose->flowStatus()->orderBy('id', 'desc')->first();
+                    if ($flow_status->status_code === 'PS')
+                    {
+                        $proposes->add($propose);
+                    }
+                }
+            }
+        }
+
         $researches = new Collection();
         foreach ($proposes as $propose)
         {
@@ -114,6 +147,8 @@ class ResearchController extends BlankonController {
                 $research->output_status = $output_status;
             }
         }
+
+        $researches = new Paginator($researches, 10, Input::get('page', 1));
 
         $data_not_found = 'Data tidak ditemukan';
 
@@ -339,10 +374,11 @@ class ResearchController extends BlankonController {
                 if ($output_members[$key]->isEmpty())
                 {
                     $output_members[$key]->add(new OutputMember());
-                }else{
+                } else
+                {
                     foreach ($output_members[$key] as $output_member)
                     {
-                        if($output_member->nidn !== null) $output_member->nidn_display = $output_member->nidn . ' : ' . Lecturer::where('employee_card_serial_number', $output_member->nidn)->first()->full_name;
+                        if ($output_member->nidn !== null) $output_member->nidn_display = $output_member->nidn . ' : ' . Lecturer::where('employee_card_serial_number', $output_member->nidn)->first()->full_name;
                     }
                 }
             }
@@ -406,7 +442,10 @@ class ResearchController extends BlankonController {
             foreach ($request->output_description as $key => $item)
             {
                 $research_output_general = $research_output_generals->get($key);
-                DB::table('output_members')->where('output_id', $research_output_general->id)->delete();
+                if($research_output_general !== null)
+                {
+                    DB::table('output_members')->where('output_id', $research_output_general->id)->delete();
+                }
 
                 if ($request->file_name !== null && array_key_exists($key, $request->file_name))
                 {
@@ -527,10 +566,11 @@ class ResearchController extends BlankonController {
             $output_members[$key] = $research_output_general->outputMember()->get();
             if ($output_members[$key]->isEmpty())
             {
-            }else{
+            } else
+            {
                 foreach ($output_members[$key] as $output_member)
                 {
-                    if($output_member->nidn !== null) $output_member->nidn_display = $output_member->nidn . ' : ' . Lecturer::where('employee_card_serial_number', $output_member->nidn)->first()->full_name;
+                    if ($output_member->nidn !== null) $output_member->nidn_display = $output_member->nidn . ' : ' . Lecturer::where('employee_card_serial_number', $output_member->nidn)->first()->full_name;
                 }
             }
         }
