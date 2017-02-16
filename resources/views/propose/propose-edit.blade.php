@@ -64,7 +64,7 @@
                                     @if($upd_mode === 'edit')
                                         <button name="submit_button" type="submit" class="btn btn-primary btn-stroke btn-dashed btn-slideright submit" value="print"><i class="fa fa-print"></i>Print</button>
                                         @if($disable_upload === false)
-                                            <button name="submit_button" type="submit" class="btn btn-success btn-slideright submit" value="edit">Ubah</button>
+                                            <button name="submit_button" type="submit" class="btn btn-success btn-slideright submit" value="edit">Submit</button>
                                         @endif
                                     @endif
                                 </div><!-- /.col-sm-offset-3 -->

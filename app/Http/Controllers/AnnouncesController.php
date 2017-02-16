@@ -117,7 +117,6 @@ class AnnouncesController extends BlankonController {
         $store = new Announce;
         $this->setAnnounceFields($request, $store);
         $store->created_by = Auth::user()->nidn;
-        $store->save();
 
         if ($request->hasFile('image_name'))
         {
@@ -125,6 +124,7 @@ class AnnouncesController extends BlankonController {
             $path = public_path('images/upload/announces');
             $request->file('image_name')->move($path, $store->image_name);
         }
+        $store->save();
 
         return redirect()->intended('/announces/');
     }

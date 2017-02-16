@@ -328,14 +328,16 @@ class ProposeController extends BlankonController {
             if ($member_left_to_accept === 1 && $member_rejected === false && $status === 'accepted')
             {
                 $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
-                if($propose->is_own !== '1'){
+                if ($propose->is_own !== '1')
+                {
                     $propose->flowStatus()->create([
                         'item'        => $flow_status->item + 1,
                         'status_code' => 'UU', //Menunggu Unggah Usulan
                         'created_by'  => Auth::user()->nidn,
                     ]);
                     $this->setEmail('UU', $propose);
-                }else{
+                } else
+                {
                     $propose->flowStatus()->create([
                         'item'        => $flow_status->item + 1,
                         'status_code' => 'RS', //Menunggu Persetujuan
@@ -962,15 +964,19 @@ class ProposeController extends BlankonController {
                     'status_code' => 'UL', // Menunggu Luaran
                     'created_by'  => Auth::user()->nidn,
                 ]);
-                $this->setEmail('UL', $propose);
-            }else{
-                $this->setEmail('UD', $propose);
             }
 
             $propose->research()->create([
                 'created_by' => Auth::user()->nidn,
             ]);
         });
+        if ($propose->is_own === '1')
+        {
+            $this->setEmail('UL', $propose);
+        } else
+        {
+            $this->setEmail('UD', $propose);
+        }
 
 
         return redirect()->intended('proposes');

@@ -323,41 +323,8 @@ class ReviewProposeController extends BlankonController {
             return abort('403');
         }
 
-        $propose_own = $propose->proposesOwn()->first();
-        $periods = $propose->period()->get();
-        $period = $propose->period()->first();
-        $members = $propose->member()->get();
-        foreach ($members as $member)
-        {
-            if ($member->external === '1')
-            {
-                $external_member = $member->externalMember()->first();
-                $member->external_name = $external_member->name;
-                $member->external_affiliation = $external_member->affiliation;
-            } else
-            {
-                $member['member_display'] = Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
-            }
-        }
-        $member = $propose->member()->first();
-        $lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
-        $faculties = Faculty::where('is_faculty', '1')->get();
-        $output_types = Output_type::all();
-        $research_types = ResearchType::all();
-
-        if ($propose_own === null)
-        {
-            $propose_own = new Propose_own();
-        }
-        if ($periods === null)
-        {
-            $periods = new Collection();
-            $periods->add(new Period);
-        }
-        if ($period === null)
-        {
-            $period = new Period();
-        }
+        $propose_relation = $this->getProposeRelationData($propose);
+        $propose_relation->propose = $propose;
 
         $disable_upload = true;
         $status_code = $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code;
@@ -366,6 +333,7 @@ class ReviewProposeController extends BlankonController {
 
         return view('research.research-edit', compact(
             'research',
+            'propose_relation',
             'propose',
             'propose_own',
             'periods',
@@ -382,6 +350,55 @@ class ReviewProposeController extends BlankonController {
             'disabled',
             'upd_mode'
         ));
+    }
+
+    private function getProposeRelationData($propose = null)
+    {
+        $ret = new \stdClass();
+        $ret->propose_own = $propose->proposesOwn()->first();
+        $ret->periods = $propose->period()->get();
+        $ret->period = $propose->period()->first();
+        $ret->propose_output_types = $propose->proposeOutputType()->get();
+        $ret->members = $propose->member()->get();
+        $ret->flow_status = $propose->flowStatus()->orderBy('id', 'desc')->first();
+        foreach ($ret->members as $member)
+        {
+            if ($member->external === '1')
+            {
+                $external_member = $member->externalMember()->first();
+                $member->external_name = $external_member->name;
+                $member->external_affiliation = $external_member->affiliation;
+            } else
+            {
+                if ($member->nidn !== null && $member->nidn !== '')
+                {
+                    $member->member_display = $member->nidn . ' : ' . Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+                    $member->member_nidn = $member->nidn;
+                }
+            }
+        }
+        $ret->member = $ret->members->get(0);
+        $ret->lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
+        $ret->faculties = Faculty::where('is_faculty', '1')->get();
+        $ret->output_types = Output_type::all();
+        $ret->output_types->add(new Output_type());
+        $ret->research_types = ResearchType::all();
+
+        if ($ret->propose_own === null)
+        {
+            $ret->propose_own = new Propose_own();
+        }
+        if ($ret->periods === null)
+        {
+            $ret->periods = new Collection();
+            $ret->periods->add(new Period);
+        }
+        if ($ret->period === null)
+        {
+            $ret->period = new Period();
+        }
+
+        return $ret;
     }
 
     private function setCSS404()

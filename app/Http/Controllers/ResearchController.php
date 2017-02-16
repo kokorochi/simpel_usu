@@ -99,13 +99,16 @@ class ResearchController extends BlankonController {
             if ($research !== null)
             {
                 $propose = $research->propose()->first();
-                $find_propose = $proposes->find($propose->id);
-                if ($find_propose === null)
+                if ($propose !== null)
                 {
-                    $flow_status = $propose->flowStatus()->orderBy('id', 'desc')->first();
-                    if ($flow_status->status_code === 'PS')
+                    $find_propose = $proposes->find($propose->id);
+                    if ($find_propose === null)
                     {
-                        $proposes->add($propose);
+                        $flow_status = $propose->flowStatus()->orderBy('id', 'desc')->first();
+                        if ($flow_status->status_code === 'PS')
+                        {
+                            $proposes->add($propose);
+                        }
                     }
                 }
             }
@@ -128,7 +131,7 @@ class ResearchController extends BlankonController {
             } else
             {
                 $output_flow_status = $research->outputFlowStatus()->orderBy('id', 'desc')->first();
-                if ($output_flow_status->status_code !== null)
+                if ($output_flow_status !== null && $output_flow_status->status_code !== null)
                 {
                     $output_status = $output_flow_status->statusCode()->first()->description;
                 } else
@@ -373,7 +376,7 @@ class ResearchController extends BlankonController {
                 $output_members[$key] = $research_output_general->outputMember()->get();
                 if ($output_members[$key]->isEmpty())
                 {
-                    $output_members[$key]->add(new OutputMember());
+//                    $output_members[$key]->add(new OutputMember());
                 } else
                 {
                     foreach ($output_members[$key] as $output_member)
@@ -389,6 +392,11 @@ class ResearchController extends BlankonController {
 
         $disabled = null;
         $output_flow_status = $research->outputFlowStatus()->orderBy('id', 'desc')->first();
+        if ($output_flow_status === null)
+        {
+            $output_flow_status = new OutputFlowStatus();
+            $output_flow_status->status_code = 'UL';
+        }
         $output_code = $output_flow_status->status_code;
         if ($output_flow_status !== null && ($output_code === 'VL' || $status_code === 'PS')) $disabled = 'disabled';
         $upd_mode = 'output';
@@ -442,7 +450,7 @@ class ResearchController extends BlankonController {
             foreach ($request->output_description as $key => $item)
             {
                 $research_output_general = $research_output_generals->get($key);
-                if($research_output_general !== null)
+                if ($research_output_general !== null)
                 {
                     DB::table('output_members')->where('output_id', $research_output_general->id)->delete();
                 }
@@ -489,7 +497,10 @@ class ResearchController extends BlankonController {
                             }
                         } else
                         {
-                            $output_member->nidn = $request->nidn[$key][$nidn_key];
+                            if ($request->nidn[$key][$nidn_key] !== null && $request->nidn[$key][$nidn_key] !== '')
+                            {
+                                $output_member->nidn = $request->nidn[$key][$nidn_key];
+                            }
                         }
                         $output_members->add($output_member);
                         $ctr_item++;

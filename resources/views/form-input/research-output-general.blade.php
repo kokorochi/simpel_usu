@@ -154,9 +154,11 @@
                                 </div>
 
                                 <div class="clearfix"></div>
-                                <hr />
                                 <div class="member-wrapper">
                                     @php($lv_output_members = $output_members->get($key))
+                                    @if(! $lv_output_members->isEmpty())
+                                        <hr />
+                                    @endif
                                     @foreach($lv_output_members as $member_key => $output_member)
                                         <div class="clone-member-wrapper">
                                             <div class="clearfix"></div>
