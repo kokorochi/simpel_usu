@@ -127,8 +127,7 @@
                                 </div>
 
                                 <div class="clearfix"></div>
-                                <label for="output_description[]" class="control-label col-sm-4 col-md-3">Deskripsi
-                                    Luaran</label>
+                                <label for="output_description[]" class="control-label col-sm-4 col-md-3">Detail Publikasi</label>
                                 <div class="col-sm-6 mb-10">
                                     <input name="output_description[]" class="form-control input-sm" type="text"
                                            value="{{ $research_output_general->output_description }}" {{$disabled}}>

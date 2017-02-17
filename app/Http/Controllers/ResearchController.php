@@ -274,6 +274,7 @@ class ResearchController extends BlankonController {
                 Storage::delete($path . $research->file_final_budgets);
             }
 
+            $propose = $research->propose()->first();
             $research->file_final_activity_ori = $request->file('file_final_activity')->getClientOriginalName();
             $research->file_final_activity = md5($request->file('file_final_activity')->getClientOriginalName() . Carbon::now()->toDateTimeString()) . $research->id . '.pdf';
 
@@ -289,11 +290,24 @@ class ResearchController extends BlankonController {
             $flow_status = $research->propose()->first()->flowStatus()->orderBy('id', 'desc')->first();
             if ($flow_status->status_code === 'LA')
             {
-                $research->propose()->first()->flowStatus()->create([
-                    'item'        => $flow_status->item + 1,
-                    'status_code' => 'UL', //Menunggu Luaran
-                    'created_by'  => Auth::user()->nidn,
-                ]);
+                $output_flow_status = $research->outputFlowStatus()->orderBy('id', 'desc')->first();
+                if($output_flow_status->status_code === 'LT')
+                {
+                    $research->propose()->first()->flowStatus()->create([
+                        'item'        => $flow_status->item + 1,
+                        'status_code' => 'PS', //Penelitian Selesai
+                        'created_by'  => Auth::user()->nidn,
+                    ]);
+                    $this->setEmail('PS', $propose);
+                }
+                else{
+                    $research->propose()->first()->flowStatus()->create([
+                        'item'        => $flow_status->item + 1,
+                        'status_code' => 'UL', //Menunggu Luaran
+                        'created_by'  => Auth::user()->nidn,
+                    ]);
+                    $this->setEmail('UL', $propose);
+                }
             }
             $this->setOutputFlowStatuses($research);
 
@@ -657,12 +671,16 @@ class ResearchController extends BlankonController {
                     'status_code' => 'LT', // Validasi Luaran Diterima
                     'created_by'  => Auth::user()->nidn
                 ]);
-                $research->propose()->first()->flowStatus()->create([
-                    'item'        => $flow_status->item + 1,
-                    'status_code' => 'PS', // Penelitian Selesai
-                    'created_by'  => Auth::user()->nidn
-                ]);
-                $this->setEmail('PS', $research->propose()->first());
+                $this->setEmail('LT', $research->propose()->first());
+                if ($flow_status->status_code === 'UL')
+                {
+                    $research->propose()->first()->flowStatus()->create([
+                        'item'        => $flow_status->item + 1,
+                        'status_code' => 'PS', // Penelitian Selesai
+                        'created_by'  => Auth::user()->nidn
+                    ]);
+                    $this->setEmail('PS', $research->propose()->first());
+                }
             }
         });
 

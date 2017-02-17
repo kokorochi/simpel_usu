@@ -47,6 +47,7 @@
                                         <thead>
                                         <tr>
                                             <th class="text-center border-right">Id</th>
+                                            <th class="text-center">Tahun</th>
                                             <th class="text-center">Judul</th>
                                             <th class="text-center">Scheme</th>
                                             <th class="text-center">Status Penelitian</th>
@@ -57,13 +58,15 @@
                                         <tbody>
                                             @foreach($researches as $research)
                                                 @php($propose = $research->propose()->first())
+                                                @php($period = $propose->period()->first())
                                                 @php($status_code = $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code)
                                                 <tr>
                                                     <td class="text-center border-right">{{ $research->id }}</td>
+                                                    <td class="text-center border-right">{{ $period->years }}</td>
                                                     <td class="text-center border-right">{{ $propose->title }}</td>
                                                     <td class="text-center border-right">
                                                         @if($propose->is_own === null)
-                                                            {{ $propose->period()->first()->scheme }}
+                                                            {{ $period->scheme }}
                                                         @else
                                                             {{ $propose->proposesOwn()->first()->scheme }}
                                                         @endif
@@ -89,6 +92,7 @@
                                         <tfoot>
                                         <tr>
                                             <th class="text-center border-right">Id</th>
+                                            <th class="text-center">Tahun</th>
                                             <th class="text-center">Judul</th>
                                             <th class="text-center">Scheme</th>
                                             <th class="text-center">Status Penelitian</th>

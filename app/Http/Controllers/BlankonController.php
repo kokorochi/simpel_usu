@@ -363,6 +363,18 @@ class BlankonController extends Controller {
 
                 dispatch(new SendNotificationEmail($recipients, $email, $propose));
                 break;
+            case 'LT':
+                $research = $propose->research()->first();
+                $lecturer = $this->getEmployee($propose->created_by);
+
+                $recipients = $lecturer->email;
+                $email['subject'] = '[SIMPEL] Validasi Luaran Diterima';
+                $email['recipient_name'] = 'Bapak/Ibu';
+                $email['body_content'] = 'Kami informasikan bahwa luaran anda telah divalidasi dan diterima oleh Operator LP. Untuk melihat luaran, Bapak/Ibu diminta untuk login pada link ini: <a href="https://simpel.usu.ac.id/researches/' . $research->id . '/output">Sistem Penelitian USU</a>';
+                $email['body_detail_content'] = 'Demikian informasi ini kami sampaikan.<br/>Dikirim otomatis oleh Sistem Penlitian USU';
+
+                dispatch(new SendNotificationEmail($recipients, $email, $propose));
+                break;
             case 'PS':
                 $lecturer = $this->getEmployee($propose->created_by);
                 $members = $propose->member()->get();
