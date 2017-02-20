@@ -45,17 +45,19 @@
                                 <hr>
                             @endif
                             @if($announce->share_file !== null)
-                                <div class="form-group">
-                                    <label class="control-label col-sm-4 col-md-3">Unduh File</label>
-                                    <div class="col-sm-7">
-                                        <div class="input-group">
-                                            <input name="file_progress_activity" class="form-control input-sm"
-                                                   type="text" disabled
-                                                   value="{{ $announce->share_file_ori }}">
-                                            <span class="input-group-btn">
+                                <div class="form-body form-horizontal form-bordered">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-4 col-md-3">Unduh File</label>
+                                        <div class="col-sm-7">
+                                            <div class="input-group">
+                                                <input name="file_progress_activity" class="form-control input-sm"
+                                                       type="text" disabled
+                                                       value="{{ $announce->share_file_ori }}">
+                                                <span class="input-group-btn">
                                                             <a href="{{url('files/upload/announces', $announce->share_file)}}"
                                                                class="btn btn-primary btn-sm" target="_blank">Unduh</a>
                                                         </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
