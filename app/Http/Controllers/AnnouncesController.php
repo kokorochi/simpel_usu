@@ -148,7 +148,6 @@ class AnnouncesController extends BlankonController {
             ($request->hasFile('image_name') && $store->image_name !== null)
         )
         {
-//            dd($path . $store->image_name);
             File::delete($path . DIRECTORY_SEPARATOR . $store->image_name);
             $store->image_name = null;
         }
@@ -157,6 +156,23 @@ class AnnouncesController extends BlankonController {
         {
             $store->image_name = md5($request->file('image_name')->getClientOriginalName() . Carbon::now()->toDateTimeString()) . '.' . $request->file('image_name')->extension();
             $request->file('image_name')->move($path, $store->image_name);
+        }
+
+        $path = public_path('files/upload/announces');
+        if ($request->delete_file === 'x' ||
+            ($request->hasFile('share_file_ori') && $store->share_file !== null)
+        )
+        {
+            File::delete($path . DIRECTORY_SEPARATOR . $store->share_file);
+            $store->share_file_ori = null;
+            $store->share_file = null;
+        }
+
+        if ($request->hasFile('share_file_ori'))
+        {
+            $store->share_file_ori = $request->file('share_file_ori')->getClientOriginalName();
+            $store->share_file = md5($request->file('share_file_ori')->getClientOriginalName() . Carbon::now()->toDateTimeString()) . '.' . $request->file('share_file_ori')->extension();
+            $request->file('share_file_ori')->move($path, $store->share_file);
         }
         $store->save();
 

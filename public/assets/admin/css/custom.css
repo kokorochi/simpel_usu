@@ -1,5 +1,5 @@
 /* Create your style on here */
-body{
+body {
     overflow-y: scroll;
 }
 
@@ -15,29 +15,34 @@ body{
     margin-left: 35px;
 }
 
-.blog-img{
+.blog-img {
     max-height: 170px;
     width: auto !important;
     margin: 0 auto;
 }
 
-.announce-image{
+.announce-image {
     display: block;
     max-width: 100%;
     /*width: 750px;*/
     /*margin: 0 auto;*/
 }
 
-.sign-body .form-group:first-child #password-confirm-error{
+.sign-body .form-group:first-child #password-confirm-error {
     left: -230px;
 }
 
-.navbar-toolbar .navbar-right .navbar-profile > a .meta .avatar img{
+.navbar-toolbar .navbar-right .navbar-profile > a .meta .avatar img {
     width: auto;
     max-height: 35px;
 }
 
-.sidebar-content img{
+.sidebar-content img {
     width: auto;
     max-height: 50px;
+}
+
+#announce-img {
+    max-width: 500px;
+    margin: 0 auto;
 }

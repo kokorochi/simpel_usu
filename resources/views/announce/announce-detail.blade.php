@@ -113,17 +113,17 @@
                                                                value="{{ $announce->share_file_ori }}">
                                                         <span class="input-group-btn">
                                                             <a href="{{url('files/upload/announces', $announce->share_file)}}"
-                                                               class="btn btn-primary btn-sm">Unduh</a>
+                                                               class="btn btn-primary btn-sm" target="_blank">Unduh</a>
                                                         </span>
                                                     </div>
                                                 </div>
                                                 <div class="clearfix"></div>
-                                                <label class="control-label col-sm-4 col-md-3">Hapus Gambar</label>
+                                                <label for="delete_file" class="control-label col-sm-4 col-md-3">Hapus File</label>
                                                 <div class="col-sm-7">
                                                     <div class="ckbox ckbox-danger">
-                                                        <input name="delete_image" id="checkbox-danger2" type="checkbox"
+                                                        <input name="delete_file" id="checkbox-danger3" type="checkbox"
                                                                value="x">
-                                                        <label for="checkbox-danger2"></label>
+                                                        <label for="checkbox-danger3"></label>
                                                     </div>
                                                 </div>
                                             </div>

@@ -40,10 +40,28 @@
                             @if($announce->image_name !== null)
                                 <div>
                                     <img src="{{url('images/upload/announces', $announce->image_name)}}" alt=""
-                                         class="img-responsive">
+                                         class="img-responsive" id="announce-img">
                                 </div>
+                                <hr>
                             @endif
-                            <hr>
+                            @if($announce->share_file !== null)
+                                <div class="form-group">
+                                    <label class="control-label col-sm-4 col-md-3">Unduh File</label>
+                                    <div class="col-sm-7">
+                                        <div class="input-group">
+                                            <input name="file_progress_activity" class="form-control input-sm"
+                                                   type="text" disabled
+                                                   value="{{ $announce->share_file_ori }}">
+                                            <span class="input-group-btn">
+                                                            <a href="{{url('files/upload/announces', $announce->share_file)}}"
+                                                               class="btn btn-primary btn-sm" target="_blank">Unduh</a>
+                                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                                <hr>
+                            @endif
                             {!! $announce->content !!}
                         </div><!-- panel-body -->
                     </div><!-- panel-blog -->
