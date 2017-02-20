@@ -102,6 +102,59 @@
                                         </div>
                                     </div>
 
+                                    @if($upd_mode === 'edit')
+                                        @if($announce->share_file !== null)
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-4 col-md-3">Unduh File</label>
+                                                <div class="col-sm-7 mb-10">
+                                                    <div class="input-group">
+                                                        <input name="file_progress_activity" class="form-control input-sm"
+                                                               type="text" disabled
+                                                               value="{{ $announce->share_file_ori }}">
+                                                        <span class="input-group-btn">
+                                                            <a href="{{url('files/upload/announces', $announce->share_file)}}"
+                                                               class="btn btn-primary btn-sm">Unduh</a>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix"></div>
+                                                <label class="control-label col-sm-4 col-md-3">Hapus Gambar</label>
+                                                <div class="col-sm-7">
+                                                    <div class="ckbox ckbox-danger">
+                                                        <input name="delete_image" id="checkbox-danger2" type="checkbox"
+                                                               value="x">
+                                                        <label for="checkbox-danger2"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endif
+                                    <div class="form-group">
+                                        <div class="clearfix"></div>
+                                        <label class="control-label col-sm-4 col-md-3">Unggah File Untuk Dibagikan</label>
+                                        <div class="col-sm-7">
+                                            <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                                <div class="form-control input-sm" data-trigger="fileinput">
+                                                    <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                                                    <span class="fileinput-filename"></span>
+                                                </div>
+                                                <span class="input-group-addon btn btn-success btn-file">
+                                                    <span class="fileinput-new">Pilih file</span>
+                                                    <span class="fileinput-exists">Ubah</span>
+                                                    <input type="file" name="share_file_ori"
+                                                           value="">
+                                                </span>
+                                                <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
+                                                   data-dismiss="fileinput">Hapus</a>
+                                            </div>
+                                            @if($errors->has('share_file_ori'))
+                                                <label class="error" for="share_file_ori" style="display: inline-block;">
+                                                    {{ $errors->first('share_file_ori') }}
+                                                </label>
+                                            @endif
+                                        </div>
+                                    </div>
+
                                     <div class="form-group">
                                         <label for="title" class="col-sm-4 col-md-3 control-label">Judul
                                             Pengumuman</label>

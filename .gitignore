@@ -2,6 +2,9 @@
 /public/storage
 /public/images/upload/*
 /public/images/upload/announces/*
+/public/files/*
+/public/files/upload/*
+/public/files/upload/announces/*
 /config/constant.php
 /storage/*.key
 /vendor

@@ -117,12 +117,20 @@ class AnnouncesController extends BlankonController {
         $store = new Announce;
         $this->setAnnounceFields($request, $store);
         $store->created_by = Auth::user()->nidn;
+        $store->save();
 
         if ($request->hasFile('image_name'))
         {
             $store->image_name = md5($request->file('image_name')->getClientOriginalName() . Carbon::now()->toDateTimeString() . $store->id) . '.' . $request->file('image_name')->extension();
             $path = public_path('images/upload/announces');
             $request->file('image_name')->move($path, $store->image_name);
+        }
+        if($request->hasFile('share_file_ori'))
+        {
+            $store->share_file_ori = $request->file('share_file_ori')->getClientOriginalName();
+            $store->share_file = md5($request->file('share_file_ori')->getClientOriginalName() . Carbon::now()->toDateTimeString() . $store->id) . '.' . $request->file('share_file_ori')->extension();
+            $path = public_path('files/upload/announces');
+            $request->file('share_file_ori')->move($path, $store->share_file);
         }
         $store->save();
 
