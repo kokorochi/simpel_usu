@@ -169,3 +169,13 @@ Route::get('ajax/reviewers/get', 'AJAXController@getReviewer');
 Route::get('ajax/reviewers/search', 'AJAXController@searchReviewer');
 Route::get('ajax/researches/get', 'AJAXController@getResearch');
 // End AJAX Route
+
+$api = app('Dingo\Api\Routing\Router');
+
+$api->version('v1', function ($api)
+{
+    $api->group(['namespace' => 'App\Api\V1\Controllers'], function ($api)
+    {
+        $api->get('researches', 'ResearchController@getAllWithDetail');
+    });
+});

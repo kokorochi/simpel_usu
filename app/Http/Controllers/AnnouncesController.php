@@ -200,7 +200,7 @@ class AnnouncesController extends BlankonController {
     private function setAnnounceFields(Requests\StoreAnnounceRequest $request, $store)
     {
         $store->title = $request->title;
-        $store->content = $request->content;
+        $store->content = $request['content'];
     }
 
     private function setCSS404()
