@@ -57,20 +57,23 @@
                                         </thead>
                                         <tbody>
                                             @foreach($researches as $research)
-                                                @php($propose = $research->propose()->first())
-                                                @php($period = $propose->period()->first())
-                                                @php($status_code = $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code)
+                                                @php
+                                                    $propose = $research->propose()->first();
+                                                    if($propose->is_own === null)
+                                                    {
+                                                        $period = $propose->period()->first();
+                                                    }
+                                                    else
+                                                    {
+                                                        $period = $propose->proposesOwn()->first();
+                                                    }
+                                                    $status_code = $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code;
+                                                @endphp
                                                 <tr>
                                                     <td class="text-center border-right">{{ $research->id }}</td>
                                                     <td class="text-center border-right">{{ $period->years }}</td>
                                                     <td class="text-center border-right">{{ $propose->title }}</td>
-                                                    <td class="text-center border-right">
-                                                        @if($propose->is_own === null)
-                                                            {{ $period->scheme }}
-                                                        @else
-                                                            {{ $propose->proposesOwn()->first()->scheme }}
-                                                        @endif
-                                                    </td>
+                                                    <td class="text-center border-right">{{ $period->scheme }}</td>
                                                     <td class="text-center border-right">{{ $propose->flowStatus()->orderBy('item', 'desc')->first()
                                                        ->statusCode()->first()->description }}</td>
                                                     <td class="text-center">{!!$research->output_status!!}</td>

@@ -6,8 +6,7 @@ use App\Api\V1\Services\ResearchService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class ResearchController extends Controller
-{
+class ResearchController extends Controller {
     private $researchService;
 
     public function __construct(ResearchService $researchService)

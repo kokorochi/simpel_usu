@@ -22,7 +22,6 @@ class CreateProposesTable extends Migration
             $table->string('title', 100)->nullable();
             $table->double('total_amount', 15, 2)->nullable();
             $table->double('final_amount', 15, 2)->nullable();
-            $table->integer('output_type_id', false, true)->nullable();
             $table->smallInteger('time_period', false, true)->nullable();
             $table->smallInteger('student_involved', false, true)->nullable();
             $table->string('address')->nullable();

@@ -181,14 +181,17 @@ class ApproveProposeController extends BlankonController {
         if ($request->rejected == 1)
         {
             $status_code = 'UT'; //Usulan Ditolak
+            $propose->approval_status = 'Rejected';
         } else
         {
             if ($propose->final_amount != $propose->total_amount)
             {
                 $status_code = 'PU'; //Perbaikan, Menunggu Unggah Usulan Perbaikan
+                $propose->approval_status = 'Accepted';
             } else
             {
                 $status_code = 'UD'; //Usulan Diterima
+                $propose->approval_status = 'Accepted';
             }
         }
 

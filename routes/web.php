@@ -176,6 +176,7 @@ $api->version('v1', function ($api)
 {
     $api->group(['namespace' => 'App\Api\V1\Controllers'], function ($api)
     {
-        $api->get('researches', 'ResearchController@getAllWithDetail');
+        $api->get('researches/search', 'ResearchController@getAllWithDetail');
+        $api->get('outputs/count/search', 'OutputController@getCountAcceptedOutput');
     });
 });
