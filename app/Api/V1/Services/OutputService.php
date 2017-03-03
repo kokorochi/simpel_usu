@@ -76,13 +76,13 @@ class OutputService {
                     $input_faculty_code[] = $item->faculty_code;      //Filter faculty
                     $input_study_program[] = $item->study_program;    //Filter study program
                 }
+                $input_faculty_code = array_unique($input_faculty_code);
             }
 
             //Filter Lecturer
-            if ($level > 2)
+            $lecturers = Lecturer::query();
+            if ($level > 1)
             {
-                $lecturers = Lecturer::query();
-
                 //Setup query
                 if (! empty($input_study_program) && is_array($input_study_program))
                     $lecturers->whereIn('study_program', $input_study_program);
@@ -134,9 +134,11 @@ class OutputService {
             }
             //End filter
         }
+
         if (1 == 1)
         {
             $query = DB::table('propose_output_types')
+                ->join('output_types', 'output_types.id', '=', 'propose_output_types.output_type_id')
                 ->join('proposes', 'proposes.id', '=', 'propose_output_types.propose_id')
                 ->join('researches', 'researches.propose_id', '=', 'proposes.id')
                 ->join('research_output_generals', 'research_output_generals.research_id', '=', 'researches.id')
@@ -149,8 +151,14 @@ class OutputService {
             if (! empty($input_years) && is_array($input_years))
                 $query->whereIn('research_output_generals.year', $input_years);
             $query->whereIn('output_flow_statuses.status_code', ['LT'])
-                ->select(DB::raw('COUNT(DISTINCT(propose_output_types.id)) AS count_output'));
+                ->select('proposes.created_by', DB::raw('COUNT(DISTINCT(propose_output_types.id)) AS count_output'))
+                ->groupBy('proposes.created_by');
 
+            if($level == 4)
+                $query->addSelect('output_types.output_code', 'output_types.output_name')
+                    ->groupBy('output_types.output_code', 'output_types.output_name');
+
+//            dd($query->toSql());
             $query = $query->get();
         }
 
@@ -160,7 +168,8 @@ class OutputService {
         $result['study_program'] = $input_study_program;
         $result['lecturer'] = $lecturers;
         $result['output_type'] = $output_types;
-        $result['count_output'] = $query[0]->count_output;
+        if(!$query->isEmpty())
+            $result['count_output'] = $query[0]->count_output;
 
         return $result;
     }

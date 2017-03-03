@@ -160,6 +160,10 @@ Route::get('researches/{id}/approve', 'ResearchController@approveDetail');
 Route::put('researches/{id}/approve', 'ResearchController@approveUpdate');
 // End Dedication Route
 
+// Reporting Route
+Route::get('reports/count-output', 'ReportingController@countOutput');
+// End Route
+
 // AJAX Route
 Route::get('ajax/periods/get', 'AJAXController@getPeriod');
 Route::get('ajax/members/search', 'AJAXController@searchLecturer');
@@ -168,6 +172,11 @@ Route::get('ajax/proposes/getbyscheme', 'AJAXController@getProposesByScheme');
 Route::get('ajax/reviewers/get', 'AJAXController@getReviewer');
 Route::get('ajax/reviewers/search', 'AJAXController@searchReviewer');
 Route::get('ajax/researches/get', 'AJAXController@getResearch');
+Route::get('ajax/faculties/get', 'AJAXController@getFaculty');
+Route::get('ajax/study-programs/get', 'AJAXController@getStudyProgram');
+Route::get('ajax/lecturers/get', 'AJAXController@getLecturer');
+Route::get('ajax/outputs/get', 'AJAXController@getOutput');
+Route::get('ajax/outputs/get-count', 'AJAXController@getCountOutput');
 // End AJAX Route
 
 $api = app('Dingo\Api\Routing\Router');

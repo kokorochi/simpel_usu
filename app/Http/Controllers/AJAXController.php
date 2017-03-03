@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Client;
+
 use App\Auths;
+use App\ModelSDM\Faculty;
 use App\ModelSDM\Lecturer;
+use App\ModelSDM\StudyProgram;
+use App\Output_type;
 use App\Period;
 use App\Propose;
 use Illuminate\Http\Request;
@@ -244,5 +249,178 @@ class AJAXController extends BlankonController {
         $data = json_encode($data, JSON_PRETTY_PRINT);
 
         return response($data, 200)->header('Content-Type', 'application/json');
+    }
+
+    public function getFaculty()
+    {
+        $input = Input::get('input');
+        $query = Faculty::query();
+        if (! is_null($input))
+        {
+            if (is_array($input))
+            {
+                foreach ($input as $key => $item)
+                {
+                    $query->orWhere($key, 'like', '%' . $item . '%');
+                }
+            }
+        }
+        $query->where('is_faculty', '1')->where('faculty_code', '<>', 'SPS');
+        $data['data'] = $query->get(['faculty_code', 'faculty_name']);
+
+        if ($data['data']->isEmpty()) $count_data = 0;
+        else $count_data = count($data['data']);
+
+        if ($count_data == 0)
+        {
+            $data['data'] = [];
+        }
+        $data['iTotalRecords'] = $data['iTotalDisplayRecords'] = $count_data;
+        $data = json_encode($data, JSON_PRETTY_PRINT);
+
+        return response($data, 200)->header('Content-Type', 'application/json');
+    }
+
+    public function getStudyProgram()
+    {
+        $input = Input::get('faculty_code');
+        $query = StudyProgram::query();
+        if (! is_null($input))
+        {
+            if (is_array($input))
+            {
+                foreach ($input as $key => $item)
+                {
+                    $query->orWhere('faculty_code', 'like', '%' . $item . '%');
+                }
+            }
+        }
+        $data['data'] = $query->get();
+
+        if ($data['data']->isEmpty()) $count_data = 0;
+        else $count_data = count($data['data']);
+
+        if ($count_data == 0)
+        {
+            $data['data'] = [];
+        }
+        $data['iTotalRecords'] = $data['iTotalDisplayRecords'] = $count_data;
+        $data = json_encode($data, JSON_PRETTY_PRINT);
+
+        return response($data, 200)->header('Content-Type', 'application/json');
+    }
+
+    public function getLecturer()
+    {
+        $input = Input::get();
+        $query = Lecturer::query();
+        foreach ($input as $key1 => $item1)
+        {
+            if (is_array($item1))
+            {
+                $first = true;
+                foreach ($item1 as $item)
+                {
+                    if ($first)
+                    {
+                        $first = false;
+                        $query->where($key1, 'like', '%' . $item . '%');
+                    } else
+                    {
+                        $query->orWhere($key1, 'like', '%' . $item . '%');
+                    }
+                }
+            } else
+            {
+                $query->where($key1, 'like', '%' . $item . '%');
+            }
+        }
+        $data['data'] = $query->get();
+
+        if ($data['data']->isEmpty()) $count_data = 0;
+        else $count_data = count($data['data']);
+
+        if ($count_data == 0)
+        {
+            $data['data'] = [];
+        }
+        $data['iTotalRecords'] = $data['iTotalDisplayRecords'] = $count_data;
+        $data = json_encode($data, JSON_PRETTY_PRINT);
+
+        return response($data, 200)->header('Content-Type', 'application/json');
+    }
+
+    public function getOutput()
+    {
+        $input = Input::get();
+        $query = Output_type::query();
+        foreach ($input as $key1 => $item1)
+        {
+            if (is_array($item1))
+            {
+                $first = true;
+                foreach ($item1 as $item)
+                {
+                    if ($first)
+                    {
+                        $first = false;
+                        $query->where($key1, 'like', '%' . $item . '%');
+                    } else
+                    {
+                        $query->orWhere($key1, 'like', '%' . $item . '%');
+                    }
+                }
+            } else
+            {
+                $query->where($key1, 'like', '%' . $item . '%');
+            }
+        }
+        $data['data'] = $query->get(['id', 'output_code', 'output_name']);
+
+        if ($data['data']->isEmpty()) $count_data = 0;
+        else $count_data = count($data['data']);
+
+        if ($count_data == 0)
+        {
+            $data['data'] = [];
+        }
+        $data['iTotalRecords'] = $data['iTotalDisplayRecords'] = $count_data;
+        $data = json_encode($data, JSON_PRETTY_PRINT);
+
+        return response($data, 200)->header('Content-Type', 'application/json');
+    }
+
+    public function getCountOutput()
+    {
+        $client = new Client(
+            ['defaults' => [ 'verify' => false]]
+        );
+
+        $data['data'] = new Collection();
+
+        if ($data['data']->isEmpty()) $count_data = 0;
+        else $count_data = count($data['data']);
+
+        if ($count_data == 0)
+        {
+            $data['data'] = [];
+        }
+        $data['iTotalRecords'] = $data['iTotalDisplayRecords'] = $count_data;
+        $data = json_encode($data, JSON_PRETTY_PRINT);
+
+        return response($data, 200)->header('Content-Type', 'application/json');
+
+        $res = $client->request('GET', 'http://simpel.usu.ac.id/api/outputs/count/search',[
+          'query' => [
+              'level' => '1',
+              'years[]' => '2013',
+              'years[]' => '2014',
+              'years[]' => '2015',
+              'years[]' => '2016',
+              'output_code[]' => 'PFN',
+              'faculty_code[]' => 'FIKTI',
+          ]
+        ]);
+        echo $res->getStatusCode();
     }
 }

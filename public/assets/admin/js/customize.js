@@ -175,4 +175,116 @@ $(document).ready(function () {
             form.prepend($(this));
         });
     });
+
+    if($(".chosen-select-level").length){
+        $('.chosen-select-level').chosen();
+    }
+
+    if($(".chosen-select-faculty").length){
+        $('.chosen-select-faculty').chosen();
+        $.get(baseUrl + '/ajax/faculties/get', function (data) {
+            $('.chosen-select-faculty').empty();
+            var selected_faculty;
+            $.each(data['data'], function (key, value) {
+                selected_faculty = value.faculty_code;
+                $('.chosen-select-faculty').append('<option value="' + value.faculty_code + '">' + value.faculty_name + '</option>');
+            });
+            $('.chosen-select-faculty').trigger('chosen:updated');
+            getAndSetChosenStudyProgram(selected_faculty);
+        });
+    }
+
+    $(document).on('change', '.chosen-select-faculty', function(e){
+        e.preventDefault();
+        getAndSetChosenStudyProgram($(this).val());
+    });
+
+    if($('.chosen-select-lecturer').length){
+        $('.chosen-select-lecturer').chosen();
+    }
+
+    $(document).on('change', '.chosen-select-study-program', function(e){
+        e.preventDefault();
+        getAndSetChosenLecturer($(this).val());
+    });
+
+    if($('.chosen-select-output').length){
+        getAndSetChosenOutput();
+    }
+
+    showHideFilterOutputReport(1); //First inititate to level 1
+
+    $(document).on('change', '.chosen-select-level', function(e){
+        e.preventDefault();
+        showHideFilterOutputReport($(this).val());
+    })
+
+    $('form.output-filter').click(function(){
+        $.get(baseUrl + '/ajax/outputs/get-count',{
+            'level': $('.chosen-select-level').val(),
+            'faculty_code[]': $('.chosen-select-faculty').val(),
+            'study_program[]': $('.chosen-select-study-program').val(),
+            'lecturer_nidn[]': $('.chosen-select-lecturer').val(),
+            'output_code[]': $('.chosen-select-output').val(),
+            'years[]': $('input[name="input[year]"]').val()
+        }, function (data) {
+            console.log(data);
+        });
+    });
+
+    function showHideFilterOutputReport(p1){
+        if(p1 == 1){
+            $('.faculty-wrapper select').prop('disabled', true).trigger('chosen:updated');
+            $('.study-program-wrapper select').prop('disabled', true).trigger('chosen:updated');
+            $('.lecturer-wrapper select').prop('disabled', true).trigger('chosen:updated');
+        }else if(p1 == 2){
+            $('.faculty-wrapper select').prop('disabled', false).trigger('chosen:updated');
+            $('.study-program-wrapper select').prop('disabled', true).trigger('chosen:updated');
+            $('.lecturer-wrapper select').prop('disabled', true).trigger('chosen:updated');
+        }else if(p1 == 3){
+            $('.faculty-wrapper select').prop('disabled', false).trigger('chosen:updated');
+            $('.study-program-wrapper select').prop('disabled', false).trigger('chosen:updated');
+            $('.lecturer-wrapper select').prop('disabled', true).trigger('chosen:updated');
+        }else if(p1 == 4){
+            $('.faculty-wrapper select').prop('disabled', false).trigger('chosen:updated');
+            $('.study-program-wrapper select').prop('disabled', false).trigger('chosen:updated');
+            $('.lecturer-wrapper select').prop('disabled', false).trigger('chosen:updated');
+        }
+    }
+
+    function getAndSetChosenStudyProgram(p1){
+        $('.chosen-select-study-program').chosen();
+        $.get(baseUrl + '/ajax/study-programs/get', {'faculty_code[]': p1}, function (data) {
+            $('.chosen-select-study-program').empty();
+            var selected_val;
+            $.each(data['data'], function (key, value) {
+                if(selected_val == null) selected_val = value.study_program;
+                $('.chosen-select-study-program').append('<option value="' + value.study_program + '">' + value.study_program + '</option>');
+            });
+            $('.chosen-select-study-program').trigger('chosen:updated');
+            getAndSetChosenLecturer(selected_val);
+        })
+    }
+
+    function getAndSetChosenLecturer(p1){
+        $('.chosen-select-lecturer').chosen();
+        $.get(baseUrl + '/ajax/lecturers/get', {'study_program[]': p1}, function (data) {
+            $('.chosen-select-lecturer').empty();
+            $.each(data['data'], function (key, value) {
+                $('.chosen-select-lecturer').append('<option value="' + value.employee_card_serial_number + '">' + value.employee_card_serial_number + ': ' + value.full_name + '</option>');
+            });
+            $('.chosen-select-lecturer').trigger('chosen:updated');
+        })
+    }
+
+    function getAndSetChosenOutput(){
+        $('.chosen-select-output').chosen();
+        $.get(baseUrl + '/ajax/outputs/get', function (data) {
+            $('.chosen-select-output').empty();
+            $.each(data['data'], function (key, value) {
+                $('.chosen-select-output').append('<option value="' + value.id + '">' + value.output_code + ': ' + value.output_name + '</option>');
+            });
+            $('.chosen-select-output').trigger('chosen:updated');
+        })
+    }
 });
