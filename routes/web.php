@@ -80,6 +80,19 @@ Route::put('research-types/{id}/edit', 'ResearchTypeController@update');
 Route::delete('research-types/{id}', 'ResearchTypeController@destroy');
 // End Research Types Route
 
+
+// Research Types Route
+Route::get('output-types/', 'OutputTypeController@index');
+
+Route::get('output-types/create', 'OutputTypeController@create');
+Route::post('output-types/create', 'OutputTypeController@store');
+
+Route::get('output-types/{id}/edit', 'OutputTypeController@edit');
+Route::put('output-types/{id}/edit', 'OutputTypeController@update');
+
+Route::delete('output-types/{id}', 'OutputTypeController@destroy');
+// End Research Types Route
+
 // Periods Route
 Route::get('periods/', 'PeriodController@index');
 

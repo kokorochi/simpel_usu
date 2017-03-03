@@ -136,11 +136,30 @@ START @SIDEBAR LEFT
             </li>
             <!--/ End navigation - Research Types -->
 
+            <!-- Start navigation - Output Types -->
+            <li {!! Request::is('output-types','output-types/*')? 'class="submenu active"' : 'class="submenu"' !!}>
+                <a href="javascript:void(0);">
+                    <span class="icon"><i class="fa fa-file-archive-o"></i></span>
+                    <span class="text">Luaran</span>
+                    <span class="arrow"></span>
+                    {!! Request::is('output-types', 'output-types/*') ? '<span class="selected"></span>' : null !!}
+                </a>
+                <ul>
+                    <li {!! Request::is('output-types','output-types/create')? 'class="active"' : null !!}>
+                        <a href="{{url('output-types/create')}}">Tambah</a>
+                    </li>
+                    <li {!! Request::is('output-types','output-types/list')? 'class="active"' : null !!}>
+                        <a href="{{url('output-types/')}}">Daftar</a>
+                    </li>
+                </ul>
+            </li>
+            <!--/ End navigation - Output Types -->
+
             <!-- Start navigation - Period -->
             <li {!! Request::is('periods','periods/*')? 'class="submenu active"' : 'class="submenu"' !!}>
                 <a href="javascript:void(0);">
                     <span class="icon"><i class="fa fa-calendar"></i></span>
-                    <span class="text">Periode</span>
+                    <span class="text">Scheme</span>
                     <span class="arrow"></span>
                     {!! Request::is('periods', 'periods/*') ? '<span class="selected"></span>' : null !!}
                 </a>

@@ -13,8 +13,8 @@ use App\Period;
 use View;
 
 class PeriodController extends BlankonController {
-    protected $pageTitle = 'Periode';
-    protected $deleteQuestion = 'Apakah anda yakin untuk menghapus Periode ini?';
+    protected $pageTitle = 'Scheme';
+    protected $deleteQuestion = 'Apakah anda yakin untuk menghapus Scheme ini?';
     protected $deleteUrl = 'periods';
     protected $category_types;
     protected $research_types;
