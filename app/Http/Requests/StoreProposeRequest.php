@@ -289,7 +289,7 @@ class StoreProposeRequest extends FormRequest {
                 $proposes = $period->propose()->where('created_by', '<>', Auth::user()->nidn)->where('is_own', null)->get();
                 foreach ($proposes as $propose)
                 {
-                    $flow_status = $item->flowStatus()->where('status_code', '<>', 'UT')->where('status_code', '<>', 'SS')->first();
+                    $flow_status = $propose->flowStatus()->where('status_code', '<>', 'UT')->where('status_code', '<>', 'SS')->first();
                     if ($flow_status !== null)
                     {
                         $member = $propose->member()->where('nidn', Auth::user()->nidn)->where('status', 'accepted')->first();
