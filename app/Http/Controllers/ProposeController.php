@@ -623,6 +623,7 @@ class ProposeController extends BlankonController {
 
             $sign_1 = $request->sign_1;
             $sign_2 = $request->sign_2;
+            $period = $propose->period()->first();
 
             return view('printing.print-confirmation', compact(
                 'propose',
@@ -633,7 +634,8 @@ class ProposeController extends BlankonController {
                 'lppm_head',
                 'dean',
                 'sign_1',
-                'sign_2'
+                'sign_2',
+                'period'
             ));
         } else //Button Save
         {

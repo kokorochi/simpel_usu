@@ -20,7 +20,10 @@
 </head>
 <body class="page-session page-sound page-header-fixed page-sidebar-fixed">
 <div id="print-confirmation-wrapper">
-    <h3 class="text-center">Halaman Pengesahan</h3>
+    <h3 class="text-center">
+        Halaman Pengesahan<br />
+        {{$period->scheme}}
+    </h3>
     <table>
         <tbody>
         <!-- Dedication Title -->
@@ -110,6 +113,8 @@
         </tr>
         @php($ctr_alpha = 'b')
         @foreach($members as $member)
+            @php($lecturer = $member->lecturer()->first())
+            @php($faculty = \App\ModelSDM\Faculty::where('faculty_code', $lecturer->work_unit)->first())
             @php
                 if($member->external === '1')
                 {
@@ -133,9 +138,29 @@
             @endif
             <tr>
                 <td class="print-col-1"></td>
-                <td class="print-col-2">{{$ctr_alpha++ . '. Nama Anggota ' . $member->item . ' / bidang keahlian'}}</td>
+                <td class="print-col-2"><u>{{$ctr_alpha++ . '. Anggota Peneliti (' . $member->item . ')'}}</u></td>
+                {{--<td class="print-col-2">{{$ctr_alpha++ . '. Nama Anggota ' . $member->item . ' / bidang keahlian'}}</td>--}}
+                <td class="print-col-3"></td>
+                {{--<td class="print-col-4">{{$full_name . ' / ' . $member->areas_of_expertise}}</td>--}}
+                <td class="print-col-4"></td>
+            </tr>
+            <tr>
+                <td class="print-col-1"></td>
+                <td class="print-col-2">1. Nama Lengkap</td>
                 <td class="print-col-3">:</td>
-                <td class="print-col-4">{{$full_name . ' / ' . $member->areas_of_expertise}}</td>
+                <td class="print-col-4">{{$full_name}}</td>
+            </tr>
+            <tr>
+                <td class="print-col-1"></td>
+                <td class="print-col-2">2. NIDN</td>
+                <td class="print-col-3">:</td>
+                <td class="print-col-4">{{$lecturer->employee_card_serial_number}}</td>
+            </tr>
+            <tr>
+                <td class="print-col-1"></td>
+                <td class="print-col-2">3. Fakultas</td>
+                <td class="print-col-3">:</td>
+                <td class="print-col-4">{{$faculty->faculty_name}}</td>
             </tr>
         @endforeach
         <tr>
@@ -147,25 +172,25 @@
         <!-- End Member Detail -->
 
         <!-- Output Type -->
-        @foreach($propose_output_types as $key => $propose_output_type)
-            <tr>
-                <td class="print-col-1">{{$key === 0 ? "5." : ""}}</td>
-                <td class="print-col-2">{{$key === 0 ? "Luaran yang dihasilkan" : ""}}</td>
-                <td class="print-col-3">{{$key === 0 ? ":" : ""}}</td>
-                <td class="print-col-4">{{"- " . $propose_output_type->outputType()->first()->output_name}}</td>
-            </tr>
-        @endforeach
+        {{--@foreach($propose_output_types as $key => $propose_output_type)--}}
+            {{--<tr>--}}
+                {{--<td class="print-col-1">{{$key === 0 ? "5." : ""}}</td>--}}
+                {{--<td class="print-col-2">{{$key === 0 ? "Luaran yang dihasilkan" : ""}}</td>--}}
+                {{--<td class="print-col-3">{{$key === 0 ? ":" : ""}}</td>--}}
+                {{--<td class="print-col-4">{{"- " . $propose_output_type->outputType()->first()->output_name}}</td>--}}
+            {{--</tr>--}}
+        {{--@endforeach--}}
         <!-- End Output Type -->
 
         <tr>
-            <td class="print-col-1">6.</td>
+            <td class="print-col-1">4.</td>
             <td class="print-col-2">Jangka waktu Pelaksanaan</td>
             <td class="print-col-3">:</td>
             <td class="print-col-4">{{$propose->time_period . ' bulan'}}</td>
         </tr>
 
         <tr>
-            <td class="print-col-1">7.</td>
+            <td class="print-col-1">5.</td>
             <td class="print-col-2">Biaya yang diperlukan</td>
             <td class="print-col-3">:</td>
             @if($propose->final_amount !== null)
@@ -175,7 +200,7 @@
         </tr>
 
         <tr>
-            <td class="print-col-1">8.</td>
+            <td class="print-col-1">6.</td>
             <td class="print-col-2">Sumber Dana</td>
             <td class="print-col-3">:</td>
             <td class="print-col-4">

@@ -77,18 +77,26 @@
                                                     <td class="text-center border-right">{{ $propose->flowStatus()->orderBy('item', 'desc')->first()
                                                        ->statusCode()->first()->description }}</td>
                                                     <td class="text-center">{!!$research->output_status!!}</td>
-                                                    <td class="text-center">
-                                                        <a href="{{url($deleteUrl . '/' . $research->id .'/edit')}}"
-                                                           class="btn btn-primary btn-xs" data-toggle="tooltip"
-                                                           data-placement="top" data-original-title="Ubah">
-                                                            <i class="fa fa-pencil"></i>
-                                                        </a>
-                                                        <a href="{{url($deleteUrl . '/' . $research->id .'/output')}}"
-                                                           class="btn btn-success btn-xs" data-toggle="tooltip"
-                                                           data-placement="top" data-original-title="Unggah Luaran">
-                                                            <i class="fa fa-upload"></i>
-                                                        </a>
-                                                    </td>
+                                                        <td class="text-center">
+                                                            @if($propose->created_by === Auth::user()->nidn)
+                                                                <a href="{{url($deleteUrl . '/' . $research->id .'/edit')}}"
+                                                                   class="btn btn-primary btn-xs" data-toggle="tooltip"
+                                                                   data-placement="top" data-original-title="Ubah">
+                                                                    <i class="fa fa-pencil"></i>
+                                                                </a>
+                                                                <a href="{{url($deleteUrl . '/' . $research->id .'/output')}}"
+                                                                   class="btn btn-success btn-xs" data-toggle="tooltip"
+                                                                   data-placement="top" data-original-title="Unggah Luaran">
+                                                                    <i class="fa fa-upload"></i>
+                                                            </a>
+                                                            @else
+                                                                <a href="{{url($deleteUrl . '/' . $research->id .'/display')}}"
+                                                                   class="btn btn-primary btn-xs" data-toggle="tooltip"
+                                                                   data-placement="top" data-original-title="Detail">
+                                                                    <i class="fa fa-info"></i>
+                                                                </a>
+                                                            @endif
+                                                        </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>

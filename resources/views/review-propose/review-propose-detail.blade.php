@@ -116,7 +116,9 @@
                                             <select name="score[]"
                                                     class="chosen-select input-score" {{$review_propose_i->disabled}}>
                                                 @for($i = 1; $i <= 7; $i++)
-                                                    <option value="{{$i}}" {{$i == $review_propose_i->score ? 'selected' : ''}}>{{$i}}</option>
+                                                    @if($i != 4)
+                                                        <option value="{{$i}}" {{$i == $review_propose_i->score ? 'selected' : ''}}>{{$i}}</option>
+                                                    @endif
                                                 @endfor
                                             </select>
                                             @if($errors->has('score.' . $key))

@@ -161,6 +161,7 @@ Route::get('approve-proposes/{id}/display', 'ApproveProposeController@display');
 
 // Start Dedication Route
 Route::get('researches/', 'ResearchController@index');
+Route::get('researches/{id}/display', 'ResearchController@display');
 Route::get('researches/{id}/edit', 'ResearchController@edit');
 Route::put('researches/{id}/edit-progress', 'ResearchController@updateProgress');
 Route::put('researches/{id}/edit-final', 'ResearchController@updateFinal');

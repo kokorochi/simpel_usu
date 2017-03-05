@@ -161,6 +161,74 @@ class ResearchController extends BlankonController {
         ));
     }
 
+    public function display($id)
+    {
+        $research = Research::find($id);
+        if ($research === null)
+        {
+            $this->setCSS404();
+
+            return abort('404');
+        }
+
+        $propose = $research->propose()->first();
+        if ($propose === null)
+        {
+            $this->setCSS404();
+
+            return abort('404');
+        }
+
+        $propose_relation = $this->getProposeRelationData($propose);
+        $propose_relation->propose = $propose;
+
+        if ($propose->created_by !== Auth::user()->nidn)
+        {
+            $member = $propose_relation->members->filter(function ($item)
+            {
+                return $item->nidn = Auth::user()->nidn;
+            })->first();
+
+            if (is_null($member))
+            {
+                $this->setCSS404();
+
+                return abort('403');
+            }
+        }
+
+        if ($propose_relation->flow_status->status_code === 'UD')
+        {
+            $research->propose()->first()->flowStatus()->create([
+                'item'        => $propose_relation->flow_status->item + 1,
+                'status_code' => 'LK', //Menunggu Laporan Kemajuan
+                'created_by'  => Auth::user()->nidn,
+            ]);
+            $propose_relation->flow_status->status_code = 'LK';
+        }
+
+        $disable_upload = false;
+        $status_code = $propose_relation->flow_status->status_code;
+        if ($status_code !== 'UU' && $status_code !== 'PR')
+        {
+            $disable_upload = true;
+        }
+
+        $disabled = 'disabled';
+        $disable_final_amount = 'readonly';
+        $upd_mode = 'display';
+
+        return view('research.research-edit', compact(
+            'research',
+            'propose_relation',
+            'disable_upload',
+            'status_code',
+            'disable_final_amount',
+            'disabled',
+            'upd_mode'
+        ));
+    }
+
     public function edit($id)
     {
         $research = Research::find($id);
@@ -291,7 +359,7 @@ class ResearchController extends BlankonController {
             if ($flow_status->status_code === 'LA')
             {
                 $output_flow_status = $research->outputFlowStatus()->orderBy('id', 'desc')->first();
-                if($output_flow_status->status_code === 'LT')
+                if ($output_flow_status->status_code === 'LT')
                 {
                     $research->propose()->first()->flowStatus()->create([
                         'item'        => $flow_status->item + 1,
@@ -299,8 +367,8 @@ class ResearchController extends BlankonController {
                         'created_by'  => Auth::user()->nidn,
                     ]);
                     $this->setEmail('PS', $propose);
-                }
-                else{
+                } else
+                {
                     $research->propose()->first()->flowStatus()->create([
                         'item'        => $flow_status->item + 1,
                         'status_code' => 'UL', //Menunggu Luaran
