@@ -86,7 +86,6 @@ class UpdateVerificationRequest extends FormRequest {
                     $flow_status = $item->flowStatus()->where('status_code', '<>', 'UT')->first();
                     if ($flow_status !== null)
                     {
-                        array_push($ret, '1 Dosen hanya bisa menjadi ( ketua penlitian sebanyak 1 kali dan menjadi anggota sebanyak 2 kali ) atau ( anggota sebanyak 3 kali ) dalam 1 tahun');
                         $i_as_head = 1;
                     }
                 }

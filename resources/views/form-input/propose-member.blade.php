@@ -106,19 +106,9 @@ $errors->has('external_affiliation.' . $ctr_old) || old('external_affiliation.' 
                                         @elseif($member->status === 'rejected')
                                             <i class="fa fa-times-circle fg-danger" style="bottom: 18px;"></i>
                                         @endif
-                                        @php
-                                            if($member->status === 'rejected')
-                                            {
-                                                $disabled_member = '';
-                                            }
-                                            else
-                                            {
-                                                $disabled_member = $disabled;
-                                            }
-                                        @endphp
                                         <input name="member_display[]" type="text"
                                                class="input-member form-control input-sm mb-15"
-                                               value="{{$member->member_display}}" {{$disabled_member}} />
+                                               value="{{$member->member_display}}" {{$disabled}} />
                                         <input name="member_nidn[]" type="text" class="input-value" hidden="hidden"
                                                value="{{$member->member_nidn}}"/>
                                         @if($errors->has('member_display.' . $key))
