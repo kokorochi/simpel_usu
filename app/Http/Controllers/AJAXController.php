@@ -392,35 +392,109 @@ class AJAXController extends BlankonController {
 
     public function getCountOutput()
     {
-        $client = new Client(
-            ['defaults' => [ 'verify' => false]]
-        );
+        $input = Input::get();
 
-        $data['data'] = new Collection();
-
-        if ($data['data']->isEmpty()) $count_data = 0;
-        else $count_data = count($data['data']);
-
-        if ($count_data == 0)
+        if(!isset($input['level']))
         {
-            $data['data'] = [];
+            $input['level'] = 1;
         }
-        $data['iTotalRecords'] = $data['iTotalDisplayRecords'] = $count_data;
+
+        if(!isset($input['year']))
+        {
+            $input['year'] = date('Y');
+        }
+        $min_year = $input['year'] - 3;
+
+        $query = Output_type::query();
+        if(isset($input['output_code']))
+        {
+            if(is_array($input['output_code']))
+            {
+                $query->whereIn('output_code', $input['output_code']);
+            }else{
+                $query->where('output_code', $input['output_code']);
+            }
+        }
+        $output_types = $query->get();
+        foreach ($output_types as $output_type)
+        {
+            $filter['output_type'] = $output_type->output_type_id;
+        }
+
+        if($input['level'] == 1) // University level means list all faculty
+        {
+            $data['columns'][] = [
+                'label' => 'Fakultas',
+                'property' => 'faculty_name',
+                'sortable' => true,
+            ];
+
+            while($min_year <= $input['year'])
+            {
+                $data['columns'][] = [
+                    'label' => $min_year,
+                    'property' => 'year_' . $min_year,
+                    'sortable' => true,
+                    'cssClass' => 'report-year'
+                ];
+                $min_year++;
+            }
+
+            $faculties = Faculty::where('is_faculty', '1')->where('faculty_code', '<>', 'SPS')->get();
+            $i = 0;
+            foreach ($faculties as $faculty)
+            {
+                $lecturers = Lecturer::where('work_unit', $faculty->faculty_code)->get(["employee_card_serial_number"]);
+                foreach ($lecturers as $lecturer)
+                {
+                    $filter['lecturer'][] = $lecturer->employee_card_serial_number;
+                }
+
+                $data['items'][$i]['faculty_name'] = $faculty->faculty_name;
+
+                $min_year = $input['year'] - 3;
+                while($min_year <= $input['year'])
+                {
+                    $query = DB::table('output_flow_statuses')
+                        ->join('researches', 'researches.id', '=', 'output_flow_statuses.research_id')
+                        ->join('proposes', 'proposes.id', '=', 'researches.propose_id')
+                        ->join('propose_output_types', 'propose_output_types.propose_id', '=', 'proposes.id')
+                        ->join('research_output_generals', 'research_output_generals.research_id', '=', 'researches.id');
+
+                    if(isset($filter['lecturer']) && is_array($filter['lecturer']))
+                        $query->whereIn('proposes.created_by', $filter['lecturer']);
+                    if(isset($filter['output_type']) && is_array($filter['output_type']))
+                        $query->whereIn('propose_output_types.output_type_id', $filter['output_type']);
+                    $query->where('output_flow_statuses.status_code', 'VL');
+                    $query->where('research_output_generals.year', $min_year);
+                    $query->select('');
+                    $data = $query->get();
+
+                    $data['items'][$i]['year_' . $min_year] = rand(0,3);
+                    $min_year++;
+                }
+                $data['items'][$i]['faculty_name'] = $faculty->faculty_name;
+                $i++;
+            }
+        }
+        $data['total'] = count($data['items']);
+        $data['input'] = $input;
+
         $data = json_encode($data, JSON_PRETTY_PRINT);
 
         return response($data, 200)->header('Content-Type', 'application/json');
 
-        $res = $client->request('GET', 'http://simpel.usu.ac.id/api/outputs/count/search',[
-          'query' => [
-              'level' => '1',
-              'years[]' => '2013',
-              'years[]' => '2014',
-              'years[]' => '2015',
-              'years[]' => '2016',
-              'output_code[]' => 'PFN',
-              'faculty_code[]' => 'FIKTI',
-          ]
-        ]);
-        echo $res->getStatusCode();
+//        $res = $client->request('GET', 'http://simpel.usu.ac.id/api/outputs/count/search',[
+//          'query' => [
+//              'level' => '1',
+//              'years[]' => '2013',
+//              'years[]' => '2014',
+//              'years[]' => '2015',
+//              'years[]' => '2016',
+//              'output_code[]' => 'PFN',
+//              'faculty_code[]' => 'FIKTI',
+//          ]
+//        ]);
+//        echo $res->getStatusCode();
     }
 }

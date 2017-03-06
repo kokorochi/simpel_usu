@@ -2165,53 +2165,65 @@ table.dataTable th.dataTables_empty:before, td.dataTables_empty:before {
     border-radius: 0px;
 }
 
-.fuelux .repeater-list-header td.sortable:last-child {
-    text-align: center;
-}
+/*.fuelux .repeater-list-header td.sortable:last-child {*/
+/*text-align: center;*/
+/*}*/
 
 .fuelux .repeater-list-header td.sortable:hover {
     background: transparent;
 }
 
-.fuelux .repeater-list-items td:last-child {
-    text-align: center;
-}
+/*.fuelux .repeater-list-items td:last-child {*/
+/*text-align: center;*/
+/*}*/
 
 .fuelux .repeater-list table thead > tr > th {
     border-bottom: none;
 }
 
-.fuelux .repeater table thead tr th:nth-child(1), .fuelux .repeater table thead tr th:nth-child(3), .fuelux .repeater table thead tr th:nth-child(6) {
+/*.fuelux .repeater table thead tr th:nth-child(1), */
+/*.fuelux .repeater table thead tr th:nth-child(3), */
+/*.fuelux .repeater table thead tr th:nth-child(6),*/
+.fuelux .repeater table thead tr th {
     text-align: center;
+    font-weight: bold;
 }
 
-.fuelux .repeater table thead tr th:nth-child(2) {
-    width: 200px !important;
-}
+/*.fuelux .repeater table thead tr th:nth-child(2) {*/
+/*width: 200px !important;*/
+/*}*/
 
-.fuelux .repeater table thead tr th:nth-child(4) {
-    text-align: right;
-}
+/*.fuelux .repeater table thead tr th:nth-child(4) {*/
+/*text-align: right;*/
+/*}*/
 
-.fuelux .repeater table thead tr th:last-child {
-    text-align: center;
-}
+/*.fuelux .repeater table thead tr th:last-child {*/
+/*text-align: center;*/
+/*}*/
 
 .fuelux .repeater table tbody tr td {
     vertical-align: middle;
     font-size: 12px;
 }
 
-.fuelux .repeater table tbody tr td:nth-child(1), .fuelux .repeater table tbody tr td:nth-child(3), .fuelux .repeater table tbody tr td:nth-child(6) {
+/*.fuelux .repeater table tbody tr td:nth-child(1), .fuelux .repeater table tbody tr td:nth-child(3), .fuelux .repeater table tbody tr td:nth-child(6) {*/
+/*text-align: center;*/
+/*}*/
+
+/*.fuelux .repeater table tbody tr td:nth-child(4) {*/
+/*text-align: right;*/
+/*}*/
+
+/*.fuelux .repeater table tbody tr td:last-child {*/
+/*text-align: center;*/
+/*}*/
+
+.count-output-fuelux .repeater table tbody tr td{
     text-align: center;
 }
 
-.fuelux .repeater table tbody tr td:nth-child(4) {
-    text-align: right;
-}
-
-.fuelux .repeater table tbody tr td:last-child {
-    text-align: center;
+.count-output-fuelux .repeater table tbody tr td:nth-child(1) {
+    text-align: left;
 }
 
 .repeater-header-right .repeater-filters > button {

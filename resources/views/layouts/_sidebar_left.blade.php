@@ -229,19 +229,19 @@ START @SIDEBAR LEFT
             <!-- End navigation - Research -->
 
             <!-- Start navigation - Reporting -->
-            <li {!! Request::is('reports','reports/*')? 'class="submenu active"' : 'class="submenu"' !!}>
-                <a href="javascript:void(0);">
-                    <span class="icon"><i class="fa fa-bar-chart"></i></span>
-                    <span class="text">Laporan</span>
-                    <span class="arrow"></span>
-                    {!! Request::is('reports', 'reports/*') ? '<span class="selected"></span>' : null !!}
-                </a>
-                <ul>
-                    <li {!! Request::is('reports','reports/')? 'class="active"' : null !!}>
-                        <a href="{{url('reports/count-output')}}">Luaran</a>
-                    </li>
-                </ul>
-            </li>
+            {{--<li {!! Request::is('reports','reports/*')? 'class="submenu active"' : 'class="submenu"' !!}>--}}
+                {{--<a href="javascript:void(0);">--}}
+                    {{--<span class="icon"><i class="fa fa-bar-chart"></i></span>--}}
+                    {{--<span class="text">Laporan</span>--}}
+                    {{--<span class="arrow"></span>--}}
+                    {{--{!! Request::is('reports', 'reports/*') ? '<span class="selected"></span>' : null !!}--}}
+                {{--</a>--}}
+                {{--<ul>--}}
+                    {{--<li {!! Request::is('reports','reports/')? 'class="active"' : null !!}>--}}
+                        {{--<a href="{{url('reports/count-output')}}">Luaran</a>--}}
+                    {{--</li>--}}
+                {{--</ul>--}}
+            {{--</li>--}}
             <!-- End navigation - Reporting -->
         @endcan
     <!-- End category - Operator -->
