@@ -79,22 +79,22 @@ $errors->has('external_affiliation.' . $ctr_old) || old('external_affiliation.' 
                                                 USU</label>
                                         </div>
                                     </div>
+                                    <div class="external-member-wrapper">
+                                        <label for="external_name[]" class="col-sm-4 col-md-3 control-label">Nama</label>
+                                        <div class="col-sm-7 input-icon right">
+                                            <input name="external_name[]" type="text"
+                                                   class="form-control input-sm mb-15"
+                                                   value="{{$member->external_name}}" {{$disabled}} />
+                                        </div>
+                                        <label for="external_affiliation[]"
+                                               class="col-sm-4 col-md-3 control-label">Afiliasi</label>
+                                        <div class="col-sm-7 input-icon right">
+                                            <input name="external_affiliation[]" type="text"
+                                                   class="form-control input-sm mb-15"
+                                                   value="{{$member->external_affiliation}}" {{$disabled}} />
+                                        </div>
+                                    </div>
                                 @endif
-                                <div class="external-member-wrapper">
-                                    <label for="external_name[]" class="col-sm-4 col-md-3 control-label">Nama</label>
-                                    <div class="col-sm-7 input-icon right">
-                                        <input name="external_name[]" type="text"
-                                               class="form-control input-sm mb-15"
-                                               value="{{$member->external_name}}" {{$disabled}} />
-                                    </div>
-                                    <label for="external_affiliation[]"
-                                           class="col-sm-4 col-md-3 control-label">Afiliasi</label>
-                                    <div class="col-sm-7 input-icon right">
-                                        <input name="external_affiliation[]" type="text"
-                                               class="form-control input-sm mb-15"
-                                               value="{{$member->external_affiliation}}" {{$disabled}} />
-                                    </div>
-                                </div>
                                 <div class="internal-member-wrapper">
                                     <label for="member_nidn[]" class="col-sm-4 col-md-3 control-label">Anggota</label>
                                     <div class="col-sm-7 input-icon right">
