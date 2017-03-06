@@ -31,36 +31,37 @@ class StoreProposeRequest extends FormRequest {
     {
         if ($this->submit_button === 'save')
         {
-            if($this->is_own !== '1')
+            if ($this->is_own !== '1')
             {
                 $rules = [
                     //Check Detail
-                    'faculty_code'          => 'required',
-                    'title'                 => 'required|max:100',
-                    'output_type'           => 'required',
-                    'total_amount'          => 'required',
-                    'areas_of_expertise'    => 'required',
-                    'time_period'           => 'required|max:2',
-                    'address'               => 'required',
+                    'faculty_code'       => 'required',
+                    'title'              => 'required|max:100',
+                    'output_type'        => 'required',
+                    'total_amount'       => 'required',
+                    'areas_of_expertise' => 'required',
+                    'time_period'        => 'required|max:2',
+                    'address'            => 'required',
                     //End Check Detail
 
                     //Check Upload
-                    'file_propose'          => 'mimes:pdf',
-                    'file_propose_final'    => 'mimes:pdf'
+                    'file_propose'       => 'mimes:pdf',
+                    'file_propose_final' => 'mimes:pdf'
                     //End Check Detail
                 ];
-            }else{
+            } else
+            {
                 $rules = [
                     //Check Own Proposes
-                    'own-years'             => 'numeric',
-                    'own-member'            => 'numeric',
+                    'own-years'          => 'numeric',
+                    'own-member'         => 'numeric',
                     //End Check Own Proposes
 
                     //Check Detail
-                    'faculty_code'          => 'required',
-                    'title'                 => 'required|max:100',
-                    'total_amount'          => 'required',
-                    'areas_of_expertise'    => 'required',
+                    'faculty_code'       => 'required',
+                    'title'              => 'required|max:100',
+                    'total_amount'       => 'required',
+                    'areas_of_expertise' => 'required',
                     //End Check Detail
                 ];
             }
@@ -171,11 +172,11 @@ class StoreProposeRequest extends FormRequest {
                     if ($lv_total_amount > $period->total_amount) array_push($ret, 'Jumlah dana melebihi batas maksimal');
                 }
 
-                if($period->allow_external == false)
+                if ($period->allow_external == false)
                 {
                     foreach ($this->member_nidn as $key => $item)
                     {
-                        if($this['external' . $key] == '1')
+                        if ($this['external' . $key] == '1')
                         {
                             array_push($ret, 'Anggota dari luar USU tidak diperbolehkan pada scheme ini');
                             break;
@@ -234,10 +235,12 @@ class StoreProposeRequest extends FormRequest {
                 if ($lecturer === null)
                 {
                     array_push($ret, 'Anggota yang dipilih tidak valid : ' . $this->input('member_display.' . $key));
-                }
-                if ($lecturer->email === null || $lecturer->email === '')
+                } else
                 {
-                    array_push($ret, 'Anggota yang dipilih belum mengisi email di SIMSDM : ' . $this->input('member_display.' . $key));
+                    if ($lecturer->email === null || $lecturer->email === '')
+                    {
+                        array_push($ret, 'Anggota yang dipilih belum mengisi email di SIMSDM : ' . $this->input('member_display.' . $key));
+                    }
                 }
             }
         }

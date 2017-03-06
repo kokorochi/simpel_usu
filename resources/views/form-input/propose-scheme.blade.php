@@ -54,7 +54,7 @@ $errors->has('period_id')           || old('period_id')
 
                     <div class="form-group">
                         <div id="own-wrapper" class="col-sm-12">
-                            <label for="own-years" class="col-sm-4 col-md-3 control-label">Tahun</label>
+                            <label for="own-years" class="col-sm-4 col-md-3 control-label">Tahun *</label>
                             <div class="col-sm-7 mb-10">
                                 <input name="own-years" class="form-control input-sm" type="text"
                                        value="{{ $propose_relation->propose_own->years }}" {{$disabled}}>
@@ -97,7 +97,7 @@ $errors->has('period_id')           || old('period_id')
                                 @endif
                             </div>
 
-                            <label for="own-member" class="col-sm-4 col-md-3 control-label">Anggota</label>
+                            <label for="own-member" class="col-sm-4 col-md-3 control-label">Anggota *</label>
                             <div class="col-sm-7 mb-10">
                                 <input name="own-member" class="form-control input-sm" type="text"
                                        maxlength="2" data-inputmask="'alias': 'decimal', 'rightAlign': false"
