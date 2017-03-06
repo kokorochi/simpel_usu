@@ -69,15 +69,17 @@ $errors->has('external_affiliation.' . $ctr_old) || old('external_affiliation.' 
                     <div class="member-wrapper">
                         @foreach($propose_relation->members as $key => $member)
                             <div class="form-group">
-                                <label class="control-label col-sm-4 col-md-3">Dosen Luar</label>
-                                <div class="col-sm-7 mb-10">
-                                    <div class="ckbox ckbox-default">
-                                        <input name="external{{$key}}" id="external{{$key}}" type="checkbox" value="1"
-                                               class="external-checkbox" {{$member->external === '1' ? "checked" : ""}} {{$disabled}}>
-                                        <label for="external{{$key}}">*Tick ini jika anggota merupakan dosen dari luar
-                                            USU</label>
+                                @if($propose_relation->period->allow_external != '0')
+                                    <label class="control-label col-sm-4 col-md-3">Dosen Luar</label>
+                                    <div class="col-sm-7 mb-10">
+                                        <div class="ckbox ckbox-default">
+                                            <input name="external{{$key}}" id="external{{$key}}" type="checkbox" value="1"
+                                                   class="external-checkbox" {{$member->external === '1' ? "checked" : ""}} {{$disabled}}>
+                                            <label for="external{{$key}}">*Tick ini jika anggota merupakan dosen dari luar
+                                                USU</label>
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
                                 <div class="external-member-wrapper">
                                     <label for="external_name[]" class="col-sm-4 col-md-3 control-label">Nama</label>
                                     <div class="col-sm-7 input-icon right">
