@@ -66,6 +66,10 @@
                                                     else
                                                     {
                                                         $period = $propose->proposesOwn()->first();
+                                                        if($period->scheme == '')
+                                                        {
+                                                            $period->scheme = 'Mandiri';
+                                                        }
                                                     }
                                                     $status_code = $propose->flowStatus()->orderBy('item', 'desc')->first()->status_code;
                                                 @endphp

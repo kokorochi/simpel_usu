@@ -127,7 +127,8 @@
                                 </div>
 
                                 <div class="clearfix"></div>
-                                <label for="output_description[]" class="control-label col-sm-4 col-md-3">Detail Publikasi</label>
+                                <label for="output_description[]" class="control-label col-sm-4 col-md-3">Detail
+                                    Publikasi</label>
                                 <div class="col-sm-6 mb-10">
                                     <input name="output_description[]" class="form-control input-sm" type="text"
                                            value="{{ $research_output_general->output_description }}" {{$disabled}}>
@@ -156,7 +157,7 @@
                                 <div class="member-wrapper">
                                     @php($lv_output_members = $output_members->get($key))
                                     @if(! $lv_output_members->isEmpty())
-                                        <hr />
+                                        <hr/>
                                     @endif
                                     @foreach($lv_output_members as $member_key => $output_member)
                                         <div class="clone-member-wrapper">
@@ -168,7 +169,8 @@
                                                            id="is_external[{{$key}}][{{$member_key}}]"
                                                            type="checkbox" value="1"
                                                            class="external-output-checkbox" {{$output_member->external === null ? "" : "checked"}} {{$disabled}}>
-                                                    <label for="is_external[{{$key}}][{{$member_key}}]">*Tick ini jika penulis bukan
+                                                    <label for="is_external[{{$key}}][{{$member_key}}]">*Tick ini jika
+                                                        penulis bukan
                                                         dosen USU</label>
                                                 </div>
                                             </div>
@@ -195,7 +197,8 @@
                                             </div>
                                             @if($disabled === null)
                                                 <div class="col-sm-1">
-                                                    <a href="#" class="remove-output-member btn btn-sm btn-danger btn-stroke">
+                                                    <a href="#"
+                                                       class="remove-output-member btn btn-sm btn-danger btn-stroke">
                                                         <i class="fa fa-minus"></i>
                                                     </a>
                                                 </div>
@@ -216,7 +219,7 @@
 
                                 @if($upd_mode !== 'approve' && $status_code !== 'PS' && $disabled == null)
                                     <div class="clearfix"></div>
-                                    <hr />
+                                    <hr/>
                                     <label class="control-label col-sm-4 col-md-3">Unggah Luaran</label>
                                     <div class="col-sm-6 mb-5">
                                         <div class="fileinput fileinput-new input-group" data-provides="fileinput">
@@ -242,12 +245,14 @@
                                     </div>
 
                                     @if($research_output_general->file_name_ori === null)
-                                        <div class="clearfix"></div>
-                                        <label class="control-label col-sm-4 col-md-3">Hapus Luaran</label>
-                                        <div class="col-sm-1">
-                                            <a href="#" class="remove_field btn btn-sm btn-danger btn-stroke">
-                                                <i class="fa fa-minus"></i>
-                                            </a>
+                                        <div class="remove-output-button-wrapper">
+                                            <div class="clearfix"></div>
+                                            <label class="control-label col-sm-4 col-md-3">Hapus Luaran</label>
+                                            <div class="col-sm-1">
+                                                <a href="#" class="remove_field btn btn-sm btn-danger btn-stroke">
+                                                    <i class="fa fa-minus"></i>
+                                                </a>
+                                            </div>
                                         </div>
                                     @endif
                                 @endif

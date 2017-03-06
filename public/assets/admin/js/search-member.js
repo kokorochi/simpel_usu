@@ -201,6 +201,13 @@ $(document).ready(function () {
             research_clone.find(".member-wrapper").append(member_clone);
 
             $('.research-general-wrapper').append(research_clone);
+
+            if(! research_clone.find(".remove-output-button-wrapper").length)
+            {
+                var remove_output_button = '<div class="remove-output-button-wrapper"><div class="clearfix"></div><label class="control-label col-sm-4 col-md-3">Hapus Luaran</label><div class="col-sm-1"><a href="#" class="remove_field btn btn-sm btn-danger btn-stroke"><i class="fa fa-minus"></i></a></div></div>';
+                $('.research-general-wrapper').find('div.form-group:last').append(remove_output_button);
+            }
+
             $('.input-member').autocomplete(autocomp_opt);
             BlankonApp.handleSound();
             BlankonFormAdvanced.inputMask();

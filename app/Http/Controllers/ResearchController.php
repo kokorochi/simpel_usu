@@ -529,6 +529,7 @@ class ResearchController extends BlankonController {
                 }
             }
 
+            $key_2 = 0;
             foreach ($request->output_description as $key => $item)
             {
                 $research_output_general = $research_output_generals->get($key);
@@ -548,10 +549,20 @@ class ResearchController extends BlankonController {
                         $research_output_general = new ResearchOutputGeneral();
                     }
                 }
+
+                if(!isset($request->status[$key_2]))
+                {
+                    while(!isset($request->status[$key_2]))
+                    {
+                        $key_2++;
+                        if($key_2 == 100) break;
+                    }
+                }
+
                 $research_output_general->item = $key + 1;
                 $research_output_general->year = $request->year[$key];
                 $research_output_general->output_description = $request->output_description[$key];
-                $research_output_general->status = $request->status[$key];
+                $research_output_general->status = $request->status[$key_2];
                 $research_output_general->url_address = $request->url_address[$key];
                 if ($request->file_name !== null && array_key_exists($key, $request->file_name))
                 {
@@ -563,25 +574,25 @@ class ResearchController extends BlankonController {
 
                 $output_members = new Collection();
                 $ctr_item = 1;
-                if (is_array($request->nidn) && array_key_exists($key, $request->nidn))
+                if (is_array($request->nidn) && array_key_exists($key_2, $request->nidn))
                 {
-                    foreach ($request->nidn[$key] as $nidn_key => $nidn)
+                    foreach ($request->nidn[$key_2] as $nidn_key => $nidn)
                     {
                         $output_member = new OutputMember();
                         $output_member->item = $ctr_item;
-                        if (is_array($request->is_external) && array_key_exists($key, $request->is_external) &&
-                            is_array($request->is_external[$key]) && array_key_exists($nidn_key, $request->is_external[$key])
+                        if (is_array($request->is_external) && array_key_exists($key_2, $request->is_external) &&
+                            is_array($request->is_external[$key_2]) && array_key_exists($nidn_key, $request->is_external[$key_2])
                         )
                         {
-                            if ($request->is_external[$key][$nidn_key] === '1')
+                            if ($request->is_external[$key_2][$nidn_key] === '1')
                             {
-                                $output_member->external = $request->external[$key][$nidn_key];
+                                $output_member->external = $request->external[$key_2][$nidn_key];
                             }
                         } else
                         {
-                            if ($request->nidn[$key][$nidn_key] !== null && $request->nidn[$key][$nidn_key] !== '')
+                            if ($request->nidn[$key_2][$nidn_key] !== null && $request->nidn[$key_2][$nidn_key] !== '')
                             {
-                                $output_member->nidn = $request->nidn[$key][$nidn_key];
+                                $output_member->nidn = $request->nidn[$key_2][$nidn_key];
                             }
                         }
                         $output_members->add($output_member);
@@ -589,6 +600,7 @@ class ResearchController extends BlankonController {
                     }
                 }
                 $research_output_general->outputMember()->saveMany($output_members);
+                $key_2++;
             }
             $this->setOutputFlowStatuses($research);
         });

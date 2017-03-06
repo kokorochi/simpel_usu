@@ -63,7 +63,7 @@
                                                     @if($propose->is_own === null)
                                                         {{ $propose->period()->first()->scheme }}
                                                     @else
-                                                        {{ $propose->proposesOwn()->first()->scheme }}
+                                                        {{ $propose->proposesOwn()->first()->scheme == '' ? 'Mandiri' : $propose->proposesOwn()->first()->scheme}}
                                                     @endif
                                                 </td>
                                                 <td class="text-center border-right">{{ $propose->flowStatus()->orderBy('item', 'desc')->first()

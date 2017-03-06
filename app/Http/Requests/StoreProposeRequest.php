@@ -137,7 +137,8 @@ class StoreProposeRequest extends FormRequest {
                 return $ret;
             }
 
-            if (! count($this->input('member_nidn')) == $this->input('own-member'))
+//            dd(count($this->input('member_nidn')) . ' ' . $this->input('own-member'));
+            if (count($this->input('member_nidn')) != $this->input('own-member'))
             {
                 array_push($ret, 'Jumlah anggota tidak sesuai dengan data anggota yang diisi');
             }
