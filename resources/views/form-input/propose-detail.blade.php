@@ -134,8 +134,7 @@ $errors->has('bank_account_no') || old('bank_account_no')
                     </div><!-- /.form-group -->
 
                     <div class="form-group">
-                        <label for="bank_account_no" class="col-sm-4 col-md-3 control-label">Nomor Pemilik Rekening
-                            Bank</label>
+                        <label for="bank_account_no" class="col-sm-4 col-md-3 control-label">Nomor Rekening Bank</label>
                         <div class="col-sm-7">
                             <input name="bank_account_no" class="form-control input-sm" type="text"
                                    value="{{ $propose_relation->propose->bank_account_no }}" {{$disabled}}>

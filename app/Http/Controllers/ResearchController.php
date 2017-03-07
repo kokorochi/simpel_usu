@@ -131,7 +131,9 @@ class ResearchController extends BlankonController {
             } else
             {
                 $output_flow_status = $research->outputFlowStatus()->orderBy('id', 'desc')->first();
-                if ($output_flow_status !== null && $output_flow_status->status_code !== null)
+                if ($output_flow_status !== null &&
+                    $output_flow_status->status_code !== null &&
+                    $output_flow_status->status_code != 'UL' )
                 {
                     $output_status = $output_flow_status->statusCode()->first()->description;
                 } else
