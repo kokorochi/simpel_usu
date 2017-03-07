@@ -154,7 +154,7 @@
                 <td class="print-col-1"></td>
                 <td class="print-col-2">2. NIDN</td>
                 <td class="print-col-3">:</td>
-                <td class="print-col-4">{{$lecturer->employee_card_serial_number}}</td>
+                <td class="print-col-4">{{$lecturer_member->employee_card_serial_number}}</td>
             </tr>
             <tr>
                 <td class="print-col-1"></td>
