@@ -37,7 +37,7 @@ class BlankonController extends Controller {
     public $v_auths = [];
 
     private $operator_email = [
-        '0' => 'suryawijaya@usu.ac.id'
+        '0' => 'lp@usu.ac.id'
     ];
 
     /**
@@ -250,10 +250,8 @@ class BlankonController extends Controller {
                 dispatch(new SendNotificationEmail($recipients, $email, $propose));
                 break;
             case 'PR':
-                $recipients = [
-                    '0' => 'suryawijaya@usu.ac.id',
-//                    '1' => 'lp@usu.ac.id'
-                ];
+                $recipients = $this->operator_email;
+
                 $email['subject'] = '[SIMPEL] Penentuan Reviewer';
                 $email['recipient_name'] = 'Operator Sistem Penelitian';
                 $email['body_content'] = 'Diinformasikan bahwa terdapat usulan untuk dilakukan penentuan reviewer. Untuk itu, kami meminta Bapak/Ibu untuk melakukan penentuan reviewer atas usulan tersebut. Untuk melakukan penentuan reviewer, Bapak/Ibu diminta untuk login pada link ini: <a href="https://simpel.usu.ac.id/reviewers/assign/' . $propose->id . '">Sistem Penelitian USU</a>';
@@ -338,10 +336,7 @@ class BlankonController extends Controller {
                 dispatch(new SendNotificationEmail($recipients, $email, $propose));
                 break;
             case 'VL':
-                $recipients = [
-                    '0' => 'suryawijaya@usu.ac.id',
-//                    '1' => 'lp@usu.ac.id'
-                ];
+                $recipients = $this->operator_email;
                 $research = $propose->research()->first();
 
                 $email['subject'] = '[SIMPEL] Validasi Luaran';
