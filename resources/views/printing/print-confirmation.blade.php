@@ -113,8 +113,8 @@
         </tr>
         @php($ctr_alpha = 'b')
         @foreach($members as $member)
-            @php($lecturer = $member->lecturer()->first())
-            @php($faculty = \App\ModelSDM\Faculty::where('faculty_code', $lecturer->work_unit)->first())
+            @php($lecturer_member = $member->lecturer()->first())
+            @php($faculty = \App\ModelSDM\Faculty::where('faculty_code', $lecturer_member->work_unit)->first())
             @php
                 if($member->external === '1')
                 {
