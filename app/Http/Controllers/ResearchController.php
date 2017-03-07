@@ -361,7 +361,7 @@ class ResearchController extends BlankonController {
             if ($flow_status->status_code === 'LA')
             {
                 $output_flow_status = $research->outputFlowStatus()->orderBy('id', 'desc')->first();
-                if ($output_flow_status->status_code === 'LT')
+                if ($output_flow_status!== null && $output_flow_status->status_code === 'LT')
                 {
                     $research->propose()->first()->flowStatus()->create([
                         'item'        => $flow_status->item + 1,
