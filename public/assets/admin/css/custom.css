@@ -8,11 +8,12 @@ body {
 }
 
 #login-error {
+    display: block;
     border-radius: 3px;
     background-color: #E9573F;
     color: #FFFFFF;
     padding: 5px 10px;
-    margin-left: 35px;
+    text-align: center;
 }
 
 .blog-img {

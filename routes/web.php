@@ -28,6 +28,9 @@ Route::post('user/login', 'LoginController@doLogin');
 Route::get('user/logout', 'LoginController@doLogout');
 Route::get('user/reset', 'LoginController@reset');
 Route::put('user/reset', 'LoginController@doReset');
+Route::get('user/lost', 'LoginController@showLostPassword');
+Route::put('user/lost', 'LoginController@doSendPassword');
+Route::get('user/reset-password', 'LoginController@doSendPassword');
 // End Login Route
 
 // Announces Route

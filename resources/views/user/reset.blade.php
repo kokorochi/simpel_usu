@@ -62,6 +62,7 @@
                 </div><!-- /.form-group -->
                 {{ csrf_field() }}
                 <input type="hidden" name="_method" value="PUT">
+                <input type="hidden" name="nidn" value="{{$nidn}}">
             </div><!-- /.sign-footer -->
         </form><!-- /.form-horizontal -->
         <!--/ Login form -->

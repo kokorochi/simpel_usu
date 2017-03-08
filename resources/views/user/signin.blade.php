@@ -48,8 +48,15 @@
             <div class="sign-footer">
                 @if($errors->has('sumErrors'))
                     <div class="form-group">
-                        <label id="login-error" class="error" for="password" style="display: inline-block;">
+                        <label id="login-error" class="error" for="password">
                             {{$errors->first('sumErrors')}}
+                        </label>
+                    </div>
+                @endif
+                @if(Session::has('alert-success'))
+                    <div class="form-group">
+                        <label class="alert alert-success" for="password" style="display: block; text-align: center;">
+                            {{Session::get('alert-success')}}
                         </label>
                     </div>
                 @endif
@@ -61,9 +68,9 @@
                                 <label for="rememberme" class="rounded">Ingat saya</label>
                             </div>
                         </div>
-                        {{--<div class="col-xs-6 text-right">--}}
-                        {{--<a href="{{url('page/lost-password')}}" title="lost password">Lost password?</a>--}}
-                        {{--</div>--}}
+                        <div class="col-xs-6 text-right">
+                            <a href="{{url('user/lost')}}" title="lost password">Lupa Password?</a>
+                        </div>
                     </div>
                 </div><!-- /.form-group -->
                 <div class="form-group">
