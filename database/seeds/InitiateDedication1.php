@@ -129,6 +129,11 @@ class InitiateDedication1 extends Seeder {
             'created_by'  => 'admin',
         ]);
         StatusCode::create([
+            'code'        => 'UA',
+            'description' => 'Anggota tidak menyetujui, Ubah Anggota',
+            'created_by'  => 'admin',
+        ]);
+        StatusCode::create([
             'code'        => 'VA',
             'description' => 'Menunggu Verifikasi Anggota',
             'created_by'  => 'admin',

@@ -36,7 +36,7 @@ class StoreProposeRequest extends FormRequest {
                 $rules = [
                     //Check Detail
                     'faculty_code'       => 'required',
-                    'title'              => 'required|max:100',
+                    'title'              => 'required',
                     'output_type'        => 'required',
                     'total_amount'       => 'required',
                     'areas_of_expertise' => 'required',
@@ -59,7 +59,7 @@ class StoreProposeRequest extends FormRequest {
 
                     //Check Detail
                     'faculty_code'       => 'required',
-                    'title'              => 'required|max:100',
+                    'title'              => 'required',
                     'total_amount'       => 'required',
                     'areas_of_expertise' => 'required',
                     //End Check Detail
