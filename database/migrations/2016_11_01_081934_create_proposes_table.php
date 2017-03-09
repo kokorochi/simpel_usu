@@ -19,7 +19,7 @@ class CreateProposesTable extends Migration
             $table->char('is_own', 1)->nullable();
             $table->string('faculty_code', 10)->nullable();
             $table->string('areas_of_expertise')->nullable();
-            $table->string('title', 100)->nullable();
+            $table->text('title')->nullable();
             $table->double('total_amount', 15, 2)->nullable();
             $table->double('final_amount', 15, 2)->nullable();
             $table->smallInteger('time_period', false, true)->nullable();
