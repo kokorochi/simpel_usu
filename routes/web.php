@@ -197,7 +197,9 @@ Route::get('ajax/outputs/get-count', 'AJAXController@getCountOutput');
 // End AJAX Route
 
 //Log Viewer Route
-Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+Route::group(['middleware' => ['auth','isSuperUser']], function() {
+    Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+});
 //End Log Viewer Route
 
 $api = app('Dingo\Api\Routing\Router');

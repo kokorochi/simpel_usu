@@ -27,7 +27,8 @@ class IsSuperUser extends BlankonController
 
             View::share('css', $this->css);
             View::share('js', $this->js);
-            View::share('title', 'ERROR 403 | ' . $this->title);
+            if(isset($this->title))
+                View::share('title', 'ERROR 403 | ' . $this->title);
             return abort('403');
         }
         return $next($request);
