@@ -86,7 +86,7 @@ $(document).ready(function () {
         if ($("input#external" + i).is(":checked")) {
             // console.log($(this).closest('.form-group').find('.external-member-wrapper').length);
             $("input#external" + i).closest('.form-group').find('.external-member-wrapper').show();
-            $("input#external" + i).closest('.form-group').find('.internal-member-wrapper').hide();
+            $("input#external" + i).closest('.form-group').find('.internal-member-wrapper').hide().find('input').prop('disabled', true);
         } else {
             $("input#external" + i).closest('.form-group').find('.external-member-wrapper').hide();
             $("input#external" + i).closest('.form-group').find('.internal-member-wrapper').show();

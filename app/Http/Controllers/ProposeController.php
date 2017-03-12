@@ -39,7 +39,8 @@ class ProposeController extends BlankonController {
     {
         $this->middleware('auth');
         $this->middleware('isLecturer')->except('getFile');
-        $this->middleware('isMember')->only('getFile', 'edit');
+        $this->middleware('isMember')->only('getFile', 'display');
+        $this->middleware('isLead')->except('getFile', 'display');
         parent::__construct();
 
         array_push($this->css['pages'], 'global/plugins/bower_components/fontawesome/css/font-awesome.min.css');
@@ -345,6 +346,17 @@ class ProposeController extends BlankonController {
                     ]);
                     $this->setEmail('RS', $propose);
                 }
+            }
+
+            if($status === 'rejected')
+            {
+                $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
+                $propose->flowStatus()->create([
+                    'item'        => $flow_status->item + 1,
+                    'status_code' => 'UA', //Ubah Anggota
+                    'created_by'  => Auth::user()->nidn,
+                ]);
+                $this->setEmail('UA', $propose);
             }
         });
 
@@ -848,6 +860,35 @@ class ProposeController extends BlankonController {
                 return redirect()->intended('/proposes');
             }
         }
+    }
+
+    public function updateMember(Requests\UpdateMemberRequest $request, $id)
+    {
+        $propose = Propose::find($id);
+        if ($propose === null)
+        {
+            $this->setCSS404();
+
+            return abort('404');
+        }
+
+        $members = $propose->member()->where('status', 'rejected')->get();
+
+        DB::transaction(function () use ($propose, $request, $members){
+            $members->delete();
+
+            $member_item = $propose->member()->orderBy('id', 'desc')->first();
+            $i = $member_item->item + 1;
+
+            foreach ($request->member_nidn as $item)
+            {
+                $store = new Member();
+                $store->item = $i++;
+                $store->nidn = $item;
+                $store->status = 'waiting';
+                $propose->member()->save($store);
+            }
+        });
     }
 
     public function destroy($id)

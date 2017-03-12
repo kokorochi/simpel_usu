@@ -84,7 +84,8 @@
                                                         @endif
                                                         @if($status_code === 'VA' ||
                                                             $status_code === 'UU' ||
-                                                            $status_code === 'PR')
+                                                            $status_code === 'PR' ||
+                                                            $status_code === 'UA')
                                                             <a href="#" class="modal_delete btn btn-danger btn-xs"
                                                                data-id="{{$propose->id}}" data-placement="top"
                                                                data-original-title="Delete" data-toggle="modal"

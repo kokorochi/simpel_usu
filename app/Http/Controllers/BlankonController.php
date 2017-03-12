@@ -208,6 +208,17 @@ class BlankonController extends Controller {
 
                 dispatch(new SendNotificationEmail($recipients, $email, $propose));
                 break;
+            case 'UA':
+                $lecturer = $this->getEmployee($propose->created_by);
+
+                $recipients = $lecturer->email;
+                $email['subject'] = '[SIMPEL] Ubah Anggota';
+                $email['recipient_name'] = $lecturer->full_name;
+                $email['body_content'] = 'Kami informasikan bahwa anggota tidak menyetujui usulan anda. Untuk itu, kami meminta Bapak/Ibu untuk mengubah anggota atas usulan tersebut. Untuk melakukan perubahan anggota, Bapak/Ibu diminta untuk login pada link ini: <a href="https://simpel.usu.ac.id/proposes/' . $propose->id . '/edit">Sistem Penelitian USU</a>';
+                $email['body_detail_content'] = 'Demikian informasi ini kami sampaikan.<br/>Dikirim otomatis oleh Sistem Penlitian USU';
+
+                dispatch(new SendNotificationEmail($recipients, $email, $propose));
+                break;
             case 'accepted':
                 $lecturer = $this->getEmployee($propose->created_by);
                 $member = $this->getEmployee(Auth::user()->nidn);

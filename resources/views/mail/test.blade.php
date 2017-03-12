@@ -123,7 +123,7 @@
                                                                 {{--style="margin: 0;padding: 0;font-family: &quot;Helvetica Neue&quot;, &quot;Helvetica&quot;, Helvetica, Arial, sans-serif;">--}}
                                                         Email: <strong
                                                                 style="margin: 0;padding: 0;font-family: &quot;Helvetica Neue&quot;, &quot;Helvetica&quot;, Helvetica, Arial, sans-serif;"><a
-                                                                    href="emailto:hseldon@trantor.com"
+                                                                    href="mailto:lp@usu.ac.id"
                                                                     style="margin: 0;padding: 0;font-family: &quot;Helvetica Neue&quot;, &quot;Helvetica&quot;, Helvetica, Arial, sans-serif;color: #2BA6CB;">lp@usu.ac.id</a></strong></p>
 
                                                 </td>

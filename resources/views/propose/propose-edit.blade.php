@@ -29,8 +29,12 @@
             @include('form-input.panel-errors')
 
             @include('form-input.propose-scheme')
-            
-            @include('form-input.propose-member')
+
+            @if($status_code === 'UA')
+                @include('form-input.propose-member-edit')
+            @else
+                @include('form-input.propose-member')
+            @endif
 
             @include('form-input.propose-detail-output')
 
