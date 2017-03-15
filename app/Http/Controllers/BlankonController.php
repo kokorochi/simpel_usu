@@ -192,7 +192,7 @@ class BlankonController extends Controller {
         switch ($status_code)
         {
             case 'VA' :
-                $members = $propose->member()->get();
+                $members = $propose->member()->where('status', 'waiting')->get();
                 foreach ($members as $key => $member)
                 {
                     if ($member->external !== '1')

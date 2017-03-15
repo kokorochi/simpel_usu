@@ -39,8 +39,8 @@ class ProposeController extends BlankonController {
     {
         $this->middleware('auth');
         $this->middleware('isLecturer')->except('getFile');
-        $this->middleware('isMember')->only('getFile', 'display');
-        $this->middleware('isLead')->except('getFile', 'display');
+        $this->middleware('isMember')->only('getFile', 'display', 'verification', 'updateVerification');
+        $this->middleware('isLead')->except('getFile', 'display', 'verification', 'updateVerification');
         parent::__construct();
 
         array_push($this->css['pages'], 'global/plugins/bower_components/fontawesome/css/font-awesome.min.css');
@@ -636,6 +636,10 @@ class ProposeController extends BlankonController {
             $sign_1 = $request->sign_1;
             $sign_2 = $request->sign_2;
             $period = $propose->period()->first();
+            if(!is_null($propose->is_own))
+            {
+                $propose_own = $propose->proposesOwn()->first();
+            }
 
             return view('printing.print-confirmation', compact(
                 'propose',
@@ -647,7 +651,8 @@ class ProposeController extends BlankonController {
                 'dean',
                 'sign_1',
                 'sign_2',
-                'period'
+                'period',
+                'propose_own'
             ));
         } else //Button Save
         {
@@ -872,12 +877,10 @@ class ProposeController extends BlankonController {
             return abort('404');
         }
 
-        $members = $propose->member()->where('status', 'rejected')->get();
+        DB::transaction(function () use ($propose, $request){
+            Member::where('status', 'rejected')->delete();
 
-        DB::transaction(function () use ($propose, $request, $members){
-            $members->delete();
-
-            $member_item = $propose->member()->orderBy('id', 'desc')->first();
+            $member_item = $propose->member()->withTrashed()->orderBy('id', 'desc')->first();
             $i = $member_item->item + 1;
 
             foreach ($request->member_nidn as $item)
@@ -888,7 +891,19 @@ class ProposeController extends BlankonController {
                 $store->status = 'waiting';
                 $propose->member()->save($store);
             }
+
+            $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
+            $propose->flowStatus()->create([
+                'item'        => $flow_status->item + 1,
+                'status_code' => 'VA', //Verifikasi Anggota
+                'created_by'  => Auth::user()->nidn,
+            ]);
+
+            //Send email to member
+            $this->setEmail('VA', $propose);
         });
+
+        return redirect()->intended('/proposes');
     }
 
     public function destroy($id)

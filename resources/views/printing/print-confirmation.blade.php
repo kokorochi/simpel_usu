@@ -21,8 +21,12 @@
 <body class="page-session page-sound page-header-fixed page-sidebar-fixed">
 <div id="print-confirmation-wrapper">
     <h3 class="text-center">
-        Halaman Pengesahan<br />
-        {{$period->scheme}}
+        Halaman Pengesahan<br/>
+        @if(!is_null($period))
+            {{$period->scheme}}
+        @elseif(! is_null($propose_own))
+            {{$propose_own->scheme}}
+        @endif
     </h3>
     <table>
         <tbody>
@@ -113,8 +117,10 @@
         </tr>
         @php($ctr_alpha = 'b')
         @foreach($members as $member)
-            @php($lecturer_member = $member->lecturer()->first())
-            @php($faculty = \App\ModelSDM\Faculty::where('faculty_code', $lecturer_member->work_unit)->first())
+            @if($member->external === null)
+                @php($lecturer_member = $member->lecturer()->first())
+                @php($faculty = \App\ModelSDM\Faculty::where('faculty_code', $lecturer_member->work_unit)->first())
+            @endif
             @php
                 if($member->external === '1')
                 {
@@ -150,18 +156,26 @@
                 <td class="print-col-3">:</td>
                 <td class="print-col-4">{{$full_name}}</td>
             </tr>
-            <tr>
-                <td class="print-col-1"></td>
-                <td class="print-col-2">2. NIDN</td>
-                <td class="print-col-3">:</td>
-                <td class="print-col-4">{{$lecturer_member->employee_card_serial_number}}</td>
-            </tr>
-            <tr>
-                <td class="print-col-1"></td>
-                <td class="print-col-2">3. Fakultas</td>
-                <td class="print-col-3">:</td>
-                <td class="print-col-4">{{$faculty->faculty_name}}</td>
-            </tr>
+            @if($member->external === null)
+                <tr>
+                    <td class="print-col-1"></td>
+                    <td class="print-col-2">2. NIDN</td>
+                    <td class="print-col-3">:</td>
+                    <td class="print-col-4">{{$lecturer_member->employee_card_serial_number}}</td>
+                </tr>
+                <tr>
+                    <td class="print-col-1"></td>
+                    <td class="print-col-2">3. Jabatan/Golongan</td>
+                    <td class="print-col-3">:</td>
+                    <td class="print-col-4">{{$lecturer_member->position}}</td>
+                </tr>
+                <tr>
+                    <td class="print-col-1"></td>
+                    <td class="print-col-2">4. Fakultas</td>
+                    <td class="print-col-3">:</td>
+                    <td class="print-col-4">{{$faculty->faculty_name}}</td>
+                </tr>
+            @endif
         @endforeach
         <tr>
             <td class="print-col-1"></td>
@@ -173,12 +187,12 @@
 
         <!-- Output Type -->
         {{--@foreach($propose_output_types as $key => $propose_output_type)--}}
-            {{--<tr>--}}
-                {{--<td class="print-col-1">{{$key === 0 ? "5." : ""}}</td>--}}
-                {{--<td class="print-col-2">{{$key === 0 ? "Luaran yang dihasilkan" : ""}}</td>--}}
-                {{--<td class="print-col-3">{{$key === 0 ? ":" : ""}}</td>--}}
-                {{--<td class="print-col-4">{{"- " . $propose_output_type->outputType()->first()->output_name}}</td>--}}
-            {{--</tr>--}}
+        {{--<tr>--}}
+        {{--<td class="print-col-1">{{$key === 0 ? "5." : ""}}</td>--}}
+        {{--<td class="print-col-2">{{$key === 0 ? "Luaran yang dihasilkan" : ""}}</td>--}}
+        {{--<td class="print-col-3">{{$key === 0 ? ":" : ""}}</td>--}}
+        {{--<td class="print-col-4">{{"- " . $propose_output_type->outputType()->first()->output_name}}</td>--}}
+        {{--</tr>--}}
         {{--@endforeach--}}
         <!-- End Output Type -->
 

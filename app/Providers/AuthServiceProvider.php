@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Policies\UpdatePropose;
+use App\Propose;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use App\Auths;
@@ -14,6 +16,7 @@ class AuthServiceProvider extends ServiceProvider {
      */
     protected $policies = [
         'App\Model' => 'App\Policies\ModelPolicy',
+        Propose::class => UpdatePropose::class,
     ];
 
     /**

@@ -3,11 +3,7 @@
 
 @while(
 $errors->has('member_display.' . $ctr_old) || old('member_display.' . $ctr_old) ||
-$errors->has('member_nidn.' . $ctr_old) || old('member_nidn.' . $ctr_old) ||
-$errors->has('member_areas_of_expertise.' . $ctr_old) || old('member_areas_of_expertise.' . $ctr_old) ||
-$errors->has('external' . $ctr_old) || old('external' . $ctr_old) ||
-$errors->has('external_name.' . $ctr_old) || old('external_name.' . $ctr_old) ||
-$errors->has('external_affiliation.' . $ctr_old) || old('external_affiliation.' . $ctr_old)
+$errors->has('member_nidn.' . $ctr_old) || old('member_nidn.' . $ctr_old)
 )
     @php
         $member = new \App\Member;
@@ -17,16 +13,11 @@ $errors->has('external_affiliation.' . $ctr_old) || old('external_affiliation.' 
             $propose_relation->members->add($member);
         }else{
             $propose_relation->members[$ctr_old]['member_display'] = $member['member_display'];
-            $propose_relation->members[$ctr_old]['v'] = $member['member_nidn'];
+            $propose_relation->members[$ctr_old]['member_nidn'] = $member['member_nidn'];
         }
         $ctr_old++;
     @endphp
 @endwhile
-
-@php
-    $olds = session()->getOldInput();
-    var_dump($olds);
-@endphp
 
 @if($errors->has('areas_of_expertise') || old('areas_of_expertise'))
     @php($propose_relation->propose->areas_of_expertise = old('areas_of_expertise'))
@@ -128,7 +119,7 @@ $errors->has('external_affiliation.' . $ctr_old) || old('external_affiliation.' 
                                                    class="input-member form-control input-sm mb-15"
                                                    value="{{$member->member_display}}" {{$disabled_member}} />
                                             <input name="member_nidn[]" type="text" class="input-value" hidden="hidden"
-                                                   value="{{$member->member_nidn}}"/>
+                                                   value="{{$member->member_nidn}}" {{$disabled_member}}/>
                                             @if($errors->has('member_display.' . $key))
                                                 <label class="error" for="member_display[]"
                                                        style="display: inline-block;">

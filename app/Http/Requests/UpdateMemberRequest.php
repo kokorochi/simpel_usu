@@ -66,7 +66,7 @@ class UpdateMemberRequest extends FormRequest {
             array_push($ret, 'Usulan tidak valid!');
         }
 
-        $propose_members = $propose->member()->withTrashed()->get();
+        $propose_members = $propose->member()->get();
 
         foreach ($this->member_nidn as $item)
         {

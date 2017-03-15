@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST_USU', 'smtp.gmail.org'),
+    'host' => env('MAIL_HOST_USU', 'smtp.gmail.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -84,7 +84,7 @@ return [
     |
     */
 
-    'username' => env('MAIL_USERNAME_USU'),
+    'username' => env('MAIL_USERNAME'),
 
     /*
     |--------------------------------------------------------------------------
@@ -97,7 +97,7 @@ return [
     |
     */
 
-    'password' => env('MAIL_PASSWORD_USU'),
+    'password' => env('MAIL_PASSWORD'),
 
     /*
     |--------------------------------------------------------------------------
