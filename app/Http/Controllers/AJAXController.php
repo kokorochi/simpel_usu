@@ -418,7 +418,7 @@ class AJAXController extends BlankonController {
         $output_types = $query->get();
         foreach ($output_types as $output_type)
         {
-            $filter['output_type'] = $output_type->output_type_id;
+            $filter['output_type'][] = $output_type->output_type_id;
         }
 
         if($input['level'] == 1) // University level means list all faculty
@@ -451,6 +451,7 @@ class AJAXController extends BlankonController {
                 }
 
                 $data['items'][$i]['faculty_name'] = $faculty->faculty_name;
+                dd($filter);
 
                 $min_year = $input['year'] - 3;
                 while($min_year <= $input['year'])
@@ -467,8 +468,10 @@ class AJAXController extends BlankonController {
                         $query->whereIn('propose_output_types.output_type_id', $filter['output_type']);
                     $query->where('output_flow_statuses.status_code', 'VL');
                     $query->where('research_output_generals.year', $min_year);
-                    $query->select('');
+                    $query->select('proposes.id');
                     $data = $query->get();
+
+                    dd($data);
 
                     $data['items'][$i]['year_' . $min_year] = rand(0,3);
                     $min_year++;

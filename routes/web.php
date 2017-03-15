@@ -146,6 +146,8 @@ Route::put('reviewers/{id}/edit', 'ReviewerController@update');
 Route::get('reviewers/assign', 'ReviewerController@assignList');
 Route::get('reviewers/assign/{id}', 'ReviewerController@assign');
 Route::post('reviewers/assign/{id}', 'ReviewerController@assignUpdate');
+
+Route::delete('reviewers/{id}', 'ReviewerController@destroy');
 // End Reviewer Route
 
 // Start Review Proposes Route

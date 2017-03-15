@@ -299,6 +299,21 @@ class ReviewerController extends BlankonController {
         return redirect()->intended('reviewers/assign');
     }
 
+    public function destroy($id)
+    {
+        $auth = Auths::find($id);
+        if(is_null($auth))
+        {
+            $this->setCSS404();
+
+            return abort('404');
+        }
+
+        $auth->delete();
+
+        return redirect()->intended('reviewers');
+    }
+
     private function getProposeRelationData($propose = null)
     {
         $ret = new \stdClass();
