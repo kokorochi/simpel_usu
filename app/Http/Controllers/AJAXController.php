@@ -394,45 +394,46 @@ class AJAXController extends BlankonController {
     {
         $input = Input::get();
 
-        if(!isset($input['level']))
+        if (! isset($input['level']))
         {
             $input['level'] = 1;
         }
 
-        if(!isset($input['year']))
+        if (! isset($input['year']))
         {
             $input['year'] = date('Y');
         }
         $min_year = $input['year'] - 3;
 
         $query = Output_type::query();
-        if(isset($input['output_code']))
+        if (isset($input['output_code']))
         {
-            if(is_array($input['output_code']))
+            if (is_array($input['output_code']))
             {
                 $query->whereIn('output_code', $input['output_code']);
-            }else{
+            } else
+            {
                 $query->where('output_code', $input['output_code']);
             }
         }
         $output_types = $query->get();
         foreach ($output_types as $output_type)
         {
-            $filter['output_type'][] = $output_type->output_type_id;
+            $filter['output_type'][] = $output_type->id;
         }
 
-        if($input['level'] == 1) // University level means list all faculty
+        if ($input['level'] == 1) // University level means list all faculty
         {
             $data['columns'][] = [
-                'label' => 'Fakultas',
+                'label'    => 'Fakultas',
                 'property' => 'faculty_name',
                 'sortable' => true,
             ];
 
-            while($min_year <= $input['year'])
+            while ($min_year <= $input['year'])
             {
                 $data['columns'][] = [
-                    'label' => $min_year,
+                    'label'    => $min_year,
                     'property' => 'year_' . $min_year,
                     'sortable' => true,
                     'cssClass' => 'report-year'
@@ -451,29 +452,34 @@ class AJAXController extends BlankonController {
                 }
 
                 $data['items'][$i]['faculty_name'] = $faculty->faculty_name;
-                dd($filter);
 
                 $min_year = $input['year'] - 3;
-                while($min_year <= $input['year'])
+                while ($min_year <= $input['year'])
                 {
+//                    $query = DB::table('proposes')
+//                        ->join('propose_output_types', 'propose_output_types.propose_id', '=', 'proposes.id')
+//                        ->join('researches', 'researches.propose_id', '=', 'propose.id');
+
                     $query = DB::table('output_flow_statuses')
                         ->join('researches', 'researches.id', '=', 'output_flow_statuses.research_id')
                         ->join('proposes', 'proposes.id', '=', 'researches.propose_id')
                         ->join('propose_output_types', 'propose_output_types.propose_id', '=', 'proposes.id')
                         ->join('research_output_generals', 'research_output_generals.research_id', '=', 'researches.id');
 
-                    if(isset($filter['lecturer']) && is_array($filter['lecturer']))
+                    if (isset($filter['lecturer']) && is_array($filter['lecturer']))
                         $query->whereIn('proposes.created_by', $filter['lecturer']);
-                    if(isset($filter['output_type']) && is_array($filter['output_type']))
+                    if (isset($filter['output_type']) && is_array($filter['output_type']))
                         $query->whereIn('propose_output_types.output_type_id', $filter['output_type']);
                     $query->where('output_flow_statuses.status_code', 'VL');
                     $query->where('research_output_generals.year', $min_year);
-                    $query->select('proposes.id');
-                    $data = $query->get();
+                    $query->select('proposes.*', 'research_output_generals.*');
+                    $query = $query->get();
+                    if ($faculty->faculty_code == 'FIKTI' && $min_year == 2017)
+                    {
+                        dd($query);
+                    }
 
-                    dd($data);
-
-                    $data['items'][$i]['year_' . $min_year] = rand(0,3);
+                    $data['items'][$i]['year_' . $min_year] = rand(0, 3);
                     $min_year++;
                 }
                 $data['items'][$i]['faculty_name'] = $faculty->faculty_name;
