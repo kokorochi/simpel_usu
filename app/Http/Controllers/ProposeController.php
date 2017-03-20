@@ -348,7 +348,7 @@ class ProposeController extends BlankonController {
                 }
             }
 
-            if($status === 'rejected')
+            if ($status === 'rejected')
             {
                 $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
                 $propose->flowStatus()->create([
@@ -397,7 +397,8 @@ class ProposeController extends BlankonController {
                 $propose_relation->period = new Period();
             } else
             {
-                $propose_relation->period = $propose_relation->periods[0];
+                $propose_relation->period = $propose->period()->first();
+                if (is_null($propose_relation->period)) $propose_relation->period = $propose_relation->periods[0];
             }
 
             $form_action = url('proposes', $propose->id) . '/edit';
@@ -636,7 +637,7 @@ class ProposeController extends BlankonController {
             $sign_1 = $request->sign_1;
             $sign_2 = $request->sign_2;
             $period = $propose->period()->first();
-            if(!is_null($propose->is_own))
+            if (! is_null($propose->is_own))
             {
                 $propose_own = $propose->proposesOwn()->first();
             }
@@ -877,7 +878,8 @@ class ProposeController extends BlankonController {
             return abort('404');
         }
 
-        DB::transaction(function () use ($propose, $request){
+        DB::transaction(function () use ($propose, $request)
+        {
             Member::where('status', 'rejected')->delete();
 
             $member_item = $propose->member()->withTrashed()->orderBy('id', 'desc')->first();
@@ -1128,7 +1130,7 @@ class ProposeController extends BlankonController {
                 $ret->propose->is_own = '1';
             } else
             {
-                $ret->period = $ret->propose->period()->first();
+                $ret->period = $ret->periods->get(0);
             }
             $ret->output_types = Output_type::all();
             $ret->output_types->add(new Output_type());
