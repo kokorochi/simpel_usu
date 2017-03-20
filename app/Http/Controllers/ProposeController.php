@@ -1128,7 +1128,7 @@ class ProposeController extends BlankonController {
                 $ret->propose->is_own = '1';
             } else
             {
-                $ret->period = $ret->periods->get(0);
+                $ret->period = $ret->propose->period()->first();
             }
             $ret->output_types = Output_type::all();
             $ret->output_types->add(new Output_type());
