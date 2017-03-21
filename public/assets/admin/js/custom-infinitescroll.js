@@ -17,3 +17,7 @@ $(".announce-home").infinitescroll({
         BlankonBlog.masonryGrid();
     }
 );
+
+if($(window).height() >= $(document).height()){
+    $(".announce-home").infinitescroll('retrieve');
+};
