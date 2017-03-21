@@ -287,4 +287,8 @@ $(document).ready(function () {
             $('.chosen-select-output').trigger('chosen:updated');
         })
     }
+
+    $("button[name='filter-report']").click(function (e) {
+        console.log('test');
+    });
 });

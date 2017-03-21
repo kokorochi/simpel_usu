@@ -446,6 +446,7 @@ class AJAXController extends BlankonController {
             foreach ($faculties as $faculty)
             {
                 $lecturers = Lecturer::where('work_unit', $faculty->faculty_code)->get(["employee_card_serial_number"]);
+                $filter['lecturer'] = [];
                 foreach ($lecturers as $lecturer)
                 {
                     $filter['lecturer'][] = $lecturer->employee_card_serial_number;
@@ -460,6 +461,11 @@ class AJAXController extends BlankonController {
 //                        ->join('propose_output_types', 'propose_output_types.propose_id', '=', 'proposes.id')
 //                        ->join('researches', 'researches.propose_id', '=', 'propose.id');
 
+//                    if ($faculty->faculty_code == 'FAHUTA' && $min_year == 2017)
+//                    {
+//                        dd($filter['lecturer']);
+//                    }
+
                     $query = DB::table('output_flow_statuses')
                         ->join('researches', 'researches.id', '=', 'output_flow_statuses.research_id')
                         ->join('proposes', 'proposes.id', '=', 'researches.propose_id')
@@ -472,14 +478,16 @@ class AJAXController extends BlankonController {
                         $query->whereIn('propose_output_types.output_type_id', $filter['output_type']);
                     $query->where('output_flow_statuses.status_code', 'VL');
                     $query->where('research_output_generals.year', $min_year);
-                    $query->select('proposes.*', 'research_output_generals.*');
+                    $query->where('proposes.deleted_at', null);
+                    $query->select('propose_output_types.*');
                     $query = $query->get();
-                    if ($faculty->faculty_code == 'FIKTI' && $min_year == 2017)
+                    $count_output_array = [];
+                    foreach ($query as $query_item)
                     {
-                        dd($query);
+                        $count_output_array[] = $query_item->propose_id . '.' . $query_item->output_type_id;
                     }
-
-                    $data['items'][$i]['year_' . $min_year] = rand(0, 3);
+                    $count_output_array = array_unique($count_output_array);
+                    $data['items'][$i]['year_' . $min_year] = count($count_output_array);
                     $min_year++;
                 }
                 $data['items'][$i]['faculty_name'] = $faculty->faculty_name;

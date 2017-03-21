@@ -109,7 +109,7 @@
                                 </div>
                                 {{--</div> <!-- /.form-group -->--}}
                                 <div class="form-footer">
-                                    <button type="button" class="btn btn-success btn-slideright submit">Filter</button>
+                                    <button name="filter-report" type="button" class="btn btn-success btn-slideright submit">Filter</button>
                                     <div class="clearfix"></div>
                                 </div>
                             </form>
