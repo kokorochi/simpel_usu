@@ -187,6 +187,13 @@ class StoreProposeRequest extends FormRequest {
             }
         }
 
+        //Check head email
+        $lecturer = Lecturer::where('employee_card_serial_number', Auth::user()->nidn)->first();
+        if(!filter_var($lecturer->email, FILTER_VALIDATE_EMAIL))
+        {
+            array_push($ret, 'Email ketua tidak valid di SIMSDM, mohon diperbaiki terlebih dahulu');
+        }
+
         //Check output type
         $output_type_unique_ori = [];
         $valid_output = false;
