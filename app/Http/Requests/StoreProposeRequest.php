@@ -42,6 +42,7 @@ class StoreProposeRequest extends FormRequest {
                     'areas_of_expertise' => 'required',
                     'time_period'        => 'required|max:2',
                     'address'            => 'required',
+                    'student_involved'   => 'required',
                     //End Check Detail
 
                     //Check Upload
