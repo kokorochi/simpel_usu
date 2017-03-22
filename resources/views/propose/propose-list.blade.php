@@ -60,11 +60,22 @@
                                                 <td class="text-center border-right">{{ $propose->id }}</td>
                                                 <td class="text-center border-right">{{ $propose->title }}</td>
                                                 <td class="text-center border-right">
-                                                    @if($propose->is_own === null)
-                                                        {{ $propose->period()->first()->scheme }}
-                                                    @else
-                                                        {{ $propose->proposesOwn()->first()->scheme == '' ? 'Mandiri' : $propose->proposesOwn()->first()->scheme}}
-                                                    @endif
+                                                    @php
+                                                        $scheme = '';
+                                                        if($propose->is_own === null)
+                                                        {
+                                                            $period = $propose->period()->first();
+                                                            if(! is_null($period))
+                                                                $scheme = $period->scheme;
+                                                        }else{
+                                                            $period = $propose->proposesOwn()->first();
+                                                            if(! is_null($period))
+                                                                $scheme = $period->scheme;
+                                                            else
+                                                                $scheme = 'Mandiri';
+                                                        }
+                                                    @endphp
+                                                    {{$scheme}}
                                                 </td>
                                                 <td class="text-center border-right">{{ $propose->flowStatus()->orderBy('item', 'desc')->first()
                                                    ->statusCode()->first()->description }}</td>

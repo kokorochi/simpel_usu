@@ -25,8 +25,8 @@ class CreateProposesTable extends Migration
             $table->smallInteger('time_period', false, true)->nullable();
             $table->smallInteger('student_involved', false, true)->nullable();
             $table->string('address')->nullable();
-            $table->string('bank_account_name', 50)->nullable();
-            $table->string('bank_account_no', 30)->nullable();
+            $table->string('bank_account_name', 100)->nullable();
+            $table->string('bank_account_no', 100)->nullable();
             $table->string('file_propose_ori')->nullable();
             $table->string('file_propose')->nullable();
             $table->string('file_propose_final_ori')->nullable();

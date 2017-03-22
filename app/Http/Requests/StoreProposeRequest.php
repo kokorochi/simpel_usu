@@ -42,7 +42,9 @@ class StoreProposeRequest extends FormRequest {
                     'areas_of_expertise' => 'required',
                     'time_period'        => 'required|max:2',
                     'address'            => 'required',
-                    'student_involved'   => 'required',
+                    'student_involved'   => 'required|digits_between:1,2',
+                    'bank_account_no'    => 'required|numeric|max:100',
+                    'bank_account_name'  => 'required|max:100',
                     //End Check Detail
 
                     //Check Upload
@@ -61,7 +63,7 @@ class StoreProposeRequest extends FormRequest {
                     //Check Detail
                     'faculty_code'       => 'required',
                     'title'              => 'required',
-                    'total_amount'       => 'required',
+                    'total_amount'       => 'required|numeric',
                     'areas_of_expertise' => 'required',
                     //End Check Detail
                 ];
@@ -81,16 +83,20 @@ class StoreProposeRequest extends FormRequest {
             'member_display.*.required' => 'Nama Anggota tidak boleh kosong',
             'member_nidn.*.required'    => 'NIDN Anggota tidak boleh kosong',
 
-            'faculty_code.required'       => 'Fakultas tidak boleh kosong',
-            'title.required'              => 'Judul Penelitian tidak boleh kosong',
-            'output_type.required'        => 'Luaran tidak boleh kosong',
-            'total_amount.required'       => 'Jumlah Dana tidak boleh kosong',
-            'time_period.required'        => 'Jangka Waktu tidak boleh kosong',
-            'areas_of_expertise.required' => 'Bidang Keahlian tidak boleh kosong',
-            'student_involved.required'   => 'Mahasiswa terlibat tidak boleh kosong',
-            'address.required'            => 'Alamat Kantor/Faks/Telepon tidak boleh kosong',
-            'bank_account_name.required'  => 'Nama Pemilik Bank tidak boleh kosong',
-            'bank_account_no.required'    => 'Nomor Rekening Bank tidak boleh kosong',
+            'faculty_code.required'           => 'Fakultas tidak boleh kosong',
+            'title.required'                  => 'Judul Penelitian tidak boleh kosong',
+            'output_type.required'            => 'Luaran tidak boleh kosong',
+            'total_amount.required'           => 'Jumlah Dana tidak boleh kosong',
+            'time_period.required'            => 'Jangka Waktu tidak boleh kosong',
+            'areas_of_expertise.required'     => 'Bidang Keahlian tidak boleh kosong',
+            'student_involved.required'       => 'Mahasiswa terlibat tidak boleh kosong',
+            'student_involved.digits_between' => 'Mahasiswa terlibat hanya boleh diisi angka',
+            'address.required'                => 'Alamat Kantor/Faks/Telepon tidak boleh kosong',
+            'bank_account_name.required'      => 'Nama Pemilik Bank tidak boleh kosong',
+            'bank_account_name.max'           => 'Nama Pemilik Bank maksimal 100 karakter',
+            'bank_account_no.required'        => 'Nomor Rekening Bank tidak boleh kosong',
+            'bank_account_no.numeric'         => 'Nomor Rekening Bank hanya boleh diisi angka',
+            'bank_account_no.max'             => 'Nomor Rekening Bank maksimal 100 angka',
         ];
     }
 
@@ -121,6 +127,12 @@ class StoreProposeRequest extends FormRequest {
     private function checkBeforeSave()
     {
         $ret = [];
+        if (is_null($this->input('is_own')) && is_null($this->input('period_id')))
+        {
+            array_push($ret, 'Scheme harus dipilih');
+
+            return ret;
+        }
 
         //Check Own Scheme If Checked
         if ($this->input('is_own') === '1')
@@ -191,7 +203,7 @@ class StoreProposeRequest extends FormRequest {
 
         //Check head email
         $lecturer = Lecturer::where('employee_card_serial_number', Auth::user()->nidn)->first();
-        if(!filter_var($lecturer->email, FILTER_VALIDATE_EMAIL))
+        if (! filter_var($lecturer->email, FILTER_VALIDATE_EMAIL))
         {
             array_push($ret, 'Email ketua tidak valid di SIMSDM, mohon diperbaiki terlebih dahulu');
         }
@@ -250,8 +262,9 @@ class StoreProposeRequest extends FormRequest {
                     if ($lecturer->email === null || $lecturer->email === '')
                     {
                         array_push($ret, 'Anggota yang dipilih belum mengisi email di SIMSDM : ' . $this->input('member_display.' . $key));
-                    }else{
-                        if(!filter_var($lecturer->email, FILTER_VALIDATE_EMAIL))
+                    } else
+                    {
+                        if (! filter_var($lecturer->email, FILTER_VALIDATE_EMAIL))
                         {
                             array_push($ret, 'Anggota yang dipilih mengisi email yang tidak valid di SIMSDM : ' . $this->input('member_display.' . $key));
                         }

@@ -98,7 +98,7 @@ $errors->has('bank_account_no') || old('bank_account_no')
                             <input name="student_involved" class="form-control input-sm" type="text"
                                    maxlength="2" data-inputmask="'alias': 'decimal', 'rightAlign': false"
                                    value="{{ $propose_relation->propose->student_involved }}" {{$disabled}}>
-                            @if($errors->has('time_period'))
+                            @if($errors->has('student_involved'))
                                 <label class="error" for="student_involved" style="display: inline-block;">
                                     {{ $errors->first('student_involved') }}
                                 </label>
