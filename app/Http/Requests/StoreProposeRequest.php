@@ -241,6 +241,11 @@ class StoreProposeRequest extends FormRequest {
                     if ($lecturer->email === null || $lecturer->email === '')
                     {
                         array_push($ret, 'Anggota yang dipilih belum mengisi email di SIMSDM : ' . $this->input('member_display.' . $key));
+                    }else{
+                        if(!filter_var($lecturer->email, FILTER_VALIDATE_EMAIL))
+                        {
+                            array_push($ret, 'Anggota yang dipilih mengisi email yang tidak valid di SIMSDM : ' . $this->input('member_display.' . $key));
+                        }
                     }
                 }
             }
