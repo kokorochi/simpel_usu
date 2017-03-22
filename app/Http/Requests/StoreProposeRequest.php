@@ -87,6 +87,7 @@ class StoreProposeRequest extends FormRequest {
             'total_amount.required'       => 'Jumlah Dana tidak boleh kosong',
             'time_period.required'        => 'Jangka Waktu tidak boleh kosong',
             'areas_of_expertise.required' => 'Bidang Keahlian tidak boleh kosong',
+            'student_involved.required'   => 'Mahasiswa terlibat tidak boleh kosong',
             'address.required'            => 'Alamat Kantor/Faks/Telepon tidak boleh kosong',
             'bank_account_name.required'  => 'Nama Pemilik Bank tidak boleh kosong',
             'bank_account_no.required'    => 'Nomor Rekening Bank tidak boleh kosong',
