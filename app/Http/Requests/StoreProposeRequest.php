@@ -43,7 +43,7 @@ class StoreProposeRequest extends FormRequest {
                     'time_period'        => 'required|max:2',
                     'address'            => 'required',
                     'student_involved'   => 'required|digits_between:1,2',
-                    'bank_account_no'    => 'required|numeric|max:100',
+                    'bank_account_no'    => 'required|numeric',
                     'bank_account_name'  => 'required|max:100',
                     //End Check Detail
 
