@@ -39,7 +39,7 @@ class ProposeController extends BlankonController {
     {
         $this->middleware('auth');
         $this->middleware('isLecturer')->except('getFile');
-        $this->middleware('isMember')->only('getFile', 'display', 'verification', 'updateVerification');
+        $this->middleware('isMember')->only('display', 'verification', 'updateVerification');
         $this->middleware('isLead')->except('getFile', 'display', 'verification', 'updateVerification');
         parent::__construct();
 
