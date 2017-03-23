@@ -927,9 +927,16 @@ class ProposeController extends BlankonController {
 
     public function getFile($id, $type)
     {
+        $propose = Propose::find($id);
+        if(is_null($propose))
+        {
+            $this->setCSS404();
+
+            return abort('404');
+        }
+        $this->authorize('downloadPropose', $propose);
         if ($type == 2)
         {
-            $propose = Propose::find($id);
             $nidn = $propose->created_by;
             $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/propose/' . $propose->file_propose);
 
@@ -938,7 +945,6 @@ class ProposeController extends BlankonController {
             return response()->download($path, $propose->file_propose_ori, ['Content-Type' => 'application/pdf']);
         } elseif ($type == 3)
         {
-            $propose = Propose::find($id);
             $nidn = $propose->created_by;
             $path = storage_path() . '/app' . Storage::url('upload/' . md5($nidn) . '/propose/' . $propose->file_propose_final);
 

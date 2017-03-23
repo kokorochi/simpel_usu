@@ -75,4 +75,27 @@ class UpdatePropose extends AuthRetrieval {
     {
         //
     }
+
+    public function downloadPropose(User $user, Propose $propose)
+    {
+        if (! is_null($this->isSuper($user)) || ! is_null($this->isOperator($user)))
+        {
+            return true;
+        }
+
+        if (! is_null($this->isLecturer($user)))
+        {
+            $members = $propose->member()->where('external', null)->where('status', '<>', 'rejected')->get();
+            if($user->nidn === $propose->created_by) return true; //Is Head
+
+            foreach ($members as $member)
+            {
+                if($user->nidn === $member->nidn)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
