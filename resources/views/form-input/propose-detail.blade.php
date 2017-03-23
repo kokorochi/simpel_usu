@@ -137,6 +137,7 @@ $errors->has('bank_account_no') || old('bank_account_no')
                         <label for="bank_account_no" class="col-sm-4 col-md-3 control-label">Nomor Rekening Bank</label>
                         <div class="col-sm-7">
                             <input name="bank_account_no" class="form-control input-sm" type="text"
+                                   maxlength="100" data-inputmask="'alias': 'decimal', 'rightAlign': false"
                                    value="{{ $propose_relation->propose->bank_account_no }}" {{$disabled}}>
                             @if($errors->has('bank_account_no'))
                                 <label class="error" for="bank_account_no" style="display: inline-block;">
