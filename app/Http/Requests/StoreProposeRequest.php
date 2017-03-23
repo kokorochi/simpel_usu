@@ -131,7 +131,7 @@ class StoreProposeRequest extends FormRequest {
         {
             array_push($ret, 'Scheme harus dipilih');
 
-            return ret;
+            return $ret;
         }
 
         //Check Own Scheme If Checked
@@ -296,47 +296,47 @@ class StoreProposeRequest extends FormRequest {
         }
 
         //Check Head Dedication Creation times
-//        if ($this->input('is_own') !== '1')
-//        {
-//            $i_as_member = 0;
-//            $i_as_head = 0;
-//            $year = date('Y', strtotime(Carbon::now()->toDateString()));
-//            $periods = Period::where('years', $year)->get();
-//            foreach ($periods as $period)
-//            {
-//                $propose = $period->propose()->where('created_by', Auth::user()->nidn)->where('is_own', null)->get();
-//                foreach ($propose as $item)
-//                {
-//                    $flow_status = $item->flowStatus()->where('status_code', '<>', 'UT')->where('status_code', '<>', 'SS')->first();
-//                    if ($flow_status !== null)
-//                    {
-//                        array_push($ret, '1 Dosen hanya bisa menjadi ( ketua penlitian sebanyak 1 kali dan menjadi anggota sebanyak 2 kali ) atau ( anggota sebanyak 3 kali ) dalam 1 tahun');
-//                        $i_as_head = 1;
-//                        break 2;
-//                    }
-//                }
-//
-//                $i_as_member += $i_as_head;
-//                $proposes = $period->propose()->where('created_by', '<>', Auth::user()->nidn)->where('is_own', null)->get();
-//                foreach ($proposes as $propose)
-//                {
-//                    $flow_status = $propose->flowStatus()->where('status_code', '<>', 'UT')->where('status_code', '<>', 'SS')->first();
-//                    if ($flow_status !== null)
-//                    {
-//                        $member = $propose->member()->where('nidn', Auth::user()->nidn)->where('status', 'accepted')->first();
-//                        if ($member !== null)
-//                        {
-//                            $i_as_member++;
-//                            if ($i_as_member >= 3)
-//                            {
-//                                array_push($ret, '1 Dosen hanya bisa menjadi ( ketua penlitian sebanyak 1 kali dan menjadi anggota sebanyak 2 kali ) atau ( anggota sebanyak 3 kali ) dalam 1 tahun');
-//                                break 2;
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        if ($this->input('is_own') !== '1')
+        {
+            $i_as_member = 0;
+            $i_as_head = 0;
+            $year = date('Y', strtotime(Carbon::now()->toDateString()));
+            $periods = Period::where('years', $year)->get();
+            foreach ($periods as $period)
+            {
+                $propose = $period->propose()->where('created_by', Auth::user()->nidn)->where('is_own', null)->get();
+                foreach ($propose as $item)
+                {
+                    $flow_status = $item->flowStatus()->where('status_code', '<>', 'UT')->where('status_code', '<>', 'SS')->first();
+                    if ($flow_status !== null)
+                    {
+                        array_push($ret, '1 Dosen hanya bisa menjadi ( ketua penlitian sebanyak 1 kali dan menjadi anggota sebanyak 2 kali ) atau ( anggota sebanyak 3 kali ) dalam 1 tahun');
+                        $i_as_head = 1;
+                        break 2;
+                    }
+                }
+
+                $i_as_member += $i_as_head;
+                $proposes = $period->propose()->where('created_by', '<>', Auth::user()->nidn)->where('is_own', null)->get();
+                foreach ($proposes as $propose)
+                {
+                    $flow_status = $propose->flowStatus()->where('status_code', '<>', 'UT')->where('status_code', '<>', 'SS')->first();
+                    if ($flow_status !== null)
+                    {
+                        $member = $propose->member()->where('nidn', Auth::user()->nidn)->where('status', 'accepted')->first();
+                        if ($member !== null)
+                        {
+                            $i_as_member++;
+                            if ($i_as_member >= 3)
+                            {
+                                array_push($ret, '1 Dosen hanya bisa menjadi ( ketua penlitian sebanyak 1 kali dan menjadi anggota sebanyak 2 kali ) atau ( anggota sebanyak 3 kali ) dalam 1 tahun');
+                                break 2;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         return $ret;
     }
