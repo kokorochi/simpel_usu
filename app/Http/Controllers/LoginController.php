@@ -69,7 +69,9 @@ class LoginController extends BlankonController {
         $email['body_detail_content'] = 'Demikian informasi ini kami sampaikan.<br/>Dikirim otomatis oleh Sistem Penlitian USU';
         dispatch(new SendResetPassword($recipient, $email));
 
-        $request->session()->flash('alert-success', 'Email telah dikirim ke ' . $lecturer->email);
+        $mask_email = $this->obfuscate_email($lecturer->email);
+
+        $request->session()->flash('alert-success', 'Email telah dikirim ke ' . $mask_email);
 
         return redirect()->intended('/user/lost');
     }
@@ -152,17 +154,13 @@ class LoginController extends BlankonController {
         }
     }
 
-    private function randomPassword()
+    private function obfuscate_email($email)
     {
-        $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
-        $pass = array(); //remember to declare $pass as an array
-        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
-        for ($i = 0; $i < 10; $i++)
-        {
-            $n = rand(0, $alphaLength);
-            $pass[] = $alphabet[$n];
-        }
+        $em   = explode("@",$email);
+        $name = implode(array_slice($em, 0, count($em)-1), '@');
+        $len  = floor(strlen($name)/2);
 
-        return implode($pass); //turn the array into a string
+        return substr($name,0, $len) . str_repeat('*', $len) . "@" . end($em);
+
     }
 }
