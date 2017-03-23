@@ -34,11 +34,14 @@
 
             @include('form-input.propose-detail')
 
+            @include('form-input.propose-upload')
+
             @if(!$research_reviewers->isEmpty())
                 @include('form-input.propose-reviewer')
             @endif
 
-            <form class="submit-form" action="{{url('approve-proposes', $propose_relation->propose->id) . '/approve'}}" method="POST">
+            <form class="submit-form" action="{{url('approve-proposes', $propose_relation->propose->id) . '/approve'}}"
+                  method="POST">
 
                 @include('form-input.propose-revision')
 
@@ -50,10 +53,12 @@
                     <div class="col-sm-offset-4 col-md-offset-3">
                         <a href="{{url($deleteUrl)}}" class="btn btn-teal btn-slideright">Kembali</a>
                         @if($upd_mode === 'create')
-                            <button name="rejected" value="1" type="submit" class="btn btn-danger btn-slideright submit">
+                            <button name="rejected" value="1" type="submit"
+                                    class="btn btn-danger btn-slideright submit">
                                 Ditolak
                             </button>
-                            <button name="approved" value="1" type="submit" class="btn btn-success btn-slideright submit">
+                            <button name="approved" value="1" type="submit"
+                                    class="btn btn-success btn-slideright submit">
                                 Disetujui
                             </button>
                         @endif

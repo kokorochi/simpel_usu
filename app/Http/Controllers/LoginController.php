@@ -71,7 +71,7 @@ class LoginController extends BlankonController {
 
         $mask_email = $this->obfuscate_email($lecturer->email);
 
-        $request->session()->flash('alert-success', 'Email telah dikirim ke ' . $mask_email);
+        $request->session()->flash('alert-success', 'Email telah dikirim ke ' . $mask_email . '. Mohon periksa Junk/Spam jika email tidak ada di inbox.');
 
         return redirect()->intended('/user/lost');
     }
