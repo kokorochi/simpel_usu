@@ -25,8 +25,8 @@ class StoreUpdateFinalRequest extends FormRequest {
     public function rules()
     {
         return [
-            'file_final_activity' => 'required|mimes:pdf',
-            'file_final_budgets'  => 'required|mimes:pdf',
+            'file_final_activity' => 'required|mimes:pdf|max:5120',
+            'file_final_budgets'  => 'required|mimes:pdf|max:5120',
         ];
     }
 
@@ -37,6 +37,8 @@ class StoreUpdateFinalRequest extends FormRequest {
             'file_final_budgets.required'  => 'Laporan Akhir (Anggaran) harus diisi',
             'file_final_activity.mimes'    => 'Laporan Akhir (Kegiatan) harus dalam bentuk PDF',
             'file_final_budgets.mimes'     => 'Laporan Akhir (Anggaran) harus dalam bentuk PDF',
+            'file_final_activity.max'      => 'Laporan Akhir (Kegiatan) maksmimal 5MB',
+            'file_final_budgets.max'       => 'Laporan Akhir (Anggaran) maksmimal 5MB',
         ];
     }
 

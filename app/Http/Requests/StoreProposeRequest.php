@@ -48,8 +48,8 @@ class StoreProposeRequest extends FormRequest {
                     //End Check Detail
 
                     //Check Upload
-                    'file_propose'       => 'mimes:pdf',
-                    'file_propose_final' => 'mimes:pdf'
+                    'file_propose'       => 'mimes:pdf|max:5120',
+                    'file_propose_final' => 'mimes:pdf|max:5120'
                     //End Check Detail
                 ];
             } else

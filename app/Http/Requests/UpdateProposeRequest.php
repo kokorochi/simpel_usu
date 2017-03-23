@@ -23,7 +23,7 @@ class UpdateProposeRequest extends FormRequest {
     public function rules()
     {
         return [
-            'file_propose' => 'required|mimes:pdf'
+            'file_propose' => 'required|mimes:pdf|max:5120'
         ];
     }
 
@@ -31,7 +31,8 @@ class UpdateProposeRequest extends FormRequest {
     {
         return [
             'file_propose.required' => 'Usulan harus diunggah',
-            'file_propose.mimes'    => 'Usulan harus dalam bentuk PDF'
+            'file_propose.mimes'    => 'Usulan harus dalam bentuk PDF',
+            'file_propose.max'      => 'Maksimal file usulan adalah 5MB'
         ];
     }
 }

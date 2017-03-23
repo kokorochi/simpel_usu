@@ -25,8 +25,8 @@ class StoreUpdateProgressRequest extends FormRequest {
     public function rules()
     {
         return [
-            'file_progress_activity' => 'required|mimes:pdf',
-            'file_progress_budgets'  => 'required|mimes:pdf',
+            'file_progress_activity' => 'required|mimes:pdf|max:5120',
+            'file_progress_budgets'  => 'required|mimes:pdf|max:5120',
         ];
     }
 
@@ -37,6 +37,8 @@ class StoreUpdateProgressRequest extends FormRequest {
             'file_progress_budgets.required'  => 'Laporan Kemajuan (Anggaran) harus diisi',
             'file_progress_activity.mimes'    => 'Laporan Kemajuan (Kegiatan) harus dalam bentuk PDF',
             'file_progress_budgets.mimes'     => 'Laporan Kemajuan (Anggaran) harus dalam bentuk PDF',
+            'file_progress_activity.max'      => 'Laporan Kemajuan (Kegiatan) maksmimal 5MB',
+            'file_progress_budgets.max'       => 'Laporan Kemajuan (Anggaran) maksmimal 5MB',
         ];
     }
 

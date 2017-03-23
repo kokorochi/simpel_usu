@@ -24,14 +24,16 @@ class StoreRevisionUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'file_propose_final' => 'required'
+            'file_propose_final' => 'required|mimes:pdf|max:5120'
         ];
     }
 
     public function messages()
     {
         return [
-            'file_propose_final.required' => 'Usulan perbaikan harus diunggah'
+            'file_propose_final.required' => 'Usulan perbaikan harus diunggah',
+            'file_propose_final.mimes'    => 'Usulan perbaikan harus dalam bentuk PDF',
+            'file_propose_final.max'      => 'Maksimal file usulan perbaikan adalah 5MB'
         ];
     }
 }
