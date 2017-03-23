@@ -219,18 +219,18 @@ $(document).ready(function () {
         showHideFilterOutputReport($(this).val());
     })
 
-    $('form.output-filter').click(function(){
-        $.get(baseUrl + '/ajax/outputs/get-count',{
-            'level': $('.chosen-select-level').val(),
-            'faculty_code[]': $('.chosen-select-faculty').val(),
-            'study_program[]': $('.chosen-select-study-program').val(),
-            'lecturer_nidn[]': $('.chosen-select-lecturer').val(),
-            'output_code[]': $('.chosen-select-output').val(),
-            'years[]': $('input[name="input[year]"]').val()
-        }, function (data) {
-            console.log(data);
-        });
-    });
+    // $('form.output-filter').click(function(){
+    //     $.get(baseUrl + '/ajax/outputs/get-count',{
+    //         'level': $('.chosen-select-level').val(),
+    //         'faculty_code[]': $('.chosen-select-faculty').val(),
+    //         'study_program[]': $('.chosen-select-study-program').val(),
+    //         'lecturer_nidn[]': $('.chosen-select-lecturer').val(),
+    //         'output_code[]': $('.chosen-select-output').val(),
+    //         'years[]': $('input[name="input[year]"]').val()
+    //     }, function (data) {
+    //         console.log(data);
+    //     });
+    // });
 
     function showHideFilterOutputReport(p1){
         if(p1 == 1){
@@ -287,8 +287,4 @@ $(document).ready(function () {
             $('.chosen-select-output').trigger('chosen:updated');
         })
     }
-
-    $("button[name='filter-report']").click(function (e) {
-        console.log('test');
-    });
 });

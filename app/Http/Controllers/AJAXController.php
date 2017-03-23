@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Member;
 use GuzzleHttp\Client;
 
 use App\Auths;
@@ -399,7 +400,7 @@ class AJAXController extends BlankonController {
             $input['level'] = 1;
         }
 
-        if (! isset($input['year']))
+        if (! isset($input['year']) || is_null($input['year']) || $input['year'] == '')
         {
             $input['year'] = date('Y');
         }
@@ -410,10 +411,10 @@ class AJAXController extends BlankonController {
         {
             if (is_array($input['output_code']))
             {
-                $query->whereIn('output_code', $input['output_code']);
+                $query->whereIn('id', $input['output_code']);
             } else
             {
-                $query->where('output_code', $input['output_code']);
+                $query->where('id', $input['output_code']);
             }
         }
         $output_types = $query->get();
@@ -426,20 +427,9 @@ class AJAXController extends BlankonController {
         {
             $data['columns'][] = [
                 'label'    => 'Fakultas',
-                'property' => 'faculty_name',
+                'property' => 'description',
                 'sortable' => true,
             ];
-
-            while ($min_year <= $input['year'])
-            {
-                $data['columns'][] = [
-                    'label'    => $min_year,
-                    'property' => 'year_' . $min_year,
-                    'sortable' => true,
-                    'cssClass' => 'report-year'
-                ];
-                $min_year++;
-            }
 
             $faculties = Faculty::where('is_faculty', '1')->where('faculty_code', '<>', 'SPS')->get();
             $i = 0;
@@ -452,20 +442,11 @@ class AJAXController extends BlankonController {
                     $filter['lecturer'][] = $lecturer->employee_card_serial_number;
                 }
 
-                $data['items'][$i]['faculty_name'] = $faculty->faculty_name;
+                $data['items'][$i]['description'] = $faculty->faculty_name;
 
                 $min_year = $input['year'] - 3;
                 while ($min_year <= $input['year'])
                 {
-//                    $query = DB::table('proposes')
-//                        ->join('propose_output_types', 'propose_output_types.propose_id', '=', 'proposes.id')
-//                        ->join('researches', 'researches.propose_id', '=', 'propose.id');
-
-//                    if ($faculty->faculty_code == 'FAHUTA' && $min_year == 2017)
-//                    {
-//                        dd($filter['lecturer']);
-//                    }
-
                     $query = DB::table('output_flow_statuses')
                         ->join('researches', 'researches.id', '=', 'output_flow_statuses.research_id')
                         ->join('proposes', 'proposes.id', '=', 'researches.propose_id')
@@ -490,12 +471,218 @@ class AJAXController extends BlankonController {
                     $data['items'][$i]['year_' . $min_year] = count($count_output_array);
                     $min_year++;
                 }
-                $data['items'][$i]['faculty_name'] = $faculty->faculty_name;
+                $i++;
+            }
+        } elseif ($input['level'] == 2) //Faculty level means list all study programs
+        {
+            $data['columns'][] = [
+                'label'    => 'Program Studi',
+                'property' => 'description',
+                'sortable' => true,
+            ];
+
+            $faculty = Faculty::where('is_faculty', '1')->where('faculty_code', $input['faculty_code'])->first();
+            $study_programs = StudyProgram::where('faculty_code', $faculty->faculty_code)->get();
+
+            $i = 0;
+            foreach ($study_programs as $study_program)
+            {
+                $lecturers = Lecturer::where('study_program', $study_program->study_program)->get(["employee_card_serial_number"]);
+                $filter['lecturer'] = [];
+                foreach ($lecturers as $lecturer)
+                {
+                    $filter['lecturer'][] = $lecturer->employee_card_serial_number;
+                }
+
+                $data['items'][$i]['description'] = $study_program->study_program;
+
+                $min_year = $input['year'] - 3;
+                while ($min_year <= $input['year'])
+                {
+                    $query = DB::table('output_flow_statuses')
+                        ->join('researches', 'researches.id', '=', 'output_flow_statuses.research_id')
+                        ->join('proposes', 'proposes.id', '=', 'researches.propose_id')
+                        ->join('propose_output_types', 'propose_output_types.propose_id', '=', 'proposes.id')
+                        ->join('research_output_generals', 'research_output_generals.research_id', '=', 'researches.id');
+
+                    if (isset($filter['lecturer']) && is_array($filter['lecturer']))
+                        $query->whereIn('proposes.created_by', $filter['lecturer']);
+                    if (isset($filter['output_type']) && is_array($filter['output_type']))
+                        $query->whereIn('propose_output_types.output_type_id', $filter['output_type']);
+                    $query->where('output_flow_statuses.status_code', 'VL');
+                    $query->where('research_output_generals.year', $min_year);
+                    $query->where('proposes.deleted_at', null);
+                    $query->select('propose_output_types.*');
+                    $query = $query->get();
+                    $count_output_array = [];
+                    foreach ($query as $query_item)
+                    {
+                        $count_output_array[] = $query_item->propose_id . '.' . $query_item->output_type_id;
+                    }
+                    $count_output_array = array_unique($count_output_array);
+                    $data['items'][$i]['year_' . $min_year] = count($count_output_array);
+                    $min_year++;
+                }
+                $i++;
+            }
+        } elseif ($input['level'] == 3) //Study Program level means list all lecturers
+        {
+            $data['columns'][] = [
+                'label'    => 'Nama Dosen',
+                'property' => 'description',
+                'sortable' => true,
+            ];
+
+            $faculty = Faculty::where('is_faculty', '1')->where('faculty_code', $input['faculty_code'])->first();
+            $study_program = StudyProgram::where('study_program', $input['study_program'])->first();
+            $lecturers = Lecturer::where('study_program', $study_program->study_program)->get(["full_name", "employee_card_serial_number"]);
+
+            $i = 0;
+            foreach ($lecturers as $lecturer)
+            {
+                $filter['lecturer'] = [];
+                $filter['lecturer'][] = $lecturer->employee_card_serial_number;
+
+                $data['items'][$i]['description'] = $lecturer->full_name;
+
+                $min_year = $input['year'] - 3;
+                while ($min_year <= $input['year'])
+                {
+                    $query = DB::table('output_flow_statuses')
+                        ->join('researches', 'researches.id', '=', 'output_flow_statuses.research_id')
+                        ->join('proposes', 'proposes.id', '=', 'researches.propose_id')
+                        ->join('propose_output_types', 'propose_output_types.propose_id', '=', 'proposes.id')
+                        ->join('research_output_generals', 'research_output_generals.research_id', '=', 'researches.id');
+
+                    if (isset($filter['lecturer']) && is_array($filter['lecturer']))
+                        $query->whereIn('proposes.created_by', $filter['lecturer']);
+                    if (isset($filter['output_type']) && is_array($filter['output_type']))
+                        $query->whereIn('propose_output_types.output_type_id', $filter['output_type']);
+                    $query->where('output_flow_statuses.status_code', 'VL');
+                    $query->where('research_output_generals.year', $min_year);
+                    $query->where('proposes.deleted_at', null);
+                    $query->select('propose_output_types.*');
+                    $query = $query->get();
+                    $count_output_array = [];
+                    foreach ($query as $query_item)
+                    {
+                        $count_output_array[] = $query_item->propose_id . '.' . $query_item->output_type_id;
+                    }
+                    $count_output_array = array_unique($count_output_array);
+                    $data['items'][$i]['year_' . $min_year] = count($count_output_array);
+                    $min_year++;
+                }
+                $i++;
+            }
+
+        } elseif ($input['level'] == 4) //Lecturer level means list all output type
+        {
+            $data['columns'][] = [
+                'label'    => 'Luaran',
+                'property' => 'description',
+                'sortable' => true,
+            ];
+
+            $lecturer = Lecturer::where('employee_card_serial_number', $input['lecturer'])->first(["full_name", "employee_card_serial_number"]);
+
+            $output_types = Output_type::all();
+
+            $proposes = Propose::where('created_by', $lecturer->employee_card_serial_number)->get();
+            $members = Member::where('nidn', $lecturer->employee_card_serial_number)->where('status', 'accepted')->get();
+            $researches = new Collection();
+            foreach ($proposes as $propose)
+            {
+                $research = $propose->research()->first();
+                if (! is_null($research))
+                {
+                    $researches->add($research);
+                }
+            }
+
+            foreach ($members as $member)
+            {
+                $propose = $member->propose()->first();
+                if (! is_null($propose))
+                {
+                    $research = $propose->research()->first();
+                }
+                if (! is_null($research))
+                {
+                    $find = $researches->filter(function ($item) use ($research)
+                    {
+                        return $item->id == $research->id;
+                    })->first();
+                    if (is_null($find))
+                    {
+                        $researches->add($research);
+                    }
+                }
+            }
+
+            $filter['research_id'] = [];
+            foreach ($researches as $research)
+            {
+                $filter['research_id'][] = $research->id;
+            }
+
+            $i = 0;
+            foreach ($output_types as $output_type)
+            {
+                $filter['output_type'] = [];
+                $filter['output_type'][] = $output_type->id;
+
+                $data['items'][$i]['description'] = $output_type->output_name;
+
+                $min_year = $input['year'] - 3;
+                while ($min_year <= $input['year'])
+                {
+                    $query = DB::table('output_flow_statuses')
+                        ->join('researches', 'researches.id', '=', 'output_flow_statuses.research_id')
+                        ->join('proposes', 'proposes.id', '=', 'researches.propose_id')
+                        ->join('propose_output_types', 'propose_output_types.propose_id', '=', 'proposes.id')
+                        ->join('research_output_generals', 'research_output_generals.research_id', '=', 'researches.id');
+
+                    if (isset($filter['research_id']) && is_array($filter['research_id']))
+                        $query->whereIn('researches.id', $filter['research_id']);
+                    if (isset($filter['output_type']) && is_array($filter['output_type']))
+                        $query->whereIn('propose_output_types.output_type_id', $filter['output_type']);
+                    $query->where('output_flow_statuses.status_code', 'VL');
+                    $query->where('research_output_generals.year', $min_year);
+                    $query->where('proposes.deleted_at', null);
+                    $query->select('propose_output_types.*');
+                    $query = $query->get();
+                    $count_output_array = [];
+                    foreach ($query as $query_item)
+                    {
+                        $count_output_array[] = $query_item->propose_id . '.' . $query_item->output_type_id;
+                    }
+                    $count_output_array = array_unique($count_output_array);
+                    $data['items'][$i]['year_' . $min_year] = count($count_output_array);
+                    $min_year++;
+                }
                 $i++;
             }
         }
+
+        $min_year = $input['year'] - 3;
+        while ($min_year <= $input['year'])
+        {
+            $data['columns'][] = [
+                'label'    => $min_year,
+                'property' => 'year_' . $min_year,
+                'sortable' => true,
+                'cssClass' => 'report-year'
+            ];
+            $min_year++;
+        }
+
         $data['total'] = count($data['items']);
         $data['input'] = $input;
+//        usort($data['items'], function ($a, $b)
+//        {
+//            return strcmp($a['faculty_name'], $b['faculty_name']);
+//        });
+//        dd($data['items']);
 
         $data = json_encode($data, JSON_PRETTY_PRINT);
 
