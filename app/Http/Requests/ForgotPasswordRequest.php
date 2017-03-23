@@ -64,7 +64,7 @@ class ForgotPasswordRequest extends FormRequest
         $user = User::where('nidn', $this->input['nidn'])->first();
         if(is_null($user))
         {
-            array_push($ret, 'NIDN tidak ditemukan pada sistem penelitian, hubungi LP / PSI untuk registrasi NIDN');
+            array_push($ret, 'NIDN tidak ditemukan pada sistem penelitian, hubungi LP / PSI untuk registrasi NIDN! Atau email ke simsdm@usu.ac.id');
         }else{
             $lecturer = $user->lecturer()->first();
             if(!filter_var($lecturer->email, FILTER_VALIDATE_EMAIL))
