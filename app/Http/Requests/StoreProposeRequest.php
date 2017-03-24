@@ -71,7 +71,9 @@ class StoreProposeRequest extends FormRequest {
 
         } else
         {
-            $rules = [];
+            $rules = [
+                'student_involved'   => 'digits_between:1,2',
+            ];
         }
 
         return $rules;
