@@ -219,6 +219,11 @@ $(document).ready(function () {
         showHideFilterOutputReport($(this).val());
     })
 
+    $("a[name=excel-button]").click(function(e){
+        var period_id = $("#scheme-approve-propose").val();
+        window.open('approve-proposes/' + period_id + '/download-excel', "_blank");
+    });
+
     // $('form.output-filter').click(function(){
     //     $.get(baseUrl + '/ajax/outputs/get-count',{
     //         'level': $('.chosen-select-level').val(),

@@ -96,6 +96,13 @@
                             </table>
                             <!--/ End datatable -->
                         </div><!-- /.panel-body -->
+
+                        <div class="form-footer">
+                            <div class="">
+                                <a name="excel-button" class="btn btn-teal btn-slideright">Unduh Excel</a>
+                            </div><!-- /.col-sm-offset-3 -->
+                        </div><!-- /.form-footer -->
+
                     </div><!-- /.panel -->
                     <!--/ End datatable using ajax -->
                 </div>

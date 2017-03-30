@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
+use Excel;
 use Symfony\Component\HttpFoundation\File\File;
 use View;
 use Illuminate\Support\Facades\Storage;
@@ -99,7 +101,7 @@ class TestingController extends BlankonController {
         $clone_lecturers = new Collection();
         foreach ($lecturers as $lecturer)
         {
-            if($lecturer->employee_card_serial_number !== null && $lecturer->employee_card_serial_number !== '')
+            if ($lecturer->employee_card_serial_number !== null && $lecturer->employee_card_serial_number !== '')
             {
                 $clone_lecturer = new User();
                 $clone_lecturer->nidn = $lecturer->employee_card_serial_number;
@@ -111,7 +113,7 @@ class TestingController extends BlankonController {
         foreach ($clone_lecturers as $clone_lecturer)
         {
             $user = User::where('nidn', $clone_lecturer->nidn)->first();
-            if($user === null)
+            if ($user === null)
             {
                 $user = new User();
                 $user->nidn = $clone_lecturer->nidn;
@@ -129,6 +131,36 @@ class TestingController extends BlankonController {
         $email['body_detail_content'] = 'Demikian informasi ini kami sampaikan.<br/>Dikirim otomatis oleh Sistem Penlitian USU';
         View::share('email', $email);
         Mail::to('kokorochi.zhou@gmail.com')->send(new TestMail($email));
+
         return redirect()->intended('/');
+    }
+
+    public function convertExcel()
+    {
+        $data = [
+            ["firstname" => "Mary", "lastname" => "Johnson", "age" => 25],
+            ["firstname" => "Amanda", "lastname" => "Miller", "age" => 18],
+            ["firstname" => "James", "lastname" => "Brown", "age" => 31],
+            ["firstname" => "Patricia", "lastname" => "Williams", "age" => 7],
+            ["firstname" => "Michael", "lastname" => "Davis", "age" => 43],
+            ["firstname" => "Sarah", "lastname" => "Miller", "age" => 24],
+            ["firstname" => "Patrick", "lastname" => "Miller", "age" => 27]
+        ];
+
+        Excel::create('testexcel', function($excel) use($data){
+            // Set the title
+            $excel->setTitle('Our new awesome title');
+
+            // Chain the setters
+            $excel->setCreator('PSI')
+                ->setCompany('PSI');
+
+            // Call them separately
+            $excel->setDescription('A demonstration to change the file properties');
+
+            $excel->sheet('sheet1', function($sheet) use($data){
+                $sheet->fromArray($data, null, 'A1', true);
+            });
+        })->export('xlsx');
     }
 }

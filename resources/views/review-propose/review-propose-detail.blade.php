@@ -89,7 +89,7 @@
                                     <span class="input-group-btn">
                                         {{--<button type="button" class="btn btn-default">Go!</button>--}}
                                         <a href="{{url('proposes', $propose->id) . '/download/2' }}"
-                                           class="btn btn-primary btn-sm">Unduh</a>
+                                           target="_blank" class="btn btn-primary btn-sm">Unduh</a>
                                         </span>
                                 </div>
                             </div>

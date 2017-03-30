@@ -21,6 +21,7 @@ use App\ResearchType;
 use App\Output_type;
 use App\ModelSDM\Faculty;
 use Illuminate\Support\Facades\Auth;
+use Excel;
 
 
 class ApproveProposeController extends BlankonController {
@@ -50,6 +51,7 @@ class ApproveProposeController extends BlankonController {
         array_push($this->js['plugins'], 'global/plugins/bower_components/datatables/js/dataTables.bootstrap.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/datatables/js/datatables.responsive.js');
         array_push($this->js['plugins'], 'global/plugins/bower_components/jquery.inputmask/dist/jquery.inputmask.bundle.min.js');
+        array_push($this->js['plugins'], 'global/plugins/bower_components/jquery-easing-original/jquery.easing.1.3.min.js');
 
         array_push($this->js['scripts'], 'admin/js/pages/blankon.form.advanced.js');
         array_push($this->js['scripts'], 'admin/js/pages/blankon.form.element.js');
@@ -300,6 +302,59 @@ class ApproveProposeController extends BlankonController {
         ));
 
         return view();
+    }
+
+    public function downloadExcel($id)
+    {
+//        'ajax/proposes/getbyscheme';
+
+        $ajax_controller = new AJAXController();
+        $proposes = $ajax_controller->getProposesByScheme($id, "ELSE");
+//        dd($test->original);
+        $proposes = json_decode($proposes->original);
+        $proposes = $proposes->data;
+
+        $i = 1;
+        foreach ($proposes as $propose)
+        {
+            $propose = Propose::find($propose[0]);
+            $propose_members = $propose->member()->where('status', 'accepted')->get();
+            $head_info = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
+            $faculty = Faculty::where('faculty_code', $propose->faculty_code)->first();
+            $data[$i]['No'] = $i;
+            $data[$i]['Ketua'] = $head_info->full_name;
+//            $data[$i]['NIDN Ketua'] = $propose->created_by;
+            $data[$i]['Fakultas'] = $faculty->faculty_name;
+            $data[$i]['Judul'] = $propose->title;
+            $j = 1;
+            foreach ($propose_members as $propose_member)
+            {
+                $member_info = $propose_member->lecturer()->first();
+                $data[$i]['Anggota ' . $j++] = $member_info->full_name;
+            }
+            while($j <= 4)
+            {
+                $data[$i]['Anggota ' . $j++] = "";
+            }
+            $data[$i]['Biaya Diusulkan'] = $propose->total_amount;
+            $i++;
+        }
+
+        Excel::create('List Usulan LP', function($excel) use($data){
+            // Set the title
+            $excel->setTitle('List Usuluan LP');
+
+            // Chain the setters
+            $excel->setCreator('PSI')
+                ->setCompany('PSI');
+
+            // Call them separately
+            $excel->setDescription('List Usuluan Lembaga Penelitian USU');
+
+            $excel->sheet('List Usulan', function($sheet) use($data){
+                $sheet->fromArray($data, null, 'A1', true);
+            });
+        })->export('xlsx');
     }
 
     private function getProposeRelationData($propose = null)

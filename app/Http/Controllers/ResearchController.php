@@ -388,8 +388,14 @@ class ResearchController extends BlankonController {
 
     public function getFile($id, $type)
     {
-//        dd($id . ' ' . $type);
         $research = Research::find($id);
+        if(is_null($research))
+        {
+            $this->setCSS404();
+
+            return abort('404');
+        }
+        $this->authorize('download', $research);
         $propose = $research->propose()->first();
         $nidn = $propose->created_by;
         if ($type == 1)

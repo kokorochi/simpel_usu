@@ -19,6 +19,7 @@ Route::get('files/upload', 'TestingController@upload');
 Route::post('files/upload', 'TestingController@storeUpload');
 Route::get('tests', 'TestingController@index');
 Route::get('tests/send-email', 'TestingController@sendEmail');
+Route::get('tests/convert-excel', 'TestingController@convertExcel');
 
 // End TESTING Route
 
@@ -164,6 +165,7 @@ Route::get('approve-proposes/', 'ApproveProposeController@index');
 Route::get('approve-proposes/{id}/approve', 'ApproveProposeController@approve');
 Route::put('approve-proposes/{id}/approve', 'ApproveProposeController@approveUpdate');
 Route::get('approve-proposes/{id}/display', 'ApproveProposeController@display');
+Route::get('approve-proposes/{id}/download-excel', 'ApproveProposeController@downloadExcel');
 // End Approve Proposes Route
 
 // Start Dedication Route
