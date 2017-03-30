@@ -115,7 +115,7 @@
                                         <div class="form-group">
                                             <select name="score[]"
                                                     class="chosen-select input-score" {{$review_propose_i->disabled}}>
-                                                @for($i = 1; $i <= 7; $i++)
+                                                @for($i = 0; $i <= 7; $i++)
                                                     @if($i != 4)
                                                         <option value="{{$i}}" {{$i == $review_propose_i->score ? 'selected' : ''}}>{{$i}}</option>
                                                     @endif
@@ -140,8 +140,15 @@
                                                disabled>
                                     </td>
                                     <td width="30%">
+                                        <div class="form-group">
                                         <textarea name="comment[]" class="form-control input-sm" rows="2"
                                                   placeholder="" {{$review_propose_i->disabled}}>{{$review_propose_i->comment}}</textarea>
+                                            @if($errors->has('comment.' . $key))
+                                                <label class="error" for="comment[]" style="display: inline-block;">
+                                                    {{ $errors->first('comment.' . $key) }}
+                                                </label>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -162,26 +169,31 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="conclusion_id" class="col-sm-4 col-md-3 control-label">Kesimpulan</label>
-                                <div class="col-sm-7 mb-10">
-                                    <select name="conclusion_id"
-                                            class="form-control input-sm" {{$review_propose->disabled}}>
-                                        @foreach($conclusions as $conclusion)
-                                            <option value="{{$conclusion->id}}"
-                                                    {{$review_propose->conclusion_id == $conclusion->id ? 'selected' : null}}
-                                            >
-                                                {{$conclusion->conclusion_desc}}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
+                            {{--<div class="form-group">--}}
+                            {{--<label for="conclusion_id" class="col-sm-4 col-md-3 control-label">Kesimpulan</label>--}}
+                            {{--<div class="col-sm-7 mb-10">--}}
+                            {{--<select name="conclusion_id"--}}
+                            {{--class="form-control input-sm" {{$review_propose->disabled}}>--}}
+                            {{--@foreach($conclusions as $conclusion)--}}
+                            {{--<option value="{{$conclusion->id}}"--}}
+                            {{--{{$review_propose->conclusion_id == $conclusion->id ? 'selected' : null}}--}}
+                            {{-->--}}
+                            {{--{{$conclusion->conclusion_desc}}--}}
+                            {{--</option>--}}
+                            {{--@endforeach--}}
+                            {{--</select>--}}
+                            {{--</div>--}}
+                            {{--</div>--}}
                             <div class="form-group">
                                 <label for="suggestion" class="col-sm-4 col-md-3 control-label">Saran</label>
                                 <div class="col-sm-7">
                                     <textarea name="suggestion" class="form-control input-sm" rows="3"
                                               placeholder="" {{$review_propose->disabled}}>{{$review_propose->suggestion}}</textarea>
+                                    @if($errors->has('suggestion'))
+                                        <label class="error" for="suggestion" style="display: inline-block;">
+                                            {{ $errors->first('suggestion') }}
+                                        </label>
+                                    @endif
                                 </div>
                             </div><!-- /.form-group -->
                         </div><!-- /.form-body -->
@@ -195,8 +207,15 @@
                                     </a>
                                 @endif
                                 <a href="{{url($deleteUrl)}}" class="btn btn-danger btn-slideright">Kembali</a>
+                                <button name="submit_button" value="temporary" type="submit"
+                                        class="btn btn-lilac btn-slideright submit">
+                                    Simpan Sementara
+                                </button>
                                 @if($upd_mode === 'create')
-                                    <button type="submit" class="btn btn-success btn-slideright submit">Simpan</button>
+                                    <button name="submit_button" value="save" type="submit"
+                                            class="btn btn-success btn-slideright submit">
+                                        Submit
+                                    </button>
                                 @endif
                             </div><!-- /.col-sm-offset-3 -->
                         </div><!-- /.form-footer -->

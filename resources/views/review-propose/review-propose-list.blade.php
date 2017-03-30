@@ -73,7 +73,7 @@
                                                        data-placement="top" data-original-title="Review">
                                                         <i class="fa fa-pencil"></i>
                                                     </a>
-                                                    @if($propose->reviewPropose()->where('nidn', Auth::user()->nidn)->exists())
+                                                    @if($propose->reviewPropose()->where('nidn', Auth::user()->nidn)->where('status', 'submit')->exists())
                                                         <a href="{{url($deleteUrl . '/' . $propose->reviewPropose()->where('nidn', Auth::user()->nidn)->first()->id .'/print-review')}}"
                                                            class="btn btn-default btn-xs" data-toggle="tooltip"
                                                            data-placement="top" data-original-title="Print"

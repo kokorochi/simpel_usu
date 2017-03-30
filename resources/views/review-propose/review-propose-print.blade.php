@@ -85,7 +85,8 @@
             <div class="col-xs-6">Rekomendasi Jumlah Dana: Rp.{{number_format($review_propose->recommended_amount)}}</div>
         </div>
         <div class="row">
-            <div class="col-xs-6"><u>Kesimpulan: {{$review_propose->conclusion()->first()->conclusion_desc}}</u></div>
+            {{--<div class="col-xs-6"><u>Kesimpulan: {{$review_propose->conclusion()->first()->conclusion_desc}}</u></div>--}}
+            <div class="col-xs-6"></div>
             <div class="col-xs-6">Medan, {{$today_date}}</div>
 
             &nbsp;

@@ -17,8 +17,8 @@ class CreateReviewProposesTable extends Migration
             $table->increments('id');
             $table->integer('propose_id', false, true);
             $table->string('nidn', 30);
-            $table->text('suggestion');
-            $table->integer('conclusion_id', false, true);
+            $table->text('suggestion')->nullable();
+            $table->integer('conclusion_id', false, true)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

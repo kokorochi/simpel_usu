@@ -19,8 +19,8 @@ class CreateReviewProposesIsTable extends Migration
             $table->smallInteger('item', false, true);
             $table->string('aspect');
             $table->smallInteger('quality', false, true);
-            $table->tinyInteger('score', false, true);
-            $table->text('comment');
+            $table->tinyInteger('score', false, true)->nullable();
+            $table->text('comment')->nullable();
         });
     }
 

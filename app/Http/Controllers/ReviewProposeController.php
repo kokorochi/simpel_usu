@@ -115,7 +115,7 @@ class ReviewProposeController extends BlankonController {
             {
                 $review_propose_i = new ReviewProposesI;
                 $review_propose_i->item = $item->item;
-                $review_propose_i->score = 1;
+                $review_propose_i->score = 0;
                 $review_propose_i->aspect = $item->aspect;
                 $review_propose_i->quality = $item->quality;
                 $review_propose_i->final_score = $item->quality;
@@ -126,12 +126,18 @@ class ReviewProposeController extends BlankonController {
         } else
         {
             $review_proposes_i = $review_propose->reviewProposesI()->get();
-            foreach ($review_proposes_i as $review_propose_i)
+            if ($review_propose->status == 'submit')
             {
-                $review_propose_i->disabled = 'disabled';
+                $upd_mode = 'display';
+                foreach ($review_proposes_i as $review_propose_i)
+                {
+                    $review_propose_i->disabled = 'disabled';
+                }
+                $review_propose->disabled = 'disabled';
+            } elseif ($review_propose->status == 'temporary')
+            {
+                $upd_mode = 'create';
             }
-            $review_propose->disabled = 'disabled';
-            $upd_mode = 'display';
         }
         $conclusions = Conclusion::all();
 
@@ -154,30 +160,54 @@ class ReviewProposeController extends BlankonController {
             return abort('404');
         }
 
-        $appraisal = $propose->period()->first()->appraisal()->first();
-        $appraisals_i = $appraisal->appraisal_i()->get();
+        $review_propose = ReviewPropose::where('propose_id', $id)->where('nidn', Auth::user()->nidn)->first();
+        if (! is_null($review_propose))
+        {
+            $review_proposes_i = $review_propose->reviewProposesI()->get();
 
-        $review_propose = new ReviewPropose();
-        $review_propose->propose_id = $id;
-        $review_propose->nidn = Auth::user()->nidn;
+            foreach ($review_proposes_i as $key => $review_propose_i)
+            {
+                $review_propose_i->score = $request->score[$key];
+                $review_propose_i->comment = $request->comment[$key];
+            }
+        }else{
+            $review_propose = new ReviewPropose();
+            $review_propose->propose_id = $id;
+            $review_propose->nidn = Auth::user()->nidn;
+            $review_proposes_i = new Collection();
+
+            $appraisal = $propose->period()->first()->appraisal()->first();
+            $appraisals_i = $appraisal->appraisal_i()->get();
+
+            foreach ($appraisals_i as $key => $appraisal_i)
+            {
+                $review_propose_i = new ReviewProposesI();
+                $review_propose_i->item = $appraisal_i->item;
+                $review_propose_i->aspect = $appraisal_i->aspect;
+                $review_propose_i->quality = $appraisal_i->quality;
+                $review_propose_i->score = $request->score[$key];
+                $review_propose_i->comment = $request->comment[$key];
+                $review_proposes_i->add($review_propose_i);
+            }
+        }
+
         $review_propose->suggestion = $request->suggestion;
         $review_propose->conclusion_id = $request->conclusion_id;
-        $review_propose->recommended_amount = str_replace(',', '', $request->recommended_amount);
-
-        $review_proposes_i = new Collection();
-        foreach ($appraisals_i as $key => $appraisal_i)
+        if (! is_null($request->recommended_amount) && $request->recommended_amount != '')
         {
-            $review_propose_i = new ReviewProposesI();
-            $review_propose_i->item = $appraisal_i->item;
-            $review_propose_i->aspect = $appraisal_i->aspect;
-            $review_propose_i->quality = $appraisal_i->quality;
-            $review_propose_i->score = $request->score[$key];
-            $review_propose_i->comment = $request->comment[$key];
-            $review_proposes_i->add($review_propose_i);
+            $review_propose->recommended_amount = str_replace(',', '', $request->recommended_amount);
+        }
+
+        if ($request->submit_button == 'save')
+        {
+            $review_propose->status = 'submit';
+        } else
+        {
+            $review_propose->status = 'temporary';
         }
 
         $ctr_research_reviewers = count($propose->researchReviewer()->get());
-        $ctr_review_proposes = count(ReviewPropose::where('propose_id', $id)->get());
+        $ctr_review_proposes = count(ReviewPropose::where('propose_id', $id)->where('status', 'submit')->get());
         $count = $ctr_research_reviewers - $ctr_review_proposes;
 
         DB::transaction(function () use ($review_propose, $review_proposes_i, $count, $propose)
@@ -187,15 +217,19 @@ class ReviewProposeController extends BlankonController {
             {
                 $review_propose->reviewProposesI()->save($item);
             }
-            if ($count === 1)
+
+            if ($review_propose->status == 'submit')
             {
-                $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
-                $propose->flowStatus()->create([
-                    'item'        => $flow_status->item + 1,
-                    'status_code' => 'RS', //Menunggu Persetujuan Usulan
-                    'created_by'  => Auth::user()->nidn,
-                ]);
-                $this->setEmail('RS', $propose);
+                if ($count === 1)
+                {
+                    $flow_status = $propose->flowStatus()->orderBy('item', 'desc')->first();
+                    $propose->flowStatus()->create([
+                        'item'        => $flow_status->item + 1,
+                        'status_code' => 'RS', //Menunggu Persetujuan Usulan
+                        'created_by'  => Auth::user()->nidn,
+                    ]);
+                    $this->setEmail('RS', $propose);
+                }
             }
         });
 

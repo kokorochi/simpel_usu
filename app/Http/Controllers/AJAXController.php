@@ -116,27 +116,28 @@ class AJAXController extends BlankonController {
                 $data['data'][$i][0] = $propose->id;
             } else
             {
-                $data['data'][$i][0] = $propose->title;
-                $data['data'][$i][1] = Lecturer::where('employee_card_serial_number', $propose->created_by)->first()->full_name;
+                $data['data'][$i][0] = $i + 1;
+                $data['data'][$i][1] = $propose->title;
+                $data['data'][$i][2] = Lecturer::where('employee_card_serial_number', $propose->created_by)->first()->full_name;
                 if ($propose->is_own === '1')
                 {
-                    $data['data'][$i][2] = $propose->proposesOwn()->first()->scheme;
+                    $data['data'][$i][3] = $propose->proposesOwn()->first()->scheme;
                 } else
                 {
-                    $data['data'][$i][2] = $period->scheme;
+                    $data['data'][$i][3] = $period->scheme;
                 }
-                $data['data'][$i][3] = $propose->flowStatus()->orderBy('item', 'desc')->first()->statusCode()->first()->description;
+                $data['data'][$i][4] = $propose->flowStatus()->orderBy('item', 'desc')->first()->statusCode()->first()->description;
                 if ($type === 'ASSIGN')
                 {
-                    $data['data'][$i][4] = '<td class="text-center"><a href="' . url('reviewers/assign', $propose->id) . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Assign"><i class="fa fa-plus-circle"></i></a></td>';
+                    $data['data'][$i][5] = '<td class="text-center"><a href="' . url('reviewers/assign', $propose->id) . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Assign"><i class="fa fa-plus-circle"></i></a></td>';
                 } elseif ($type === 'APPROVE')
                 {
                     if ($propose->status_code === 'RS')
                     {
-                        $data['data'][$i][4] = '<td class="text-center"><a href="' . url('approve-proposes', $propose->id) . '/approve' . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Approve"><i class="fa fa-check-square-o"></i></a></td>';
+                        $data['data'][$i][5] = '<td class="text-center"><a href="' . url('approve-proposes', $propose->id) . '/approve' . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Approve"><i class="fa fa-check-square-o"></i></a></td>';
                     } else
                     {
-                        $data['data'][$i][4] = '<td class="text-center"><a href="' . url('approve-proposes', $propose->id) . '/display' . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Detail"><i class="fa fa-search-plus"></i></a></td>';
+                        $data['data'][$i][5] = '<td class="text-center"><a href="' . url('approve-proposes', $propose->id) . '/display' . '" class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Detail"><i class="fa fa-search-plus"></i></a></td>';
                     }
                 }
             }

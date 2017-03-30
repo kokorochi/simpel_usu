@@ -24,10 +24,18 @@ class StoreReviewUpdateRequest extends FormRequest {
      */
     public function rules()
     {
-        return [
-            'score.*'            => 'required|numeric|min:1|max:7',
-            'recommended_amount' => 'required'
-        ];
+        if ($this->submit_button == 'save')
+        {
+            return [
+                'score.*'            => 'required|numeric|min:1|max:7',
+                'recommended_amount' => 'required',
+                'suggestion'         => 'required|max:300',
+                'comment.*'          => 'required|string|max:100'
+            ];
+        } else
+        {
+            return [];
+        }
     }
 
     public function messages()
@@ -35,9 +43,13 @@ class StoreReviewUpdateRequest extends FormRequest {
         return [
             'score.*.required'            => 'Skor harus diisi',
             'score.*.numeric'             => 'Skor harus angka',
-            'score.*.min'                 => 'Skor diisi 1-7',
-            'score.*.max'                 => 'Skor diisi 1-7',
+            'score.*.min'                 => 'Skor harus diisi 1-7',
+            'score.*.max'                 => 'Skor harus diisi 1-7',
             'recommended_amount.required' => 'Rekomendasi jumlah dana harus diisi',
+            'suggestion.required'         => 'Saran harus diisi',
+            'suggestion.max'              => 'Saran maksimal 300 karakter',
+            'comment.*.required'          => 'Komentar harus diisi',
+            'comment.*.max:100'           => 'Komentar maksimal 100 karakter',
         ];
     }
 
@@ -52,12 +64,15 @@ class StoreReviewUpdateRequest extends FormRequest {
 
     public function after($validator)
     {
-        $check = $this->checkBeforeSave();
-        if (count($check) > 0)
+        if ($this->submit_button == 'save')
         {
-            foreach ($check as $item)
+            $check = $this->checkBeforeSave();
+            if (count($check) > 0)
             {
-                $validator->errors()->add('sumErrors', $item);
+                foreach ($check as $item)
+                {
+                    $validator->errors()->add('sumErrors', $item);
+                }
             }
         }
     }
@@ -65,7 +80,7 @@ class StoreReviewUpdateRequest extends FormRequest {
     private function checkBeforeSave()
     {
         $ret = [];
-        $review_propose = ReviewPropose::where('propose_id', $this->id)->where('nidn', Auth::user()->nidn)->first();
+        $review_propose = ReviewPropose::where('propose_id', $this->id)->where('nidn', Auth::user()->nidn)->where('status', 'submit')->first();
         if ($review_propose !== null)
         {
             array_push($ret, 'Sudah pernah direview sebelumnya, tidak diperkenankan untuk mengubah hasil review sebelumnya');
