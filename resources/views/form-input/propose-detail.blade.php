@@ -92,7 +92,7 @@ $errors->has('bank_account_no') || old('bank_account_no')
                     </div><!-- /.form-group -->
 
                     <div class="form-group">
-                        <label for="student_involved" class="col-sm-4 col-md-3 control-label">Mahasiswa Yang
+                        <label for="student_involved" class="col-sm-4 col-md-3 control-label">Jumlah Mahasiswa Yang
                             Terlibat</label>
                         <div class="col-sm-7">
                             <input name="student_involved" class="form-control input-sm" type="text"
