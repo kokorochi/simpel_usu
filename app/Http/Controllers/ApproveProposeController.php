@@ -354,7 +354,7 @@ class ApproveProposeController extends BlankonController {
             $excel->sheet('List Usulan', function($sheet) use($data){
                 $sheet->fromArray($data, null, 'A1', true);
             });
-        })->export('xlsx');
+        })->export('xls');
     }
 
     private function getProposeRelationData($propose = null)

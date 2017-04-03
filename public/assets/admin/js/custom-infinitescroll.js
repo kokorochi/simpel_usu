@@ -13,7 +13,6 @@ $(".announce-home").infinitescroll({
     // call masonry as a callback
     function (newElements) {
         var $newElems = $(newElements);
-        $(".announce-home").masonry('appended', $newElems);
         BlankonBlog.masonryGrid();
     }
 );
