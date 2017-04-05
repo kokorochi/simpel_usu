@@ -47,7 +47,10 @@ class UpdateVerificationRequest extends FormRequest {
         {
             foreach ($check as $key => $item)
             {
-                $validator->errors()->add('member_areas_of_expertise.' . $key, $item);
+                if($key !== 'sumErrors')
+                    $validator->errors()->add('member_areas_of_expertise.' . $key, $item);
+                else
+                    $validator->errors()->add('sumErrors', $item);
             }
         }
     }
@@ -55,6 +58,23 @@ class UpdateVerificationRequest extends FormRequest {
     public function checkBeforeSave()
     {
         $ret = [];
+
+        //Check if not waiting, then no need to update data anymore
+        $propose = Propose::find($this->id);
+        if(!is_null($propose))
+        {
+            $member = $propose->member()->where('nidn', Auth::user()->nidn)->first();
+            if(is_null($member))
+            {
+                $ret['sumErrors'] = 'Anggota tidak ditemukan untuk NIDN = ' . Auth::user()->nidn;
+            }else
+            {
+                if($member->status !== 'waiting')
+                {
+                    $ret['sumErrors'] = 'Anggota sudah memverifikasi sebelumnya, tidak dapat mengulangi proses verifikasi';
+                }
+            }
+        }
 
         foreach ($this->input('member_areas_of_expertise') as $item)
         {
