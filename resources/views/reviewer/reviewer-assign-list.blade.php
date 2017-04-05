@@ -74,7 +74,8 @@
                             <table id="table-assign-reviewer-ajax" class="table table-striped table-success">
                                 <thead>
                                 <tr>
-                                    <th data-class="expand">Judul</th>
+                                    <th data-class="expand">No</th>
+                                    <th data-class="phone">Judul</th>
                                     <th data-hide="phone">Ketua</th>
                                     <th data-hide="phone">Scheme</th>
                                     <th data-hide="phone">Status</th>
@@ -86,6 +87,7 @@
                                 <!--tfoot section is optional-->
                                 <tfoot>
                                 <tr>
+                                    <th>No</th>
                                     <th>Judul</th>
                                     <th>Ketua</th>
                                     <th>Scheme</th>
