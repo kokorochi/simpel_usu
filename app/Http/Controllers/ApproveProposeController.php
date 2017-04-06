@@ -321,6 +321,7 @@ class ApproveProposeController extends BlankonController {
             $propose_members = $propose->member()->where('status', 'accepted')->get();
             $head_info = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
             $faculty = Faculty::where('faculty_code', $propose->faculty_code)->first();
+            $research_reviewers = $propose->researchReviewer()->get();
             $data[$i]['No'] = $i;
             $data[$i]['Ketua'] = $head_info->full_name;
 //            $data[$i]['NIDN Ketua'] = $propose->created_by;
@@ -332,15 +333,27 @@ class ApproveProposeController extends BlankonController {
                 $member_info = $propose_member->lecturer()->first();
                 $data[$i]['Anggota ' . $j++] = $member_info->full_name;
             }
-            while($j <= 4)
+            while ($j <= 4)
             {
                 $data[$i]['Anggota ' . $j++] = "";
             }
+            $j = 1;
+            foreach ($research_reviewers as $research_reviewer)
+            {
+                $member_info = Lecturer::where('employee_card_serial_number', $research_reviewer->nidn)->first();
+                $data[$i]['Reviewer ' . $j++] = $member_info->full_name;
+            }
+            while ($j <= 4)
+            {
+                $data[$i]['Reviewer ' . $j++] = "";
+            }
             $data[$i]['Biaya Diusulkan'] = $propose->total_amount;
+
             $i++;
         }
 
-        Excel::create('List Usulan LP', function($excel) use($data){
+        Excel::create('List Usulan LP', function ($excel) use ($data)
+        {
             // Set the title
             $excel->setTitle('List Usuluan LP');
 
@@ -351,7 +364,8 @@ class ApproveProposeController extends BlankonController {
             // Call them separately
             $excel->setDescription('List Usuluan Lembaga Penelitian USU');
 
-            $excel->sheet('List Usulan', function($sheet) use($data){
+            $excel->sheet('List Usulan', function ($sheet) use ($data)
+            {
                 $sheet->fromArray($data, null, 'A1', true);
             });
         })->export('xls');
