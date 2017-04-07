@@ -2,9 +2,11 @@
 
 namespace App\Exceptions;
 
+use App\Http\Controllers\BlankonController;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use View;
 
 class Handler extends ExceptionHandler
 {
@@ -44,6 +46,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if($exception instanceof \Swift_TransportException)
+        {
+            $error = 'Email sedang dalam maintenance, mohon coba kembali beberapa saat lagi';
+
+            View::share('error', $error);
+            return abort('500');
+        }
+
         return parent::render($request, $exception);
     }
 

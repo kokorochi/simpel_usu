@@ -14,6 +14,11 @@
             'admin/css/pages/error-page.css'
         ];
     }
+    $find_error_css = array_search('admin/css/pages/error-page.css', $css['themes']);
+    if(!$find_error_css)
+    {
+        array_push($css['themes'], 'admin/css/pages/error-page.css');
+    }
 
 @endphp
 
