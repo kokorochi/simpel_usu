@@ -138,6 +138,11 @@ class ReviewProposeController extends BlankonController {
             {
                 $upd_mode = 'create';
             }
+            $total_score = 0;
+            foreach ($review_proposes_i as $review_propose_i)
+            {
+                $total_score = $total_score + ( $review_propose_i->score * $review_propose_i->quality );
+            }
         }
         $conclusions = Conclusion::all();
 
@@ -146,7 +151,8 @@ class ReviewProposeController extends BlankonController {
             'review_propose',
             'review_proposes_i',
             'conclusions',
-            'upd_mode'
+            'upd_mode',
+            'total_score'
         ));
     }
 

@@ -153,6 +153,20 @@
                                 </tr>
                             @endforeach
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>Total</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <input name="total_score"
+                                               class="form-control input-sm text-center output-score" type="text"
+                                               value="{{$total_score}}"
+                                               disabled>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
                         </table>
                         <div class="form-body form-horizontal form-bordered no-padding">
                             <div class="form-group">

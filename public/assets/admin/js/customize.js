@@ -148,6 +148,13 @@ $(document).ready(function () {
         if ($.isNumeric($(this).val())) {
             var quality = $(this).parent().parent().parent().find("input[name='quality[]']").val();
             $(this).parent().parent().parent().find(".output-score").val($(this).val() * quality);
+
+            var count_total_score = 0;
+            $(this).parent().parent().parent().parent().find(".output-score").each(function(index){
+                count_total_score = count_total_score + parseInt($(this).val());
+            });
+            // console.log(count_total_score);
+            $("input[name='total_score']").val(count_total_score);
         }
     });
 
@@ -223,6 +230,10 @@ $(document).ready(function () {
         var period_id = $("#scheme-approve-propose").val();
         window.open('approve-proposes/' + period_id + '/download-excel', "_blank");
     });
+
+    $("input[name^='final-score']").on("change", function(){
+        console.log('test');
+    })
 
     // $('form.output-filter').click(function(){
     //     $.get(baseUrl + '/ajax/outputs/get-count',{
