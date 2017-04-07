@@ -99,7 +99,7 @@
                                     <div class="col-sm-7">
                                         <select name="appraisal_type" class="form-control input-sm">
                                             @foreach($appraisals as $appraisal)
-                                                <option value="{{$appraisal->id}}" {{$period->appraisal_type == $appraisal->id ? 'selected' : null}}>{{$appraisal->name}}</option>
+                                                <option value="{{$appraisal->id}}" {{$period->appraisal_id == $appraisal->id ? 'selected' : null}}>{{$appraisal->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
