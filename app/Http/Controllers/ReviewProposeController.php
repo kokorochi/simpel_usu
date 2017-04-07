@@ -101,6 +101,7 @@ class ReviewProposeController extends BlankonController {
             return abort('404');
         }
         $upd_mode = 'create';
+        $total_score = 0;
 
         $review_propose = ReviewPropose::where('propose_id', $id)->where('nidn', Auth::user()->nidn)->first();
         if ($review_propose === null)
@@ -138,7 +139,6 @@ class ReviewProposeController extends BlankonController {
             {
                 $upd_mode = 'create';
             }
-            $total_score = 0;
             foreach ($review_proposes_i as $review_propose_i)
             {
                 $total_score = $total_score + ( $review_propose_i->score * $review_propose_i->quality );
