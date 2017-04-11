@@ -341,6 +341,20 @@ class ApproveProposeController extends BlankonController {
             foreach ($research_reviewers as $research_reviewer)
             {
                 $member_info = Lecturer::where('employee_card_serial_number', $research_reviewer->nidn)->first();
+                $review_propose = $propose->reviewPropose()->where('nidn', $research_reviewer->nidn)->first();
+                if (! is_null($review_propose))
+                {
+                    $review_proposes_i = $review_propose->reviewProposesI()->get();
+                    $total_score = 0;
+                    foreach ($review_proposes_i as $review_propose_i)
+                    {
+                        $total_score = $total_score + ($review_propose_i->quality * $review_propose_i->score);
+                    }
+                    $member_info->full_name = $member_info->full_name . ', status = ' . $review_propose->status . ', total score = ' . $total_score;
+                } else
+                {
+                    $member_info->full_name = $member_info->full_name . ', status = belum review';
+                }
                 $data[$i]['Reviewer ' . $j++] = $member_info->full_name;
             }
             while ($j <= 4)
