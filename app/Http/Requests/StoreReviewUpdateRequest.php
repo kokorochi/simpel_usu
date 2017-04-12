@@ -29,8 +29,8 @@ class StoreReviewUpdateRequest extends FormRequest {
             return [
                 'score.*'            => 'required|numeric|min:1|max:7',
                 'recommended_amount' => 'required',
-                'suggestion'         => 'required|max:300',
-                'comment.*'          => 'required|string|max:100'
+                'suggestion'         => 'required',
+                'comment.*'          => 'required|string'
             ];
         } else
         {
