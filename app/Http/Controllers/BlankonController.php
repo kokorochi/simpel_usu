@@ -171,7 +171,8 @@ class BlankonController extends Controller {
             'global/plugins/bower_components/jquery.sparkline.min/index.js',
             'global/plugins/bower_components/jquery-easing-original/jquery.easing.1.3.min.js',
             'global/plugins/bower_components/ionsound/js/ion.sound.min.js',
-            'global/plugins/bower_components/bootbox/bootbox.js'
+            'global/plugins/bower_components/bootbox/bootbox.js',
+            'admin/js/bootstrap-notify.min.js'
         ];
     }
 
