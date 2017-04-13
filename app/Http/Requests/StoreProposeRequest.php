@@ -63,7 +63,7 @@ class StoreProposeRequest extends FormRequest {
                     //Check Detail
                     'faculty_code'       => 'required',
                     'title'              => 'required',
-                    'total_amount'       => 'required|numeric',
+                    'total_amount'       => 'required',
                     'areas_of_expertise' => 'required',
                     //End Check Detail
                 ];
