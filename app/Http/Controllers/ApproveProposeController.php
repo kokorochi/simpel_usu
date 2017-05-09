@@ -322,6 +322,11 @@ class ApproveProposeController extends BlankonController {
             $head_info = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
             $faculty = Faculty::where('faculty_code', $propose->faculty_code)->first();
             $research_reviewers = $propose->researchReviewer()->get();
+
+            $period = $propose->period()->first();
+            $appraisal = $period->appraisal()->first();
+            $appraisal_is = $appraisal->appraisal_i()->get();
+
             $data[$i]['No'] = $i;
             $data[$i]['Ketua'] = $head_info->full_name;
 //            $data[$i]['NIDN Ketua'] = $propose->created_by;
@@ -351,11 +356,13 @@ class ApproveProposeController extends BlankonController {
                     $total_score = 0;
                     foreach ($review_proposes_i as $review_propose_i)
                     {
+                        $data[$i]['Reviewer ' . $j . ' Komentar aspek ' . $review_propose_i->item] = $review_propose_i->comment;
                         $total_score = $total_score + ($review_propose_i->quality * $review_propose_i->score);
                     }
                     $data[$i]['Reviewer ' . $j . ' Status'] = $review_propose->status;
                     $data[$i]['Reviewer ' . $j . ' Rekomendasi Dana'] = $review_propose->recommended_amount;
                     $data[$i]['Reviewer ' . $j . ' Nilai'] = $total_score;
+
                     $avg_score = $avg_score + $total_score;
                     $avg_amount = $avg_amount + $review_propose->recommended_amount;
                 } else
@@ -368,7 +375,15 @@ class ApproveProposeController extends BlankonController {
             }
             while ($j <= 4)
             {
-                $data[$i]['Reviewer ' . $j++] = "";
+                $data[$i]['Reviewer ' . $j . ' Nama'] = '';
+                foreach ($appraisal_is as $appraisal_i)
+                {
+                    $data[$i]['Reviewer ' . $j . ' Komentar aspek ' . $appraisal_i->item] = '';
+                }
+                $data[$i]['Reviewer ' . $j . ' Status'] = '';
+                $data[$i]['Reviewer ' . $j . ' Rekomendasi Dana'] = '';
+                $data[$i]['Reviewer ' . $j . ' Nilai'] = '';
+                $j++;
             }
             $count_reviewer = count($research_reviewers);
             if($count_reviewer > 0)
