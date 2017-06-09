@@ -131,7 +131,7 @@ class ApproveProposeController extends BlankonController {
             $count_amount += $review_propose->recommended_amount;
         }
 
-        if($propose_relation->flow_status->status_code == "RS")
+        if ($propose_relation->flow_status->status_code == "RS")
         {
             if ($count_reviewers === 0)
             {
@@ -277,12 +277,15 @@ class ApproveProposeController extends BlankonController {
             $count_amount += $review_propose->recommended_amount;
         }
 
-        if ($count_reviewers === 0)
+        if ($propose_relation->flow_status->status_code == "RS")
         {
-            $propose_relation->propose->final_amount = $propose_relation->propose->total_amount;
-        } else
-        {
-            $propose_relation->propose->final_amount = $count_amount / $count_reviewers;
+            if ($count_reviewers === 0)
+            {
+                $propose_relation->propose->final_amount = $propose_relation->propose->total_amount;
+            } else
+            {
+                $propose_relation->propose->final_amount = $count_amount / $count_reviewers;
+            }
         }
 
         $disabled = 'disabled';
@@ -389,7 +392,7 @@ class ApproveProposeController extends BlankonController {
                 $j++;
             }
             $count_reviewer = count($research_reviewers);
-            if($count_reviewer > 0)
+            if ($count_reviewer > 0)
             {
                 $avg_score = $avg_score / $count_reviewer;
                 $avg_amount = $avg_amount / $count_reviewer;
