@@ -12,6 +12,7 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 use Excel;
+use parinpan\fanjwt\libs\JWTAuth;
 use Symfony\Component\HttpFoundation\File\File;
 use View;
 use Illuminate\Support\Facades\Storage;
