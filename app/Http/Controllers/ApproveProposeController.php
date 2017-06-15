@@ -334,7 +334,10 @@ class ApproveProposeController extends BlankonController {
             $appraisal_is = $appraisal->appraisal_i()->get();
 
             $data[$i]['No'] = $i;
-            $data[$i]['Ketua'] = $head_info->full_name;
+            if(is_null($head_info))
+                $data[$i]['Ketua'] = $propose->created_by . ": NIDN NOT FOUND";
+            else
+                $data[$i]['Ketua'] = $head_info->full_name;
 //            $data[$i]['NIDN Ketua'] = $propose->created_by;
             $data[$i]['Fakultas'] = $faculty->faculty_name;
             $data[$i]['Judul'] = $propose->title;
@@ -342,7 +345,10 @@ class ApproveProposeController extends BlankonController {
             foreach ($propose_members as $propose_member)
             {
                 $member_info = $propose_member->lecturer()->first();
-                $data[$i]['Anggota ' . $j++] = $member_info->full_name;
+                if(is_null($member_info))
+                    $data[$i]['Anggota ' . $j++] = $propose_member->nidn + ": NIDN NOT FOUND";
+                else
+                    $data[$i]['Anggota ' . $j++] = $member_info->full_name;
             }
             while ($j <= 4)
             {
@@ -354,7 +360,10 @@ class ApproveProposeController extends BlankonController {
             foreach ($research_reviewers as $research_reviewer)
             {
                 $member_info = Lecturer::where('employee_card_serial_number', $research_reviewer->nidn)->first();
-                $data[$i]['Reviewer ' . $j . ' Nama'] = $member_info->full_name;
+                if(is_null($member_info))
+                    $data[$i]['Reviewer ' . $j . ' Nama'] = $research_reviewer->nidn . ": NIDN NOT FOUND";
+                else
+                    $data[$i]['Reviewer ' . $j . ' Nama'] = $member_info->full_name;
                 $review_propose = $propose->reviewPropose()->where('nidn', $research_reviewer->nidn)->first();
                 if (! is_null($review_propose))
                 {
