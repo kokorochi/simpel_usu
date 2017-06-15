@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 use Excel;
 use parinpan\fanjwt\libs\JWTAuth;
+use parinpan\fanjwt\libs\JWTGenerator;
 use Symfony\Component\HttpFoundation\File\File;
 use View;
 use Illuminate\Support\Facades\Storage;
