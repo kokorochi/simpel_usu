@@ -15,7 +15,8 @@
     "guzzlehttp/guzzle": "~4.0",
     "dingo/api": "1.0.x@dev",
     "rap2hpoutre/laravel-log-viewer": "^0.8.0",
-    "maatwebsite/excel": "~2.1.0"
+    "maatwebsite/excel": "~2.1.0",
+    "parinpan/fan-jwt": "dev-master"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",

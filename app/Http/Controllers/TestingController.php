@@ -163,4 +163,31 @@ class TestingController extends BlankonController {
             });
         })->export('xlsx');
     }
+
+    public function sso()
+    {
+        $login = JWTAuth::communicate('https://akun.usu.ac.id/auth/listen', @$_COOKIE['ssotok'], function ($credential)
+        {
+            $loggedIn = $credential->logged_in;
+            if ($loggedIn)
+            {
+                //kalau udah login
+            } else
+            {
+                setcookie('ssotok', null, -1, '/');
+
+                return false;
+            }
+        }
+        );
+        dd($login);
+    }
+
+    public function callback()
+    {
+        return JWTAuth::recv([
+            'ssotok'  => @$_GET['ssotok'],
+            'secured' => true
+        ]);
+    }
 }

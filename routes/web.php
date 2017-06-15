@@ -202,6 +202,9 @@ Route::get('ajax/outputs/get', 'AJAXController@getOutput');
 Route::get('ajax/outputs/get-count', 'AJAXController@getCountOutput');
 // End AJAX Route
 
+Route::get('testing/sso', 'TestingController@sso');
+Route::get('callback', 'TestingController@callback');
+
 //Log Viewer Route
 Route::group(['middleware' => ['auth','isSuperUser']], function() {
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
