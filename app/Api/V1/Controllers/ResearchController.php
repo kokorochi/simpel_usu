@@ -105,7 +105,18 @@ class ResearchController extends Controller {
                 foreach ($propose_output_types as $propose_output_type)
                 {
                     $output_type = $propose_output_type->outputType()->first();
-                    $data[$i]['luaran'][] = $output_type->output_name;
+                    $data[$i]['luaran_usulan'][] = $output_type->output_name;
+                }
+
+                $research_output_generals = $research->researchOutputGeneral()->get();
+                foreach ($research_output_generals as $research_output_general)
+                {
+                    $data[$i]['luaran'][] = [
+                        'tahun'     => $research_output_general->year,
+                        'deskripsi' => $research_output_general->output_description,
+                        'url'       => $research_output_general->url_address,
+                        'status'    => $research_output_general->status,
+                    ];
                 }
                 $i++;
             }
