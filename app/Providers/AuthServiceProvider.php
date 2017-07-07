@@ -15,7 +15,7 @@ class AuthServiceProvider extends ServiceProvider {
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        'App\Model'    => 'App\Policies\ModelPolicy',
         Propose::class => UpdatePropose::class,
     ];
 
@@ -42,8 +42,13 @@ class AuthServiceProvider extends ServiceProvider {
 
         Gate::define('reviewer-menu', function ($user)
         {
-           return (Auths::where('user_id', $user->id)->where('auth_object_ref_id', '1')->exists() ||
-               Auths::where('user_id', $user->id)->where('auth_object_ref_id', '3')->exists());
+            return (Auths::where('user_id', $user->id)->where('auth_object_ref_id', '1')->exists() ||
+                Auths::where('user_id', $user->id)->where('auth_object_ref_id', '3')->exists());
+        });
+
+        Gate::define('super-menu', function ($user)
+        {
+            return Auths::where('user_id', $user->id)->where('auth_object_ref_id', '1')->exists();
         });
 
         //

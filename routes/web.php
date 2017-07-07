@@ -208,6 +208,12 @@ Route::get('callback', 'TestingController@callback');
 //Log Viewer Route
 Route::group(['middleware' => ['auth','isSuperUser']], function() {
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+    Route::get('generate-lecturer', 'SuperUserController@generateLecturer');
+    Route::get('superuser/reset', 'SuperUserController@showResetPassword');
+    Route::post('superuser/reset', 'SuperUserController@resetPassword');
+    Route::get('batch-input', 'BatchInputController@selectFile');
+    Route::post('batch-input', 'BatchInputController@preview');
+    Route::post('batch-input/upload', 'BatchInputController@upload');
 });
 //End Log Viewer Route
 

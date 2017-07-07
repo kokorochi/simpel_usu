@@ -318,27 +318,21 @@ START @SIDEBAR LEFT
         @endcan
     <!-- End category - Reviewer -->
 
-        @can('super')
+        @can('super-menu')
         <!-- Start category - Testing -->
             <li class="sidebar-category">
-                <span>Testing</span>
+                <span>Super User</span>
                 <span class="pull-right"><i class="fa fa-user"></i></span>
             </li>
-            <!-- Start navigation - Proposes -->
-            <li {!! Request::is('files','files/*')? 'class="submenu active"' : 'class="submenu"' !!}>
-                <a href="javascript:void(0);">
-                    <span class="icon"><i class="fa fa-file-powerpoint-o"></i></span>
-                    <span class="text">Files</span>
-                    <span class="arrow"></span>
-                    {!! Request::is('files', 'files/*') ? '<span class="selected"></span>' : null !!}
+            <!-- Start navigation - upload file -->
+            <li {!! Request::is('batch-input', 'batch-input/*') ? 'class="active"' : null !!}>
+                <a href="{{url('batch-input')}}">
+                    <span class="icon"><i class="fa fa-upload"></i></span>
+                    <span class="text">Upload Data</span>
+                    {!! Request::is('/', '/') ? '<span class="selected"></span>' : null !!}
                 </a>
-                <ul>
-                    <li {!! Request::is('files','files/upload')? 'class="active"' : null !!}>
-                        <a href="{{url('files/upload')}}">Upload</a>
-                    </li>
-                </ul>
             </li>
-            <!--/ End navigation - Proposes -->
+            <!--/ End navigation - upload file -->
 
             <!-- End category - Testing -->
         @endcan
