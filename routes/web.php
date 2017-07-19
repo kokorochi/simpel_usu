@@ -228,3 +228,5 @@ $api->version('v1', function ($api)
         $api->get('outputs/count/search', 'OutputController@getCountAcceptedOutput');
     });
 });
+
+Route::get('callback.php', 'CallbackController@callback');
