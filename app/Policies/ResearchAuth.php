@@ -65,10 +65,11 @@ class ResearchAuth extends AuthRetrieval {
             return true;
         }
 
+        $propose = $research->propose()->first();
+        
         //Assigned reviewer can download propose too
         if (! is_null($this->isReviewer($user)))
         {
-            $propose = $research->propose()->first();
             $propose_reviewers = $propose->researchReviewer()->get();
             foreach ($propose_reviewers as $propose_reviewer)
             {
