@@ -181,6 +181,7 @@ Route::put('researches/{id}/output-general', 'ResearchController@updateOutputGen
 Route::get('researches/approve-list', 'ResearchController@approveList');
 Route::get('researches/{id}/approve', 'ResearchController@approveDetail');
 Route::put('researches/{id}/approve', 'ResearchController@approveUpdate');
+Route::get('researches/search', 'AJAXController@getResearchByTitle');
 // End Dedication Route
 
 // Reporting Route
@@ -206,7 +207,8 @@ Route::get('testing/sso', 'TestingController@sso');
 Route::get('callback', 'TestingController@callback');
 
 //Log Viewer Route
-Route::group(['middleware' => ['auth','isSuperUser']], function() {
+Route::group(['middleware' => ['auth', 'isSuperUser']], function ()
+{
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
     Route::get('generate-lecturer', 'SuperUserController@generateLecturer');
     Route::get('superuser/reset', 'SuperUserController@showResetPassword');

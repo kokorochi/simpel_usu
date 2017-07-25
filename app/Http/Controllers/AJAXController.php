@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Member;
+use App\Research;
 use GuzzleHttp\Client;
 
 use App\Auths;
@@ -252,6 +253,50 @@ class AJAXController extends BlankonController {
             }
             $i++;
         }
+        $count_data = count($data);
+        if ($count_data == 0)
+        {
+            $data['data'] = [];
+        }
+        $data['iTotalRecords'] = $data['iTotalDisplayRecords'] = $count_data;
+        $data = json_encode($data, JSON_PRETTY_PRINT);
+
+        return response($data, 200)->header('Content-Type', 'application/json');
+    }
+
+    public function getResearchByTitle()
+    {
+        $input = Input::get();
+        $proposes = Propose::where('title', 'like', '%' . $input['title'] . '%')->get();
+        $researches = new Collection();
+        foreach ($proposes as $propose)
+        {
+            $research = $propose->research()->first();
+            if (! empty($research))
+            {
+                $researches->push($research);
+            }
+        }
+
+        $i = 0;
+        $data = [];
+        foreach ($researches as $research)
+        {
+            $propose = $research->propose()->first();
+            $data['data'][$i]['title'] = $propose->title;
+            $data['data'][$i]['author'] = $propose->created_by;
+            if ($propose->is_own === '1')
+            {
+                $data['data'][$i]['scheme'] = $propose->proposesOwn()->first()->scheme;
+            } else
+            {
+                $period = $propose->period()->first();
+                $data['data'][$i]['scheme'] = $period->scheme;
+            }
+            $data['data'][$i]['last_status'] = $propose->flowStatus()->orderBy('item', 'desc')->first()->statusCode()->first()->description;
+            $i++;
+        }
+
         $count_data = count($data);
         if ($count_data == 0)
         {

@@ -185,7 +185,8 @@ class BatchInputController extends BlankonController {
                 if ($saved)
                 {
                     $propose->proposesOwn()->save($propose_own);
-                    $propose->member()->saveMany($members);
+                    if(isset($members) && !$members->isEmpty())
+                        $propose->member()->saveMany($members);
                     $propose->proposeOutputType()->saveMany($propose_output_types);
                     $propose->research()->save($research);
                     $propose->flowStatus()->saveMany($flow_statuses);
