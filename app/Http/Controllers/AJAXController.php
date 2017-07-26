@@ -267,22 +267,22 @@ class AJAXController extends BlankonController {
     public function getResearchByTitle()
     {
         $input = Input::get();
-        $proposes = Propose::where('title', 'like', '%' . $input['title'] . '%')->get();
-        $researches = new Collection();
-        foreach ($proposes as $propose)
+        if (isset($input['id']))
         {
-            $research = $propose->research()->first();
-            if (! empty($research))
-            {
-                $researches->push($research);
-            }
+            $researches = Research::where('id', $input['id'])->get();
+        }else{
+            $query = DB::table('proposes')
+                ->join('researches', 'researches.propose_id', '=', 'proposes.id')
+                ->where('proposes.title', 'like', '%' . $input['title'] . '%')
+                ->where('proposes.deleted_at', null);
+            $researches = $query->limit(5)->get();
         }
 
         $i = 0;
         $data = [];
         foreach ($researches as $research)
         {
-            $propose = $research->propose()->first();
+            $propose = Propose::find($research->propose_id);
             $data['data'][$i]['id'] = $research->id;
             $data['data'][$i]['title'] = $propose->title;
             $data['data'][$i]['author'] = $propose->created_by;
