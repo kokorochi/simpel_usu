@@ -283,6 +283,7 @@ class AJAXController extends BlankonController {
         foreach ($researches as $research)
         {
             $propose = $research->propose()->first();
+            $data['data'][$i]['id'] = $research->id;
             $data['data'][$i]['title'] = $propose->title;
             $data['data'][$i]['author'] = $propose->created_by;
             if ($propose->is_own === '1')
