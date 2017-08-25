@@ -271,11 +271,33 @@ class AJAXController extends BlankonController {
         {
             $researches = Research::where('id', $input['id'])->get();
         }else{
-            $query = DB::table('proposes')
-                ->join('researches', 'researches.propose_id', '=', 'proposes.id')
-                ->where('proposes.title', 'like', '%' . $input['title'] . '%')
-                ->where('proposes.deleted_at', null);
-            $researches = $query->limit(5)->get();
+            if(isset($input['own'])){
+                $chief = DB::table('proposes')
+                    ->join('researches', 'researches.propose_id', '=', 'proposes.id')
+                    ->orWhere('proposes.created_by', $input['own'])
+                    ->where('proposes.title', 'like', '%' . $input['title'] . '%')
+                    ->where('proposes.deleted_at', null);
+                $chief_result = $chief->limit(5)->get();
+
+                $member = DB::table('proposes')
+                    ->join('researches', 'researches.propose_id', '=', 'proposes.id')
+                    ->join('members','members.propose_id','=','proposes.id')
+                    ->where('members.nidn',$input['own'])
+                    ->where('proposes.title', 'like', '%' . $input['title'] . '%')
+                    ->where('proposes.deleted_at', null);
+
+                if(!$chief_result->isEmpty()){
+                    $researches = $chief_result;
+                }else{
+                    $researches = $member->limit(5)->get();
+                }
+            }else{
+                $query = DB::table('proposes')
+                    ->join('researches', 'researches.propose_id', '=', 'proposes.id')
+                    ->where('proposes.title', 'like', '%' . $input['title'] . '%')
+                    ->where('proposes.deleted_at', null);
+                $researches = $query->limit(5)->get();
+            }
         }
 
         $i = 0;
