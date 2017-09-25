@@ -507,7 +507,6 @@ class ResearchController extends BlankonController {
 
     public function updateOutputGeneral(Requests\StoreOutputGeneralRequest $request, $id)
     {
-        dd($request);
         $research = Research::find($id);
         if ($research === null)
         {

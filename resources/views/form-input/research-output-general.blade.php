@@ -116,7 +116,7 @@
                                         <input name="year[]" class="form-control input-sm" type="text"
                                                maxlength="4"
                                                data-inputmask="'alias': 'decimal', 'rightAlign': false"
-                                               value="{{ $research_output_general->year }}" {{$disabled}}>
+                                               value="{{ $research_output_general->year }}" required {{$disabled}}>
                                         @if($errors->has('year.' . $key))
                                             <label class="error" for="year[]"
                                                    style="display: inline-block;">
@@ -144,7 +144,7 @@
                                 <label for="url_address[]" class="control-label col-sm-4 col-md-3">Url Address</label>
                                 <div class="col-sm-6 mb-10">
                                     <input name="url_address[]" class="form-control input-sm" type="text"
-                                           value="{{ $research_output_general->url_address }}" {{$disabled}}>
+                                           value="{{ $research_output_general->url_address }}" required {{$disabled}}>
                                     @if($errors->has('url_address.' . $key))
                                         <label class="error" for="url_address[]"
                                                style="display: inline-block;">
@@ -231,7 +231,7 @@
                                                 <span class="fileinput-new">Pilih file</span>
                                                 <span class="fileinput-exists">Ubah</span>
                                                 <input type="file" name="file_name[]"
-                                                       value="">
+                                                       required value="">
                                             </span>
                                             <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
                                                data-dismiss="fileinput">Hapus</a>
