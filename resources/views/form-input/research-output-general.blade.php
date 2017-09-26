@@ -231,7 +231,7 @@
                                                 <span class="fileinput-new">Pilih file</span>
                                                 <span class="fileinput-exists">Ubah</span>
                                                 <input type="file" name="file_name[]"
-                                                       required value="">
+                                                       value="" required>
                                             </span>
                                             <a href="#" class="input-group-addon btn btn-danger fileinput-exists"
                                                data-dismiss="fileinput">Hapus</a>

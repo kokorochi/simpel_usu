@@ -29,7 +29,15 @@
         <div class="body-content animated fadeIn">
 
             @include('form-input.panel-errors')
-
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel-body no-padding">
+                        <div class="alert alert-info">
+                            Apabila ingin mengupload satu luaran, luaran yang lain silahkan dihapus
+                        </div>
+                    </div>
+                </div>
+            </div>
             @include('form-input.research-output-general')
 
             @if($upd_mode === 'approve' && $status_code !== 'PS')
