@@ -144,7 +144,7 @@
                                 <label for="url_address[]" class="control-label col-sm-4 col-md-3">Url Address</label>
                                 <div class="col-sm-6 mb-10">
                                     <input name="url_address[]" class="form-control input-sm" type="text"
-                                           value="{{ $research_output_general->url_address }}" required {{$disabled}}>
+                                           value="{{ $research_output_general->url_address }}" {{$disabled}}>
                                     @if($errors->has('url_address.' . $key))
                                         <label class="error" for="url_address[]"
                                                style="display: inline-block;">
