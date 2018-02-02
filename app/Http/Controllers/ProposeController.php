@@ -101,6 +101,10 @@ class ProposeController extends BlankonController {
         $this->lv_disable = null;
 
         $propose_relation = $this->getProposeRelationData();
+        // $sps = array("faculty_id"=>"47","faculty_code"=>"SPS","faculty_name"=>"Sekolah Pascasarjana");
+        // $rs = array("faculty_id"=>"48","faculty_code"=>"RS","faculty_name"=>"Rumah Sakit");
+        // array_push($propose_relation->faculties,$sps);
+        // array_push($propose_relation->faculties,$rs);
 
         $disable_upload = false;
         $form_action = url('proposes/create');
@@ -459,7 +463,29 @@ class ProposeController extends BlankonController {
         if ($request->submit_button === 'print')
         {
             $propose_output_types = $propose->proposeOutputType()->get();
-            $lecturer = Lecturer::where('employee_card_serial_number', Auth::user()->nidn)->first();
+
+            $this->client = new \GuzzleHttp\Client();
+            $response = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.Auth::user()->nidn);
+            $employees = json_decode($response->getBody());
+            $user_id = $employees->data[0]->id;
+
+            $response_lect = $this->client->get('https://api.usu.ac.id/0.1/users/'.$user_id.'?fieldset=functional');
+            $employee = json_decode($response_lect->getBody());
+
+            $lecturer  = new Collection();
+            $lecturer->front_degree = $employee->data->front_degree;
+            $lecturer->behind_degree = $employee->data->behind_degree;
+            $lecturer->full_name = $employee->data->full_name;
+            $lecturer->number_of_employee_holding = $employee->data->nip;
+            $lecturer->employee_card_serial_number = $employee->data->nidn;
+            $lecturer->study_program = $employee->data->study_program;
+            
+            if(isset($employee->data->functional[0])){
+                $lecturer->position = $employee->data->functional[0]->functional_position;
+            }else{
+                $lecturer->position = "";
+            }
+            
             $lppm_head = Lecturer::where('employee_card_serial_number', '0001116503')->first();
 
             if ($request->sign_2 === 'secretary')
@@ -501,6 +527,12 @@ class ProposeController extends BlankonController {
                     $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0002036006')->first();
                     $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0007047403')->first();
                     break;
+                case 'FEB':
+                    $dean = Lecturer::where('employee_card_serial_number', '0002065803')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0013105907')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0002036006')->first();
+                    $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0007047403')->first();
+                    break;
                 case 'FKG':
                     $dean = Lecturer::where('employee_card_serial_number', '0014026503')->first();
                     $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0012076404')->first();
@@ -533,7 +565,7 @@ class ProposeController extends BlankonController {
                     break;
                 case 'FF':
                     $dean = Lecturer::where('employee_card_serial_number', '0023075705')->first();
-                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0020057505')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0010067505')->first();
                     $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0015027803')->first();
                     $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0020058001')->first();
                     break;
@@ -561,17 +593,45 @@ class ProposeController extends BlankonController {
                     $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0009017404')->first();
                     $vice_dean_3 = Lecturer::where('employee_card_serial_number', '0021048001')->first();
                     break;
+                case 'RS':
+                    $dean = Lecturer::where('employee_card_serial_number', '0005056505')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0027077801')->first();
+                    break;
+                case 'SPS':
+                    $dean = Lecturer::where('employee_card_serial_number', '0012026401')->first();
+                    $vice_dean_1 = Lecturer::where('employee_card_serial_number', '0009046404')->first();
+                    $vice_dean_2 = Lecturer::where('employee_card_serial_number', '0010085807')->first();
+                    break;
             }
-            if ($request->sign_1 === 'vice_dean_1')
-            {
-                $dean = $vice_dean_1;
-            } elseif ($request->sign_1 === 'vice_dean_2')
-            {
-                $dean = $vice_dean_2;
-            } elseif ($request->sign_1 === 'vice_dean_3')
-            {
-                $dean = $vice_dean_3;
+
+            if($propose->faculty_code=="RS"){
+                if ($request->sign_1 === 'vice_dean_1')
+                {
+                    $dean = $vice_dean_1;
+                }
+            }elseif($propose->faculty_code=="SPS"){
+                if ($request->sign_1 === 'vice_dean_1')
+                {
+                    $dean = $vice_dean_1;
+                }elseif ($request->sign_1 === 'vice_dean_2')
+                {
+                    $dean = $vice_dean_2;
+                }
             }
+            else{
+                if ($request->sign_1 === 'vice_dean_1')
+                {
+                    $dean = $vice_dean_1;
+                } elseif ($request->sign_1 === 'vice_dean_2')
+                {
+                    $dean = $vice_dean_2;
+                } elseif ($request->sign_1 === 'vice_dean_3')
+                {
+                    $dean = $vice_dean_3;
+                }
+            }
+
+
             if (! ($dean->front_degree === null || $dean->front_degree === '' || $dean->front_degree === '-'))
             {
                 $dean->full_name = $dean->front_degree . ' ' . $dean->full_name;
@@ -582,6 +642,7 @@ class ProposeController extends BlankonController {
             }
 
             $members = $propose->member()->get();
+
             foreach ($members as $member)
             {
                 if ($member->external === '1')
@@ -589,8 +650,17 @@ class ProposeController extends BlankonController {
                     $external_member = $member->externalMember()->first();
                     $member->external_name = $external_member->name;
                     $member->external_affiliation = $external_member->affiliation;
+                }else{
+                    $this->client = new \GuzzleHttp\Client();
+                    $response = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.$member->nidn);
+                    $anggotas = json_decode($response->getBody());
+
+                    foreach ($anggotas->data as $anggota){
+                        $member->full_name = $anggota->full_name;
+                    }
                 }
             }
+
             $month = date('M', strtotime(Carbon::now()->toDateString()));
             switch ($month)
             {
@@ -641,6 +711,7 @@ class ProposeController extends BlankonController {
             {
                 $propose_own = $propose->proposesOwn()->first();
             }
+
 
             return view('printing.print-confirmation', compact(
                 'propose',
@@ -815,7 +886,7 @@ class ProposeController extends BlankonController {
                     $propose->flowStatus()->save($flow_statuses);
 
                     //Send email to member
-                    $this->setEmail($flow_statuses->status_code, $propose);
+                    // $this->setEmail($flow_statuses->status_code, $propose);
                 });
 
                 return redirect()->intended('/proposes');
@@ -1099,13 +1170,38 @@ class ProposeController extends BlankonController {
                 {
                     if ($member->nidn !== null && $member->nidn !== '')
                     {
-                        $member->member_display = $member->nidn . ' : ' . Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+                        $member->member_display = $member->nidn;
+
+                        $this->client = new \GuzzleHttp\Client();
+                        $response = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.$member->nidn);
+                        $lecturers = json_decode($response->getBody());
+
+                        foreach ($lecturers->data as $lecturer){
+                            $member->member_display .= " : ".$lecturer->full_name;
+                        }
+
                         $member->member_nidn = $member->nidn;
                     }
                 }
             }
             $ret->member = $ret->members->get(0);
             $ret->lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
+            if(!isset($ret->lecturer)){
+                $this->client = new \GuzzleHttp\Client();
+                $response = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.$propose->created_by);
+                $employees = json_decode($response->getBody());
+                $ret->lecturer = new Lecturer();
+                foreach ($employees->data as $employee) { 
+                    $ret->lecturer->full_name = $employee->full_name;
+                    $ret->lecturer->front_degree = $employee->front_degree;
+                    $ret->lecturer->behind_degree = $employee->behind_degree;
+                    $ret->lecturer->number_of_employee_holding = $employee->nip;
+                    $ret->lecturer->employee_card_serial_number = $employee->nidn;
+                    $ret->lecturer->email = $employee->email;
+                    $ret->lecturer->study_program = "";
+                    $ret->lecturer->position = "";
+                }
+            }
             $ret->faculties = Faculty::where('is_faculty', '1')->get();
             $ret->output_types = Output_type::all();
             $ret->output_types->add(new Output_type());
@@ -1153,7 +1249,7 @@ class ProposeController extends BlankonController {
             $ret->member = new Member;
             $ret->members->add(new Member);
 
-            $ret->faculties = Faculty::where('is_faculty', '1')->where('faculty_code', '<>', 'SPS')->get();
+            $ret->faculties = Faculty::where('is_faculty', '1')->where('faculty_code', '<>', 'FASILKOMTI')->get();
         }
 
         return $ret;

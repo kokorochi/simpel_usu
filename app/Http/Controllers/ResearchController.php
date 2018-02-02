@@ -92,6 +92,10 @@ class ResearchController extends BlankonController {
         }
 
         $output_members = OutputMember::where('nidn', Auth::user()->nidn)->get();
+        if(isset($_GET['test'])){
+            dd($output_members);
+        }
+        
         foreach ($output_members as $output_member)
         {
             $research_output_general = $output_member->researchOutputGeneral()->first();
@@ -488,7 +492,11 @@ class ResearchController extends BlankonController {
             $output_flow_status->status_code = 'UL';
         }
         $output_code = $output_flow_status->status_code;
+       
         if ($output_flow_status !== null && ($output_code === 'VL' || $status_code === 'PS')) $disabled = 'disabled';
+         if(isset($_GET['a'])){
+        	dd($output_flow_status);
+        }
         $upd_mode = 'output';
 
         return view('research.research-output', compact(

@@ -138,11 +138,18 @@ class BlankonController extends Controller {
             $ret = Lecturer::where('employee_card_serial_number', $nidn)->first();
             if ($ret === null)
             {
-                $ret = new Lecturer();
-                $ret->full_name = "Super User";
-                $ret->employee_card_serial_number = 'SuperUser';
-                $ret->number_of_employee_holding = 'SuperUser';
-                $ret->email = 'SuperUser';
+                $this->client = new \GuzzleHttp\Client();
+                $response = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.$nidn);
+                $employees = json_decode($response->getBody());
+                
+                foreach ($employees->data as $employee) {
+                    $ret = new Lecturer();
+                    $ret->full_name = $employee->full_name;
+                    $ret->employee_card_serial_number = 'SuperUser';
+                    $ret->number_of_employee_holding = 'SuperUser';
+                    $ret->email = $employee->email;
+                    $ret->photo = substr($employee->photo, 31);
+                }
             }
         }
 
@@ -150,6 +157,7 @@ class BlankonController extends Controller {
         {
             $ret->photo = 'photo.jpg';
         }
+    
         $ret->photo = 'http://simsdm.usu.ac.id/photos/' . $ret->photo;
 
         return $ret;
@@ -194,11 +202,22 @@ class BlankonController extends Controller {
         {
             case 'VA' :
                 $members = $propose->member()->where('status', 'waiting')->get();
+
                 foreach ($members as $key => $member)
                 {
                     if ($member->external !== '1')
                     {
-                        $recipients[$key] = $member->lecturer()->first()->email;
+                        if(isset($member->lecturer()->first()->email)){
+                            $recipients[$key] = $member->lecturer()->first()->email;
+                        }else{
+                            $this->client = new \GuzzleHttp\Client();
+                            $response = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.$member->nidn);
+                            $lecturers = json_decode($response->getBody());
+                            foreach ($lecturers->data as $lecturer){
+                                $recipients[$key] = $lecturer->email;
+                            }
+                        }
+
                     }
                 }
                 $email = [];

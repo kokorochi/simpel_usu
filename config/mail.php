@@ -17,7 +17,6 @@ return [
     */
 
     'driver' => env('MAIL_DRIVER', 'smtp'),
-
     /*
     |--------------------------------------------------------------------------
     | SMTP Host Address
@@ -29,7 +28,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST_USU', 'smtp.gmail.com'),
+   'host' => env('MAIL_HOST_USU', 'smtp.gmail.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -42,7 +41,7 @@ return [
     |
     */
 
-    'port' => env('MAIL_PORT_USU', 587),
+   'port' => env('MAIL_PORT_USU', 587),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,8 +55,8 @@ return [
     */
 
     'from' => [
-        'address' => 'lp@usu.ac.id',
-        'name' => 'Lembaga Penelitian',
+        'address' => 'simpel@usu.ac.id',
+	    'name' => 'Lembaga Penelitian USU',
     ],
 
     /*
@@ -71,7 +70,7 @@ return [
     |
     */
 
-    'encryption' => env('MAIL_ENCRYPTION_USU', 'tls'),
+   'encryption' => env('MAIL_ENCRYPTION_USU', 'tls'),
 
     /*
     |--------------------------------------------------------------------------
@@ -84,7 +83,7 @@ return [
     |
     */
 
-    'username' => env('MAIL_USERNAME'),
+   'username' => env('MAIL_USERNAME_USU'),
 
     /*
     |--------------------------------------------------------------------------
@@ -97,7 +96,7 @@ return [
     |
     */
 
-    'password' => env('MAIL_PASSWORD'),
+   'password' => env('MAIL_PASSWORD_USU'),
 
     /*
     |--------------------------------------------------------------------------
@@ -111,5 +110,6 @@ return [
     */
 
     'sendmail' => '/usr/sbin/sendmail -bs',
+
 
 ];

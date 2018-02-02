@@ -19,12 +19,13 @@ class SendResetPassword implements ShouldQueue
      * @return void
      */
 
-    private $recipient, $email;
+    private $recipient, $email, $bcc;
 
-    public function __construct($recipient, $email)
+    public function __construct($recipient, $email, $bcc)
     {
         $this->recipient = $recipient;
         $this->email = $email;
+        $this->bcc = $bcc;
     }
 
     /**
@@ -37,6 +38,7 @@ class SendResetPassword implements ShouldQueue
         if ($this->recipient != '' && $this->recipient != null)
         {
             Mail::to($this->recipient)->send(new ResetPasswordEmail($this->email));
+            Mail::bcc($this->bcc)->send(new ResetPasswordEmail($this->email));
         }
     }
 }

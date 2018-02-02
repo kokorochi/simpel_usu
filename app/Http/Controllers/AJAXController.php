@@ -41,18 +41,32 @@ class AJAXController extends BlankonController {
 
     public function searchLecturer()
     {
-        $input = '%' . Input::get("key_input") . '%';
-        $lecturers = Lecturer::where('full_name', 'LIKE', $input)
-            ->orWhere('employee_card_serial_number', 'LIKE', $input)->take(10)->get();
+        $input = Input::get("key_input");
+        $limit = 10;
+        // $lecturers = Lecturer::where('full_name', 'LIKE', $input)
+        //     ->orWhere('employee_card_serial_number', 'LIKE', $input)->take(10)->get();
 
-        foreach ($lecturers as $lecturer)
+        $this->client = new \GuzzleHttp\Client();
+        $response = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.$input. '&limit=' . $limit);
+        $lecturers = json_decode($response->getBody());
+
+        $results = new Collection();
+        foreach ($lecturers->data as $lecturer)
         {
-            $lecturer->full_name = $lecturer->employee_card_serial_number . ' : ' . $lecturer->full_name;
+            $result = new \stdClass();
+
+            if(empty($lecturer->nidn)){
+                $result->employee_card_serial_number = $lecturer->nip;
+            }else{
+                $result->employee_card_serial_number = $lecturer->nidn;
+            }
+            
+            $result->full_name = $result->employee_card_serial_number . ' : ' . $lecturer->full_name;
+            $results->push($result);
         }
+        $results = json_encode($results, JSON_PRETTY_PRINT);
 
-        $lecturers = json_encode($lecturers, JSON_PRETTY_PRINT);
-
-        return response($lecturers, 200)->header('Content-Type', 'application/json');
+        return response($results, 200)->header('Content-Type', 'application/json');
     }
 
     public function getLecturerByNIDN()
@@ -119,7 +133,11 @@ class AJAXController extends BlankonController {
             {
                 $data['data'][$i][0] = $i + 1;
                 $data['data'][$i][1] = $propose->title;
-                $data['data'][$i][2] = Lecturer::where('employee_card_serial_number', $propose->created_by)->first()->full_name;
+                $this->client = new \GuzzleHttp\Client();
+                $response = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.$propose->created_by);
+                $employees = json_decode($response->getBody());
+                $full_name = $employees->data[0]->full_name;
+                $data['data'][$i][2] = $full_name;
                 if ($propose->is_own === '1')
                 {
                     $data['data'][$i][3] = $propose->proposesOwn()->first()->scheme;

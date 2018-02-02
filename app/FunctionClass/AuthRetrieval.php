@@ -41,6 +41,7 @@ class AuthRetrieval {
         $today_date = Carbon::now()->toDateString();
         return $user->auths()
             ->where('auth_object_ref_id', '4')
+            ->orWhere('auth_object_ref_id', '5')
             ->where('begin_date', '<=', $today_date)
             ->where('end_date', '>=', $today_date)
             ->first();

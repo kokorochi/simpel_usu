@@ -13,6 +13,7 @@ $(document).ready(function () {
                     key_input: request.term
                 },
                 success: function (data) {
+                    console.log(data);
                     var transformed = $.map(data, function (el) {
                         return {
                             label: el.full_name,
@@ -42,6 +43,7 @@ $(document).ready(function () {
                     key_input: request.term
                 },
                 success: function (data) {
+                    console.log(data);
                     var transformed = $.map(data, function (el) {
                         return {
                             label: el.full_name,
@@ -49,6 +51,7 @@ $(document).ready(function () {
                         };
                     });
                     response(transformed);
+                    console.log("nidn"+id);
                 }
             });
         },

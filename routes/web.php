@@ -20,6 +20,7 @@ Route::post('files/upload', 'TestingController@storeUpload');
 Route::get('tests', 'TestingController@index');
 Route::get('tests/send-email', 'TestingController@sendEmail');
 Route::get('tests/convert-excel', 'TestingController@convertExcel');
+Route::get('tests/select', 'TestingController@test');
 
 // End TESTING Route
 

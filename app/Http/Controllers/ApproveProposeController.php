@@ -325,30 +325,53 @@ class ApproveProposeController extends BlankonController {
         {
             $propose = Propose::find($propose[0]);
             $propose_members = $propose->member()->where('status', 'accepted')->get();
-            $head_info = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
+            
+            $this->client = new \GuzzleHttp\Client();
+            $res_head = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.$propose->created_by);
+            $head = json_decode($res_head->getBody());
+            $head_info = $head->data[0];
+
+            // $head_info = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
             $faculty = Faculty::where('faculty_code', $propose->faculty_code)->first();
             $research_reviewers = $propose->researchReviewer()->get();
 
             $period = $propose->period()->first();
-            $appraisal = $period->appraisal()->first();
-            $appraisal_is = $appraisal->appraisal_i()->get();
+            if(isset($period)){
+                $appraisal = $period->appraisal()->first();
+                $appraisal_is = $appraisal->appraisal_i()->get();
+            }
 
             $data[$i]['No'] = $i;
             if(is_null($head_info))
-                $data[$i]['Ketua'] = $propose->created_by . ": NIDN NOT FOUND";
+                $data[$i]['Ketua'] = $propose->created_by . "x: NIDN NOT FOUND";
             else
                 $data[$i]['Ketua'] = $head_info->full_name;
-//            $data[$i]['NIDN Ketua'] = $propose->created_by;
-            $data[$i]['Fakultas'] = $faculty->faculty_name;
+
+            $data[$i]['NIDN / NIP Ketua'] = $propose->created_by;
+
+            if(isset($faculty->faculty_name)){
+                $data[$i]['Fakultas'] = $faculty->faculty_name;
+            }else{
+                $data[$i]['Fakultas'] = "";
+            }
+
             $data[$i]['Judul'] = $propose->title;
             $j = 1;
             foreach ($propose_members as $propose_member)
             {
-                $member_info = $propose_member->lecturer()->first();
-                if(is_null($member_info))
-                    $data[$i]['Anggota ' . $j++] = $propose_member->nidn + ": NIDN NOT FOUND";
-                else
-                    $data[$i]['Anggota ' . $j++] = $member_info->full_name;
+                // $member_info = $propose_member->lecturer()->first();
+                $res_member = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.$propose_member->nidn);
+                $member = json_decode($res_member->getBody());
+                $member_info = $member->data[0];
+
+                $data[$i]['Anggota ' . $j] = $member_info->full_name;
+                // if(is_null($member_info))
+                //     $data[$i]['Anggota ' . $j++] = $propose_member->nidn + ": NIDN NOT FOUND";
+                // else
+                //     $data[$i]['Anggota ' . $j++] = $member_info->full_name;    
+
+                $data[$i]['NIDN / NIP Anggota ' . $j] = $propose_member->nidn;
+                $j++;
             }
             while ($j <= 4)
             {
@@ -391,9 +414,11 @@ class ApproveProposeController extends BlankonController {
             while ($j <= 4)
             {
                 $data[$i]['Reviewer ' . $j . ' Nama'] = '';
-                foreach ($appraisal_is as $appraisal_i)
-                {
-                    $data[$i]['Reviewer ' . $j . ' Komentar aspek ' . $appraisal_i->item] = '';
+                if(isset($appraisal_is)){
+                    foreach ($appraisal_is as $appraisal_i)
+                    {
+                        $data[$i]['Reviewer ' . $j . ' Komentar aspek ' . $appraisal_i->item] = '';
+                    }
                 }
                 $data[$i]['Reviewer ' . $j . ' Status'] = '';
                 $data[$i]['Reviewer ' . $j . ' Rekomendasi Dana'] = '';
@@ -452,13 +477,34 @@ class ApproveProposeController extends BlankonController {
             {
                 if ($member->nidn !== null && $member->nidn !== '')
                 {
-                    $member->member_display = $member->nidn . ' : ' . Member::where('id', $member->id)->where('item', $member->item)->first()->lecturer()->first()->full_name;
+                    $this->client = new \GuzzleHttp\Client();
+                    $response = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.$member->nidn);
+                    $employees = json_decode($response->getBody());
+                    $full_name = $employees->data[0]->full_name;
+
+                    $member->member_display = $member->nidn . ' : ' . $full_name;
                     $member->member_nidn = $member->nidn;
                 }
             }
         }
         $ret->member = $ret->members->get(0);
         $ret->lecturer = Lecturer::where('employee_card_serial_number', $propose->created_by)->first();
+        if(!isset($ret->lecturer)){
+            $this->client = new \GuzzleHttp\Client();
+            $response = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.$propose->created_by);
+            $employees = json_decode($response->getBody());
+            $ret->lecturer = new Lecturer();
+            foreach ($employees->data as $employee) { 
+                $ret->lecturer->full_name = $employee->full_name;
+                $ret->lecturer->front_degree = $employee->front_degree;
+                $ret->lecturer->behind_degree = $employee->behind_degree;
+                $ret->lecturer->number_of_employee_holding = $employee->nip;
+                $ret->lecturer->employee_card_serial_number = $employee->nidn;
+                $ret->lecturer->email = $employee->email;
+                $ret->lecturer->study_program = "";
+                $ret->lecturer->position = "";
+            }
+        }
         $ret->faculties = Faculty::where('is_faculty', '1')->get();
         $ret->output_types = Output_type::all();
         $ret->output_types->add(new Output_type());

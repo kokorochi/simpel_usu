@@ -303,4 +303,28 @@ $(document).ready(function () {
             $('.chosen-select-output').trigger('chosen:updated');
         })
     }
+
+    $("select[name^='reviewers']").on("change", function(){
+        var id = $("input[name^='propose_id']").val();
+        console.log(this.value);
+        console.log(id);
+    })
+
+    if ($("#table-approve-propose-test").length) {
+        var approveProposeTest = $("#table-approve-propose-test").dataTable({
+            autoWidth: false,
+            responsive: true,
+            ajax: baseUrl + '/ajax/proposes/getbyscheme?period_id=9&type=APPROVE',
+            columnDefs: [
+                {
+                    width: "1%",
+                    targets: [1]
+                },
+                {
+                    visible: false,
+                    targets: 0,
+                }
+            ]
+        });
+    }
 });

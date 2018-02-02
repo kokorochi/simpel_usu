@@ -67,9 +67,21 @@ class ForgotPasswordRequest extends FormRequest
             array_push($ret, 'NIDN tidak ditemukan pada sistem penelitian, hubungi LP / PSI untuk registrasi NIDN! Atau email ke simsdm@usu.ac.id');
         }else{
             $lecturer = $user->lecturer()->first();
-            if(!filter_var($lecturer->email, FILTER_VALIDATE_EMAIL))
-            {
-                array_push($ret, 'Email di SIMSDM belum diisi / tidak valid');
+            
+            $this->client = new \GuzzleHttp\Client();
+            $response = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.$this->input['nidn']);
+            $employees = json_decode($response->getBody());
+
+            if(isset($lecturer)){
+                if(!filter_var($lecturer->email, FILTER_VALIDATE_EMAIL))
+                {
+                    array_push($ret, 'Email di SIMSDM belum diisi / tidak valid');
+                }
+            }else{
+                if(!filter_var($employees->data[0]->email, FILTER_VALIDATE_EMAIL))
+                {
+                    array_push($ret, 'Email di SIMSDM belum diisi / tidak valid');
+                }
             }
         }
 

@@ -37,7 +37,7 @@
                                 <label for="output_type" class="col-sm-4 col-md-3 control-label">Luaran yang
                                     dihasilkan</label>
                                 <div class="col-sm-7">
-                                    <select name="output_type[]" class="form-control input-sm" {{$disabled}}>
+                                    <select name="output_type[]" class="form-control input-sm chosen-select" {{$disabled}}>
                                         @foreach($propose_relation->output_types as $output_type)
                                             <option value="{{$output_type->id}}" {{$propose_output_type->output_type_id == $output_type->id ? 'selected' : null}}>{{$output_type->output_name}}</option>
                                         @endforeach

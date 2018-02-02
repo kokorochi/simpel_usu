@@ -18,7 +18,8 @@ class IsLecturerOrOperator extends BlankonController {
     public function handle($request, Closure $next)
     { 
         if (! Auths::where('user_id', Auth::user()->id)->where('auth_object_ref_id', '1')->exists() &&
-            ! Auths::where('user_id', Auth::user()->id)->where('auth_object_ref_id', '4')->exists()
+            ! Auths::where('user_id', Auth::user()->id)->where('auth_object_ref_id', '4')->exists() &&
+            ! Auths::where('user_id', Auth::user()->id)->where('auth_object_ref_id', '5')->exists()
         )
         {
             if ((! Auths::where('user_id', Auth::user()->id)->where('auth_object_ref_id', '1')->exists()) &&

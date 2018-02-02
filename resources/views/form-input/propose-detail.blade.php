@@ -40,7 +40,7 @@ $errors->has('bank_account_no') || old('bank_account_no')
                     <div class="form-group">
                         <label for="faculty_code" class="col-sm-4 col-md-3 control-label">Fakultas</label>
                         <div class="col-sm-7">
-                            <select name="faculty_code" class="form-control input-sm" {{$disabled}}>
+                            <select name="faculty_code" class="form-control input-sm chosen-select" {{$disabled}}>
                                 @foreach($propose_relation->faculties as $faculty)
                                     <option value="{{$faculty->faculty_code}}" {{$propose_relation->propose->faculty_code === $faculty->faculty_code ? 'selected' : null}}>{{$faculty->faculty_name}}</option>
                                 @endforeach

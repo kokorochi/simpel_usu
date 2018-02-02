@@ -6,6 +6,7 @@ use App\ModelSDM\Faculty;
 use App\ModelSDM\Lecturer;
 use App\Output_type;
 use App\Period;
+use App\Propose;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Http\FormRequest;
@@ -84,7 +85,6 @@ class StoreProposeRequest extends FormRequest {
         return [
             'member_display.*.required' => 'Nama Anggota tidak boleh kosong',
             'member_nidn.*.required'    => 'NIDN Anggota tidak boleh kosong',
-
             'faculty_code.required'           => 'Fakultas tidak boleh kosong',
             'title.required'                  => 'Judul Penelitian tidak boleh kosong',
             'output_type.required'            => 'Luaran tidak boleh kosong',
@@ -205,9 +205,23 @@ class StoreProposeRequest extends FormRequest {
 
         //Check head email
         $lecturer = Lecturer::where('employee_card_serial_number', Auth::user()->nidn)->first();
-        if (! filter_var($lecturer->email, FILTER_VALIDATE_EMAIL))
-        {
-            array_push($ret, 'Email ketua tidak valid di SIMSDM, mohon diperbaiki terlebih dahulu');
+        if(isset($lecturer)){
+            if (! filter_var($lecturer->email, FILTER_VALIDATE_EMAIL))
+            {
+                array_push($ret, 'Email ketua tidak valid di SIMSDM, mohon diperbaiki terlebih dahulu');
+            }
+        }else{
+            $this->client = new \GuzzleHttp\Client();
+            $response = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.Auth::user()->nidn);
+            $employees = json_decode($response->getBody());
+            $email = "";
+            foreach ($employees->data as $employee) { 
+                $email = $employee->email;
+            }
+            if (! filter_var($email, FILTER_VALIDATE_EMAIL))
+            {
+                array_push($ret, 'Email ketua tidak valid di SIMSDM, mohon diperbaiki terlebih dahulu');
+            }
         }
 
         //Check output type
@@ -255,20 +269,41 @@ class StoreProposeRequest extends FormRequest {
                 {
                     array_push($ret, 'Data dosen USU harus diisi dan dipilih via autocomplete');
                 }
+
                 $lecturer = Lecturer::where('employee_card_serial_number', $member_nidn)->first();
+
+                $this->client = new \GuzzleHttp\Client();
+                $response = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.$member_nidn);
+                $employees = json_decode($response->getBody());
+                $name = ""; 
+                $email = "";
+
+                foreach ($employees->data as $employee) { 
+                    $name = $employee->full_name;
+                    $email = $employee->email;
+                }
+
                 if ($lecturer === null)
-                {
-                    array_push($ret, 'Anggota yang dipilih tidak valid : ' . $this->input('member_display.' . $key));
+                {                    
+                    if(empty($name)){
+                        array_push($ret, 'Anggota yang dipilih tidak valid : ' . $this->input('member_display.' . $key));
+                    }
                 } else
                 {
+                    $lecturer = new Lecturer();
+
                     if ($lecturer->email === null || $lecturer->email === '')
                     {
-                        array_push($ret, 'Anggota yang dipilih belum mengisi email di SIMSDM : ' . $this->input('member_display.' . $key));
+                        if(empty($email)){
+                            array_push($ret, 'Anggota yang dipilih belum mengisi email di SIMSDM : ' . $this->input('member_display.' . $key));
+                        }
                     } else
                     {
                         if (! filter_var($lecturer->email, FILTER_VALIDATE_EMAIL))
                         {
-                            array_push($ret, 'Anggota yang dipilih mengisi email yang tidak valid di SIMSDM : ' . $this->input('member_display.' . $key));
+                            if(! filter_var($email, FILTER_VALIDATE_EMAIL)){
+                                array_push($ret, 'Anggota yang dipilih belum mengisi email di SIMSDM : ' . $this->input('member_display.' . $key));
+                            }
                         }
                     }
                 }
@@ -295,6 +330,33 @@ class StoreProposeRequest extends FormRequest {
         if (count($member_unique_collection) !== count($member_collection))
         {
             array_push($ret, 'Anggota yang dipilih tidak boleh duplikasi');
+        }
+
+        $proposes = Propose::where('created_by', Auth::user()->nidn)->get();
+
+        if(!$proposes->isEmpty()){
+            $status_propose = false;
+
+            foreach ($proposes as $propose) {
+                $flow_status = $propose->flowStatus()->where('status_code','LA')->first();
+                if(!isset($flow_status)){
+                    $status_propose = true;
+                }else{
+                    $flow_status = $propose->flowStatus()->where('status_code','UL')->first();
+                    if(isset($flow_status)){
+                        $status_propose = true;
+                    }else{
+                        $status_propose = false;
+                    }
+                }
+            }
+            
+            if ($status_propose != true)
+            {
+                $ret[] = 'Proposal tidak bisa diajukan karena belum mengupload laporan pada penelitian sebelumnya';
+
+                return $ret;
+            }
         }
 
         //Check Head Dedication Creation times

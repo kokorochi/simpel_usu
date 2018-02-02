@@ -13,6 +13,7 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Input;
 use View;
 use App\Auths;
+use App\Remail;
 
 class LoginController extends BlankonController {
 
@@ -63,13 +64,25 @@ class LoginController extends BlankonController {
         }
         $url = url('/user/reset') . '?nidn=' . $password_reset->nidn . '&token=' . $password_reset->token;
 
+        $this->client = new \GuzzleHttp\Client();
+        $response = $this->client->get('https://api.usu.ac.id/1.0/users/search?query='.$request->input['nidn']);
+        $employees = json_decode($response->getBody());
+        
+        if(!isset($lecturer)){
+            $lecturer = new \stdClass();
+            $lecturer->email = $employees->data[0]->email;
+            $lecturer->full_name = $employees->data[0]->full_name;
+
+        }
+
         $recipient = $lecturer->email;
+        $bcc = "1214022yeni@gmail.com";
         $email['recipient_name'] = $lecturer->full_name;
         $email['body_content'] = 'Kami informasikan permintaan reset password anda, dapat dilakukan melalui link berikut : <a href="' . $url . '">Reset Password</a>';
         $email['body_detail_content'] = 'Demikian informasi ini kami sampaikan.<br/>Dikirim otomatis oleh Sistem Penlitian USU';
-        dispatch(new SendResetPassword($recipient, $email));
-
+        dispatch(new SendResetPassword($recipient, $email, $bcc));
         $mask_email = $this->obfuscate_email($lecturer->email);
+        
 
         $request->session()->flash('alert-success', 'Email telah dikirim ke ' . $mask_email . '. Mohon periksa Junk/Spam jika email tidak ada di inbox.');
 

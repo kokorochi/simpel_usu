@@ -54,7 +54,7 @@
                 @if($lecturer->front_degree !== '-' &&
                     $lecturer->front_degree !== '' &&
                     $lecturer->front_degree !== null)
-                    @php($lecturer->full_name = $lecturer->front_degree . ', ' . $lecturer->full_name)
+                    @php($lecturer->full_name = $lecturer->front_degree . ' ' . $lecturer->full_name)
                 @endif
                 @if($lecturer->behind_degree !== '-' &&
                     $lecturer->behind_degree !== '' &&
@@ -118,8 +118,40 @@
         @php($ctr_alpha = 'b')
         @foreach($members as $member)
             @if($member->external === null)
-                @php($lecturer_member = $member->lecturer()->first())
-                @php($faculty = \App\ModelSDM\Faculty::where('faculty_code', $lecturer_member->work_unit)->first())
+                @php
+                    $this->client = new \GuzzleHttp\Client();
+                    $response = $this->client->get('https://api.usu.ac.id/0.1/users/search?query='.$member->nidn);
+                    $employees = json_decode($response->getBody());
+                    $employees = $employees->response;
+
+                    $user_id = $employees->data[0]->id;
+
+                    $response_lect = $this->client->get('https://api.usu.ac.id/0.1/users/'.$user_id.'?fieldset=functional');
+                    $employee = json_decode($response_lect->getBody());
+
+                    $lecturer_member = new App\ModelSDM\Lecturer();
+                    $lecturer_member->front_degree = $employee->data->front_degree;
+                    $lecturer_member->behind_degree = $employee->data->behind_degree;
+                    $lecturer_member->full_name = $employee->data->full_name;
+                    $lecturer_member->employee_card_serial_number = $employee->data->nidn;
+
+                    if(empty($employee->data->nidn)){
+                        $lecturer_member->employee_card_serial_number = $employee->data->nip;
+                    }else{
+                        $lecturer_member->employee_card_serial_number = $employee->data->nidn;
+                    }
+
+                    $lecturer_member->study_program = $employee->data->study_program;
+
+                    $lecturer_member->work_unit = $employees->data[0]->work_unit;
+                    if(isset($employee->data->functional[0])){
+                        $lecturer_member->position = $employee->data->functional[0]->functional_position;
+                    }else{
+                        $lecturer_member->position = "";
+                    }
+
+                @endphp
+                {{-- @php($faculty = \App\ModelSDM\Faculty::where('faculty_code', $lecturer_member->work_unit)->first()) --}}
             @endif
             @php
                 if($member->external === '1')
@@ -127,19 +159,19 @@
                     $full_name = $member->external_name;
                 }else
                 {
-                    $full_name = $member->lecturer()->first()->full_name;
+                    $full_name = $member->full_name;
                 }
             @endphp
             @if($member->external === null)
-                @if($member->lecturer()->first()->front_degree !== '-' &&
-                    $member->lecturer()->first()->front_degree !== '' &&
-                    $member->lecturer()->first()->front_degree !== null)
-                    @php($full_name = $member->lecturer()->first()->front_degree . ' ' . $full_name)
+                @if($lecturer_member->front_degree !== '-' &&
+                    $lecturer_member->front_degree !== '' &&
+                    $lecturer_member->front_degree !== null)
+                    @php($full_name = $lecturer_member->front_degree . ' ' . $lecturer_member->full_name)
                 @endif
-                @if($member->lecturer()->first()->behind_degree !== '-' &&
-                    $member->lecturer()->first()->behind_degree !== '' &&
-                    $member->lecturer()->first()->behind_degree !== null)
-                    @php($full_name = $full_name . ', ' . $member->lecturer()->first()->behind_degree)
+                @if($lecturer_member->behind_degree !== '-' &&
+                    $lecturer_member->behind_degree !== '' &&
+                    $lecturer_member->behind_degree !== null)
+                    @php($full_name = $full_name . ', ' . $lecturer_member->behind_degree)
                 @endif
             @endif
             <tr>
@@ -159,7 +191,7 @@
             @if($member->external === null)
                 <tr>
                     <td class="print-col-1"></td>
-                    <td class="print-col-2">2. NIDN</td>
+                    <td class="print-col-2">2. NIP / NIDN</td>
                     <td class="print-col-3">:</td>
                     <td class="print-col-4">{{$lecturer_member->employee_card_serial_number}}</td>
                 </tr>
@@ -171,9 +203,9 @@
                 </tr>
                 <tr>
                     <td class="print-col-1"></td>
-                    <td class="print-col-2">4. Fakultas</td>
+                    <td class="print-col-2">4. Unit</td>
                     <td class="print-col-3">:</td>
-                    <td class="print-col-4">{{$faculty->faculty_name}}</td>
+                    <td class="print-col-4">{{$lecturer_member->work_unit}}</td>
                 </tr>
             @endif
         @endforeach
@@ -235,10 +267,21 @@
         </tr>
         <tr>
             <td class="print-col-1 text-center">
-                @if($sign_1 === 'dean') Dekan,
-                @elseif($sign_1 === 'vice_dean_1') Wakil Dekan 1,
-                @elseif($sign_1 === 'vice_dean_2') Wakil Dekan 2,
-                @elseif($sign_1 === 'vice_dean_3') Wakil Dekan 3,
+                @if($propose->faculty_code=="RS")
+                    @if($sign_1 === 'dean') Direktur Utama,
+                    @elseif($sign_1 === 'vice_dean_1') Direktur Pendidikan, Pelatihan, Penelitian dan Kerjasama,    
+                    @endif
+                @elseif($propose->faculty_code=="SPS")    
+                    @if($sign_1 === 'dean') Direktur,
+                    @elseif($sign_1 === 'vice_dean_1') Wakil Direktur I,
+                    @elseif($sign_1 === 'vice_dean_2' ) Wakil Direktur II,
+                    @endif
+                @else
+                    @if($sign_1 === 'dean') Dekan,
+                    @elseif($sign_1 === 'vice_dean_1') Wakil Dekan 1,
+                    @elseif($sign_1 === 'vice_dean_2') Wakil Dekan 2,
+                    @elseif($sign_1 === 'vice_dean_3') Wakil Dekan 3,
+                    @endif
                 @endif
             </td>
             <td class="print-col-2 text-center">Ketua Tim Pengusul,</td>
@@ -265,7 +308,7 @@
     <table class="table-2">
         <tbody>
         <tr>
-            <td class="print-col-1 text-center">Mengetahui</td>
+            <td class="print-col-1 text-center">Menyetujui</td>
         </tr>
         <tr>
             <td class="print-col-1 text-center">Lembaga Penelitian</td>
